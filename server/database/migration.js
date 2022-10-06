@@ -18,9 +18,9 @@ const migrate = (pool) => {
    */
 
   /**
-   * Create table Form Design
+   * Create table Form Tracking
    */
-  
+
 }
 
 module.exports = migrate;

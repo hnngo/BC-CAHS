@@ -7,17 +7,12 @@ require("./database");
 
 const port = process.env.PORT || 8000;
 app.use(cors());
-
+ 
 app.use("/api/auth", authenticationRouter);
-// app.use("/api/form", authenticationRouter);
 
 // app.get("/api", (req, res) => {
 //   res.send("Hello from server"); 
 // });
-
-// app.get("/", (req, res) => {
-//   res.send("Hello world");
-// })
 
 app.listen(port, () => {
   console.log(`Server listen on port ${port}`);

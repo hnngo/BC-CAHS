@@ -11,7 +11,7 @@ const pool = new Pool({
 migrate(pool);
 
 // pool.query('SELECT * FROM users', (err, res) => {
-//   console.log(res.rows);
+//   console.log(res);
 // })
 
 module.exports = pool;
