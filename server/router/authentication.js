@@ -12,10 +12,26 @@ router.get("/", (req, res) => {
 });
 
 /**
- * Update
+ * Login in
  */
-router.post("/", (req, res) => {
-  //
+router.post("/login", (req, res) => {
+  // Max area
+  res.send("");
+});
+
+/**
+ * Sign up
+ */
+router.post("/signup", (req, res) => {
+  // Hyunbae area
+  res.send("");
+});
+
+/**
+ * Log out
+ */
+router.post("/logout", (req, res) => {
+  // Hyunbae area
   res.send("");
 });
 
