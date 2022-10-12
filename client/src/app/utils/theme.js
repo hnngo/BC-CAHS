@@ -1,9 +1,9 @@
 import { createTheme } from "@mui/material/styles";
-import MontserratBold from "../fonts/Montserrat/static/Montserrat-Bold.ttf";
-import Montserrat from "../fonts/Montserrat/static/Montserrat-Regular.ttf";
+import MontserratBold from "../../assets/fonts/Montserrat/static/Montserrat-Bold.ttf";
+import Montserrat from "../../assets/fonts/Montserrat/static/Montserrat-Regular.ttf";
 
 const montserrat = {
-  fontFamily: "Raleway",
+  fontFamily: "Montserrat",
   fontStyle: "normal",
   fontDisplay: "swap",
   fontWeight: 400,
@@ -15,13 +15,13 @@ const montserrat = {
 };
 
 const montserratBold = {
-  fontFamily: "Raleway",
+  fontFamily: "Montserrat",
   fontStyle: "normal",
   fontDisplay: "swap",
   fontWeight: 700,
   src: `
-    local('Raleway'),
-    local('Raleway-Bold'),
+    local('montserrat'),
+    local('montserrat-Bold'),
     url(${MontserratBold}) format('woff2')
   `
 };
