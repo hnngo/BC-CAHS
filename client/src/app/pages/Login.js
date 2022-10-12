@@ -1,25 +1,29 @@
 import React from "react";
 import { Box, TextField, Typography, Button } from "@mui/material";
+import "./Login.css";
 
 const Login = () => {
   return (
-    <div>
+    <div className="Login-component">
       <form>
-        <Box
-          display="flex"
-          flexDirection={"column"}
-          alignItems="center"
-          justifyContent="center"
-          margin="auto"
-          marginTop={5}
-        >
-          <Typography variant="h2" padding={3} textAligne="center">
+        <Box className="text-field" sx={{ mt: 10 }}>
+          <Typography
+            className="company-name-text"
+            variant="h1"
+            fontFamily="Kodchasan"
+          >
             CAHS LIMS
           </Typography>
-          <Typography textAligne="center">
+
+          <Typography
+            className="system-name-text"
+            fontFamily="Kodchasan"
+            variant="h2"
+          >
             Labotory Information Management System
           </Typography>
         </Box>
+
         <Box
           display="flex"
           flexDirection={"column"}
@@ -29,13 +33,7 @@ const Login = () => {
           margin="auto"
           marginTop={5}
           padding={3}
-          borderRadius={5}
-          boxShadow={"5px 5px 10px #ccc"}
-          sx={{
-            ":hover": {
-              boxShadow: "10px 10px 20px #ccc",
-            },
-          }}
+          backgroundColor="rgba(125, 216, 255, 0.8)"
         >
           <TextField
             margin="normal"
@@ -66,6 +64,7 @@ const Login = () => {
           <Button>Sing Up</Button>
         </Box>
       </form>
+      <div></div>
     </div>
   );
 };
