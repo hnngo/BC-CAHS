@@ -10,9 +10,6 @@ import Test from "./pages/Test";
 
 const router = createBrowserRouter([
   {
-    path: "/",
-    element: <Home />,
-  }, {
     path: "/login",
     element: <Login />,
   }, {
@@ -20,8 +17,16 @@ const router = createBrowserRouter([
     element: <Signup />,
   }, {
     path: "/test",
-    element: <Test /> 
-  }
+    element: <Test />
+  }, {
+    path: "/",
+    element: <Home />,
+    children: [
+      { path: "/sample" },
+      { path: "/status" },
+      { path: "/templates" },
+    ]
+  },
 ]);
 
 export default router;
