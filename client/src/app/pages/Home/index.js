@@ -13,7 +13,7 @@ import Templates from "./Templates";
 const Home = () => {
   return (
     <div>
-      <Grid container spacing={2}>
+      <Grid container spacing={0}>
         <Grid item xs={12}>
           <Navbar />
         </Grid>
