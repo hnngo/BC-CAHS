@@ -6,6 +6,6 @@ const Sample = () => {
       <h1>Sample</h1>
     </div>
   );
-}
+};
 
 export default Sample;

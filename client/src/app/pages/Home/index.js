@@ -9,7 +9,6 @@ import Status from "./Status";
 import Sample from "./Sample";
 import Templates from "./Templates";
 
-
 const Home = () => {
   return (
     <div>
@@ -30,6 +29,6 @@ const Home = () => {
       </Grid>
     </div>
   );
-}
+};
 
 export default Home;

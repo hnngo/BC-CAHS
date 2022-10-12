@@ -6,6 +6,6 @@ const Templates = () => {
       <h1>Templates</h1>
     </div>
   );
-}
+};
 
 export default Templates;
