@@ -15,5 +15,7 @@ RUN npm install --silent
 # add app
 COPY . ./
 
+RUN npm rebuild bcrypt
+
 # start app
 CMD ["npm", "start"]
