@@ -4,7 +4,7 @@ import { Routes, Route } from "react-router-dom";
 // Components
 import Grid from "@mui/material/Grid";
 import Sidebar from "./components/SideBar";
-import Navbar from "./components/NavBar";
+import NavBar from "./components/NavBar";
 import Status from "./Status";
 import Sample from "./Sample";
 import Templates from "./Templates";
@@ -14,9 +14,9 @@ const Home = () => {
     <div>
       <Grid container spacing={0}>
         <Grid item xs={12}>
-          <Navbar />
+          <NavBar />
         </Grid>
-        <Grid item xs={4}>
+        <Grid item xs={4} height="calc(100vh - 3rem)">
           <Sidebar />
         </Grid>
         <Grid item xs={8}>

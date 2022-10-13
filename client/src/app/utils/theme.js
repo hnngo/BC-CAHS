@@ -10,7 +10,7 @@ const montserrat = {
   src: `
     local('montserrat'),
     local('montserrat-Regular'),
-    url(${Montserrat}) format('woff2')
+    url(${Montserrat}) format('ttf')
   `
 };
 
@@ -22,7 +22,7 @@ const montserratBold = {
   src: `
     local('montserrat'),
     local('montserrat-Bold'),
-    url(${MontserratBold}) format('woff2')
+    url(${MontserratBold}) format('ttf')
   `
 };
 

@@ -5,7 +5,7 @@ import { useTheme } from "@mui/material/styles";
 // Components
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 
-const Navbar = () => {
+const NavBar = () => {
   const theme = useTheme();
 
   return (
@@ -38,7 +38,8 @@ const Navbar = () => {
               component="p"
               fontSize={20}
               fontWeight={"800"}
-              color={theme.primary.dark}>
+              color={theme.primary.dark}
+              marginRight={1}>
               Shellby
             </Typography>
             <AccountCircleIcon sx={{ fontSize: "30px", color: theme.primary.dark }} />
@@ -49,4 +50,4 @@ const Navbar = () => {
   );
 };
 
-export default Navbar;
+export default NavBar;
