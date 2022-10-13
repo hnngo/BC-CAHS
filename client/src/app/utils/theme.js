@@ -29,11 +29,13 @@ const montserratBold = {
 export const defaultTheme = createTheme({
   // Color
   primary: {
-    lighter: "",
-    light: "",
+    lighter: "#BEF3FF",
+    light: "#7DD8FF",
     standard: "#5DA0C3",
     dark: "#103B4E",
-    darker: ""
+    darker: "",
+
+    white: "#FFF"
   },
   secondary: {
     lighter: "",
