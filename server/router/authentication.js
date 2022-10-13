@@ -1,6 +1,10 @@
+const { application } = require("express");
 const express = require("express");
 const router = express.Router();
 const pool = require("../database");
+
+const bodyParser = require("body-parser");
+const bcrypt = require("bcrypt");
 
 /**
  * Get users
@@ -22,8 +26,10 @@ router.post("/login", (req, res) => {
 /**
  * Sign up
  */
-router.post("/signup", (req, res) => {
+router.use(bodyParser.json())
+router.post("/signup", async (req, res) => {
   let { username, password, passwordConfirm } = req.body;
+  console.log({ username, password, passwordConfirm });
   let validation = true;
 
   if (!username || !password) {
@@ -31,21 +37,22 @@ router.post("/signup", (req, res) => {
     res.send({ errMsg: "Username must be provided." });
   }
 
-  if (password.length > 8) {
+  if (password.length < 8) {
     validation = false;
     res.send({ errMsg: "Password must be at least 8 characters long." });
   }
 
-  if (password != passwordConfirm) {
-    validation = false;
-    res.send({ errMsg: "Password does not match." });
-  }
+  // if (password != passwordConfirm) {
+  //   validation = false;
+  //   res.send({ errMsg: "Password does not match." });
+  // }
 
   if (validation) {
+    let hashedPw = await bcrypt.hash(password, 10);
+    console.log(hashedPw);
+
     res.send({ msg: "this is a signup success message" });
     // pool.query("inserting user to db logic here")
-  } else {
-    res.send({ errMsg: "this is a signup error message" })
   }
 });
 
