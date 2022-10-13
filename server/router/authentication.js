@@ -1,11 +1,21 @@
 const express = require("express");
 const router = express.Router();
 const pool = require("../database");
+const bcrypt = require("bcryptjs");
+const cookieParser = require("cookie-parser");
+const sessions = require("express-session");
+
+var client = null;
 
 /**
  * Connect with Pool.
  */
-const client = await pool.connect();
+(async () => {
+  client = await pool.connect();
+})();
+
+//session cookie variable. 
+var session; 
 
 /**
 * The pool will emit an error on behalf of any idle clients
@@ -15,6 +25,17 @@ pool.on('error', (err, client) => {
   console.error('Unexpected error on idle client', err);
   process.exit(-1);
 })
+
+// Time that a cookie lasts (8 hours in milliseconds)
+const cookieTTL = 100 * 60 * 60 * 8
+
+//session middleware
+router.use(sessions({
+  secret: "thisIsMySecreteCode",
+  saveUninitialized: true,
+  cookie: {maxAge: cookieTTL},
+  resave:  false
+}));
 
 /**
  * Get users
@@ -42,26 +63,35 @@ router.post("/login", async (req, res) => {
     const data = await client.query(usernameCheck);
     const user = data.rows[0];
 
+    //confirms existence of user in DB.
     if (user.length == 0) {
-
+      
       res.status(400).json({
         error: "No user registered with that name. Sign up first."
       });
 
     } else {
-      // This will be the statement block where password authentication logic is kept.
+        bcrypt.compare(password, user[0].password, (err, result) => {
 
-      if (user[0] === password) {
-        res.status(200).json({
-          msg: "User signed in!"
-        })
+          if (err) {
+            res.status(500).json({
+              errMsg: "Server error",
+            });
 
-      } else {
-        res.status(201).json({
-          msg: "Login Failed. Please check Username or Password"
+          } else if (result === true) {
+              session = req.session;
+              session.userid = username;
+              res.status(200).json({
+                msg: "User signed in!",
+              });
+
+          } else if (result != true) {
+              res.status(400).json({
+                errMsg: "Wrong password! Please try again."
+              });
+          }
         })
       }
-    }
   } catch (error) {
 
     console.log(error);
