@@ -23,8 +23,30 @@ router.post("/login", (req, res) => {
  * Sign up
  */
 router.post("/signup", (req, res) => {
-  // Hyunbae area
-  res.send("");
+  let { username, password, passwordConfirm } = req.body;
+  let validation = true;
+
+  if (!username || !password) {
+    validation = false;
+    res.send({ errMsg: "Username must be provided." });
+  }
+
+  if (password.length > 8) {
+    validation = false;
+    res.send({ errMsg: "Password must be at least 8 characters long." });
+  }
+
+  if (password != passwordConfirm) {
+    validation = false;
+    res.send({ errMsg: "Password does not match." });
+  }
+
+  if (validation) {
+    res.send({ msg: "this is a signup success message" });
+    // pool.query("inserting user to db logic here")
+  } else {
+    res.send({ errMsg: "this is a signup error message" })
+  }
 });
 
 /**
