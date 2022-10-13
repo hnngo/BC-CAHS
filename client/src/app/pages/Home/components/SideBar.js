@@ -9,7 +9,7 @@ const SideBar = () => {
   const theme = useTheme();
 
   return (
-    <Box bgcolor={theme.primary.standard} height="100%" width="380px" padding={0} margin={0}>
+    <Box bgcolor={theme.primary.standard} height="100%" width="100%" padding={0} margin={0}>
       <SideBarRow title="Sample" indent={0} bold />
       <SideBarRow title="Login Sample" indent={1} />
       <SideBarRow title="Manage Sample" indent={1} />
