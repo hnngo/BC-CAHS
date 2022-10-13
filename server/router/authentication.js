@@ -55,13 +55,15 @@ router.post("/login", async (req, res) => {
   const { username, password } = req.body;
 
   const usernameCheck = `SELECT *
-               FROM public.user
-               WHERE username = ${username}`;
+               FROM public."user"
+               WHERE username = '${username}'`;
 
   try {
 
     const data = await client.query(usernameCheck);
-    const user = data.rows[0];
+    const user = data.rows;
+
+    console.log(user[0]);
 
     //confirms existence of user in DB.
     if (user.length == 0) {
