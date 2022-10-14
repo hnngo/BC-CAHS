@@ -34,7 +34,7 @@ const kodchasan = {
   fontWeight: 400,
   src: `local('Kodchasan'),
   local('Kodchasan-Medium'),
-  url(${Kodchasan}) format(''woff2)
+  url(${Kodchasan}) format('woff2')
   `
 };
 
@@ -48,10 +48,10 @@ export const defaultTheme = createTheme({
     darker: ""
   },
   secondary: {
-    lighter: "",
-    light: "",
-    standard: "",
-    dark: "",
+    lighter: "#bef3ff",
+    light: "#7dd8ff",
+    standard: "#27B2ED",
+    dark: "#0B8AC0",
     darker: ""
   },
 

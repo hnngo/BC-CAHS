@@ -2,14 +2,22 @@ import React from "react";
 import { Box, TextField, Typography, Button } from "@mui/material";
 import "./Login.css";
 import bgImage from "../../assets/images/background_auth.png";
-// import { ThemeProvider, createMuiTheme } from "@mui/material/styles";
+import { useTheme } from "@mui/material/styles";
+import { useEffect, useState } from "react";
+
+const users = [
+  {
+    username: "admin1",
+    password: "12345678"
+  },
+  {
+    username: "admin2",
+    password: "012345678"
+  }
+];
 
 const Login = () => {
-  // const theme = createMuiTheme( {
-  //   typography: {
-
-  //   }
-  // })
+  const theme = useTheme();
 
   const loginPageStyle = {
     backgroundImage: `url(${bgImage})`,
@@ -21,6 +29,39 @@ const Login = () => {
     top: 0,
     left: 0
   };
+
+  const [data, setData] = useState({
+    username: "",
+    password: ""
+  });
+
+  const changeHandler = (e) => {
+    setData({ ...data, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    checkUser();
+    console.log(checkUser());
+  };
+
+  const checkUser = () => {
+    const usercheck = users.find(
+      (user) => user.username === data.username && user.password === data.password
+    );
+    if (usercheck) {
+      console.log("Login successful");
+    } else {
+      console.log("Wrong password or username");
+    }
+    console.log(usercheck);
+  };
+
+  useEffect(() => {
+    checkUser(users);
+  }, [data.username, data.password]);
+
+  console.log(data);
 
   return (
     <div className="Login-component" style={loginPageStyle}>
@@ -35,13 +76,13 @@ const Login = () => {
             variant="h1"
             fontFamily="Kodchasan"
             paddingTop={5}
-            color="#bef3ff"
-            textShadow="2px 2p #0c2e53"
+            color={theme.secondary.lighter}
+            textShadow={`2px 2px ${theme.primary.dark}`}
             fontWeight="bold">
             CAHS LIMS
           </Typography>
 
-          <Typography variant="h5" color="#7dd8ff" fontFamily="Kodchasan">
+          <Typography variant="h5" color={theme.secondary.light} fontFamily="Kodchasan">
             Labotory Information Management System
           </Typography>
         </Box>
@@ -50,6 +91,7 @@ const Login = () => {
           display="flex"
           flexDirection={"column"}
           maxWidth={400}
+          borderRadius={2}
           alignItems="center"
           justifyContent="center"
           margin="auto"
@@ -58,30 +100,40 @@ const Login = () => {
           backgroundColor="rgba(125, 216, 255, 0.8)">
           <TextField
             margin="normal"
-            type={"email"}
+            type={"text"}
+            name="username"
             variant="outlined"
-            placeholder="Email"
+            placeholder="Username"
             style={{ width: 250, height: 50 }}
+            InputProps={{ inputProps: { style: { color: theme.primary.dark } } }}
+            value={data.username}
+            onChange={changeHandler}
           />
+
           <TextField
             margin="normal"
+            name="password"
             type={"password"}
             variant="outlined"
             placeholder="Password"
             style={{ width: 250, height: 50 }}
+            value={data.password}
+            onChange={changeHandler}
           />
           <Button
             sx={{ marginTop: 3 }}
             variant="contained"
-            backgroundColor="#0B8AC0"
-            style={{ width: 250, height: 50 }}>
+            style={{ width: 250, height: 50, background: theme.secondary.dark }}
+            type="submit">
             Login
           </Button>
 
           <Typography textAligne="center" marginTop={3}>
             Don&apos;t have an anccount?
           </Typography>
-          <Button>Sing Up</Button>
+          <Button style={{ color: theme.secondary.dark }} onClick={handleSubmit}>
+            Sing Up
+          </Button>
         </Box>
       </form>
     </div>
