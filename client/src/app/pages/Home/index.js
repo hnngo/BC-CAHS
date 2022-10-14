@@ -37,7 +37,8 @@ const Home = () => {
         }}>
         <Box height="100%">
           <Grid container direction={"column"} flexWrap={"unset"} height="100%">
-            <Box height={"50px"} display={"flex"} justifyContent={"start"} alignItems={"center"}>
+            <Box height={"50px"} display={"flex"} justifyContent={"start"} alignItems={"start"}>
+              {/* TODO: Auto generate breadcrumb */}
               <Breadcrumbs aria-label="breadcrumb">
                 <Chip
                   component="a"

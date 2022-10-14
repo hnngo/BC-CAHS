@@ -18,6 +18,7 @@ const Sample = () => {
         <SampleInput label={"BC CAHS Receiver"} name="receiver" type="text" />
         <SampleInput label={"BC CAHS Submission #"} name="submissionNumber" type="text" />
         <br />
+        <br />
         <SampleInput label={"Company"} name="company" type="text" />
         <SampleInput label={"Submitter"} name="submitter" type="text" />
         <SampleInput label={"Contact Phone #"} name="contactPhoneNumber" type="text" />
@@ -25,6 +26,7 @@ const Sample = () => {
         <SampleInput label={"Client Case #"} name="clientCaseNumber" type="text" />
         <SampleInput label={"Sampling Date"} name="samplingDate" type="text" />
         <SampleInput label={"Sampling Location"} name="samplingLocation" type="text" />
+        <br />
         <br />
         <SampleInput label={"BC CAHS Custodian"} name="custodian" type="text" />
         <SampleInput label={"BC CAHS P.I."} name="pi" type="text" />
@@ -38,42 +40,40 @@ const Sample = () => {
         />
         <SampleInput label={"# of Samples"} name="numberOfSample" type="text" />
         <SampleInput label={"Sample Species"} name="sampleSpecies" type="text" />
-        <SampleInput
-          label={"Sample Type"}
-          name="sampleType"
-          type="checkbox"
-          checkboxList={SAMPLE_TYPE}
-        />
+        <SampleInput label={"Sample Type"} name="sampleType" type="select" options={SAMPLE_TYPE} />
         <SampleInput
           label={"Sample Condition"}
-          name="sampleDetails"
-          type="checkbox"
-          checkboxList={SAMPLE_CONDITION}
+          name="sampleCondition"
+          type="select"
+          options={SAMPLE_CONDITION}
         />
         <SampleInput label={"Sample Details"} name="sampleDetails" type="text" />
+        <br />
         <br />
         <SampleInput
           label={"Analysis Requested"}
           labelStyle={{ fontWeight: "bold", fontSize: "26px" }}
         />
-        <SampleInput label={"Research/Diagnostic"} name="research" type="select" />
+        <SampleInput label={"Research/Diagnostic"} name="research" type="text" />
         <SampleInput
           label={"Analysis Requested"}
           name="analysisRequested"
-          type="checkbox"
-          checkboxList={ANALYSIS_REQUESTS}
+          type="multi-select"
+          options={ANALYSIS_REQUESTS}
         />
         <SampleInput
           label={"RT-qPCR Targets"}
           name="rtqpcrTargets"
-          type="checkbox"
-          checkboxList={RT_QPCR_TARGETS}
+          type="multi-select"
+          options={RT_QPCR_TARGETS}
+        />
+        <SampleInput
+          name="rtqpcrTargets_other"
+          type="text"
+          disableText
+          placeholder={"If other, please specify"}
         />
         <SampleInput label={"Comment"} name="comment" type="text-area" />
-        <br />
-        <br />
-        <br />
-        <br />
         <br />
         <br />
         <SampleInput label="" name="submit" type="submit" />
