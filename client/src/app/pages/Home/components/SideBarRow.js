@@ -1,9 +1,12 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
+
 import { Box, Typography } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 
-const SideBarRow = ({ title, indent, bold, onClick }) => {
+const SideBarRow = ({ title, indent, bold, onClick, to }) => {
   const theme = useTheme();
+  const navigate = useNavigate();
 
   return (
     <Box
@@ -13,8 +16,11 @@ const SideBarRow = ({ title, indent, bold, onClick }) => {
       onClick={() => {
         if (typeof onClick == "function") {
           onClick();
+        } else if (to) {
+          navigate(to);
         }
-      }}>
+      }}
+      sx={{ cursor: "pointer" }}>
       <Typography
         fontSize={"20px"}
         fontWeight={bold ? 800 : 400}

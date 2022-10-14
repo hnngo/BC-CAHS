@@ -67,11 +67,11 @@ const Home = () => {
               </Breadcrumbs>
             </Box>
             <Box
-              paddingX={2}
-              paddingY={3}
+              padding={2}
               bgcolor={theme.primary.lighter}
               borderRadius={4}
-              flex={1}>
+              flex={1}
+              sx={{ overflowY: "scroll" }}>
               <Routes>
                 <Route path="sample" element={<Sample />} />
                 <Route path="status" element={<Status />} />

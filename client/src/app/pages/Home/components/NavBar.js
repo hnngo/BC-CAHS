@@ -40,7 +40,7 @@ const NavBar = () => {
               fontWeight={"800"}
               color={theme.primary.dark}
               marginRight={1}>
-              Shellby
+              Shelby
             </Typography>
             <AccountCircleIcon sx={{ fontSize: "30px", color: theme.primary.dark }} />
           </Box>
