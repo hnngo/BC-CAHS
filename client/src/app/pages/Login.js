@@ -5,6 +5,27 @@ import bgImage from "../../assets/images/background_auth.png";
 import { useTheme } from "@mui/material/styles";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { createTheme } from "@mui/material/styles";
+import { ThemeProvider } from "@mui/material";
+
+export const customTheme = createTheme({
+  typography: {
+    fontFamily: [
+      "Kodchasan",
+      "Montserrat",
+      "-apple-system",
+      "BlinkMacSystemFont",
+      '"Segoe UI"',
+      "Roboto",
+      '"Helvetica Neue"',
+      "Arial",
+      "sans-serif",
+      '"Apple Color Emoji"',
+      '"Segoe UI Emoji"',
+      '"Segoe UI Symbol"'
+    ].join(",")
+  }
+});
 
 const users = [
   {
@@ -66,7 +87,7 @@ const Login = () => {
 
   return (
     <div className="Login-component" style={loginPageStyle}>
-      <form>
+      <ThemeProvider theme={customTheme}>
         <Box
           sx={{ mt: 10 }}
           display={"flex"}
@@ -132,17 +153,17 @@ const Login = () => {
           <Grid container>
             <Grid item xs={1}></Grid>
             <Grid item xs={7} pt={1}>
-              Don&apos;t have an anccount?
+              <Typography>Don&apos;t have an anccount?</Typography>
             </Grid>
 
-            <Grid item xs={3} pt={0.8}>
+            <Grid item xs={3} pt={1}>
               <Button style={{ color: theme.secondary.dark }} as={Link} to={"/signup"}>
                 Sign Up
               </Button>
             </Grid>
           </Grid>
         </Box>
-      </form>
+      </ThemeProvider>
     </div>
   );
 };

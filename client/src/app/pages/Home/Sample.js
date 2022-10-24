@@ -40,7 +40,13 @@ const Sample = () => {
         />
         <SampleInput label={"# of Samples"} name="numberOfSample" type="text" />
         <SampleInput label={"Sample Species"} name="sampleSpecies" type="text" />
-        <SampleInput label={"Sample Type"} name="sampleType" type="select" options={SAMPLE_TYPE} />
+        <SampleInput label={"Sample Type"} name="sampleType" type="text" />
+        <SampleInput
+          label={"Sample Origin"}
+          name="sampleType"
+          type="select"
+          options={SAMPLE_TYPE}
+        />
         <SampleInput
           label={"Sample Condition"}
           name="sampleCondition"

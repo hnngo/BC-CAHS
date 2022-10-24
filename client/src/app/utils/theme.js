@@ -32,9 +32,10 @@ const kodchasan = {
   fontStyle: "normal",
   fontDisplay: "swap",
   fontWeight: 400,
-  src: `local('Kodchasan'),
-  local('Kodchasan-Medium'),
-  url(${Kodchasan}) format('woff2')
+  src: `
+    local('Kodchasan'),
+    local('Kodchasan'),
+    url(${Kodchasan}) format('woff2')
   `
 };
 
@@ -60,7 +61,6 @@ export const defaultTheme = createTheme({
   typography: {
     fontFamily: [
       "Montserrat",
-      "Kodchasan",
       "-apple-system",
       "BlinkMacSystemFont",
       '"Segoe UI"',
