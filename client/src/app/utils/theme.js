@@ -11,7 +11,7 @@ const montserrat = {
   src: `
     local('montserrat'),
     local('montserrat-Regular'),
-    url(${Montserrat}) format('woff2')
+    url(${Montserrat}) format('ttf')
   `
 };
 
@@ -23,7 +23,7 @@ const montserratBold = {
   src: `
     local('montserrat'),
     local('montserrat-Bold'),
-    url(${MontserratBold}) format('woff2')
+    url(${MontserratBold}) format('ttf')
   `
 };
 
@@ -32,20 +32,23 @@ const kodchasan = {
   fontStyle: "normal",
   fontDisplay: "swap",
   fontWeight: 400,
-  src: `local('Kodchasan'),
-  local('Kodchasan-Medium'),
-  url(${Kodchasan}) format('woff2')
+  src: `
+    local('Kodchasan'),
+    local('Kodchasan'),
+    url(${Kodchasan}) format('woff2')
   `
 };
 
 export const defaultTheme = createTheme({
   // Color
   primary: {
-    lighter: "",
-    light: "",
+    lighter: "#BEF3FF",
+    light: "#7DD8FF",
     standard: "#5DA0C3",
     dark: "#103B4E",
-    darker: ""
+    darker: "",
+
+    white: "#FFF"
   },
   secondary: {
     lighter: "#bef3ff",
@@ -58,7 +61,6 @@ export const defaultTheme = createTheme({
   typography: {
     fontFamily: [
       "Montserrat",
-      "Kodchasan",
       "-apple-system",
       "BlinkMacSystemFont",
       '"Segoe UI"',
