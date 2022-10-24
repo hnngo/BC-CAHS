@@ -1,6 +1,7 @@
 import { createTheme } from "@mui/material/styles";
 import MontserratBold from "../../assets/fonts/Montserrat/static/Montserrat-Bold.ttf";
 import Montserrat from "../../assets/fonts/Montserrat/static/Montserrat-Regular.ttf";
+import Kodchasan from "../../assets/fonts/Kodchasan/Kodchasan-Medium.ttf";
 
 const montserrat = {
   fontFamily: "Montserrat",
@@ -26,6 +27,17 @@ const montserratBold = {
   `
 };
 
+const kodchasan = {
+  fontFamily: "Kodchasan",
+  fontStyle: "normal",
+  fontDisplay: "swap",
+  fontWeight: 400,
+  src: `local('Kodchasan'),
+  local('Kodchasan-Medium'),
+  url(${Kodchasan}) format('woff2')
+  `
+};
+
 export const defaultTheme = createTheme({
   // Color
   primary: {
@@ -38,16 +50,17 @@ export const defaultTheme = createTheme({
     white: "#FFF"
   },
   secondary: {
-    lighter: "",
-    light: "",
-    standard: "",
-    dark: "",
+    lighter: "#bef3ff",
+    light: "#7dd8ff",
+    standard: "#27B2ED",
+    dark: "#0B8AC0",
     darker: ""
   },
 
   typography: {
     fontFamily: [
       "Montserrat",
+      "Kodchasan",
       "-apple-system",
       "BlinkMacSystemFont",
       '"Segoe UI"',
@@ -63,7 +76,7 @@ export const defaultTheme = createTheme({
   overrides: {
     MuiCssBaseline: {
       "@global": {
-        "@font-face": [montserrat, montserratBold]
+        "@font-face": [montserrat, montserratBold, kodchasan]
       }
     }
   }
