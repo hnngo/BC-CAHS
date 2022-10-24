@@ -1,9 +1,10 @@
 import React from "react";
-import { Box, TextField, Typography, Button } from "@mui/material";
+import { Box, TextField, Typography, Button, Grid } from "@mui/material";
 import "./Login.css";
 import bgImage from "../../assets/images/background_auth.png";
 import { useTheme } from "@mui/material/styles";
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 
 const users = [
   {
@@ -18,7 +19,7 @@ const users = [
 
 const Login = () => {
   const theme = useTheme();
-
+  // const history = useHistory();
   const loginPageStyle = {
     backgroundImage: `url(${bgImage})`,
     backgroundSize: "cover",
@@ -74,15 +75,15 @@ const Login = () => {
           justifyContent="center">
           <Typography
             variant="h1"
-            fontFamily="Kodchasan"
+            fontFamily={"Kodchasan"}
             paddingTop={5}
             color={theme.secondary.lighter}
-            textShadow={`2px 2px ${theme.primary.dark}`}
+            // textShadow={`2px 2px ${theme.primary.dark}`}
             fontWeight="bold">
             CAHS LIMS
           </Typography>
 
-          <Typography variant="h5" color={theme.secondary.light} fontFamily="Kodchasan">
+          <Typography variant="h5" color={theme.secondary.light} fontFamily={"Kodchasan"}>
             Labotory Information Management System
           </Typography>
         </Box>
@@ -104,7 +105,7 @@ const Login = () => {
             name="username"
             variant="outlined"
             placeholder="Username"
-            style={{ width: 250, height: 50 }}
+            style={{ width: 300, height: 50 }}
             InputProps={{ inputProps: { style: { color: theme.primary.dark } } }}
             value={data.username}
             onChange={changeHandler}
@@ -116,24 +117,30 @@ const Login = () => {
             type={"password"}
             variant="outlined"
             placeholder="Password"
-            style={{ width: 250, height: 50 }}
+            style={{ width: 300, height: 50 }}
             value={data.password}
             onChange={changeHandler}
           />
           <Button
             sx={{ marginTop: 3 }}
             variant="contained"
-            style={{ width: 250, height: 50, background: theme.secondary.dark }}
-            type="submit">
+            style={{ width: 300, height: 50, background: theme.secondary.dark }}
+            type="submit"
+            onClick={handleSubmit}>
             Login
           </Button>
+          <Grid container>
+            <Grid item xs={1}></Grid>
+            <Grid item xs={7} pt={1}>
+              Don&apos;t have an anccount?
+            </Grid>
 
-          <Typography textAligne="center" marginTop={3}>
-            Don&apos;t have an anccount?
-          </Typography>
-          <Button style={{ color: theme.secondary.dark }} onClick={handleSubmit}>
-            Sing Up
-          </Button>
+            <Grid item xs={3} pt={0.8}>
+              <Button style={{ color: theme.secondary.dark }} as={Link} to={"/signup"}>
+                Sign Up
+              </Button>
+            </Grid>
+          </Grid>
         </Box>
       </form>
     </div>
