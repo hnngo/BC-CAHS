@@ -1,12 +1,26 @@
 import React from "react";
 import { Box, Grid, Typography } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
+import Popover from "@mui/material/Popover";
 
 // Components
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 
 const NavBar = () => {
   const theme = useTheme();
+  const [anchorEl, setAnchorEl] = React.useState(null);
+
+  //popup for logout sign
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  const open = Boolean(anchorEl);
+  const id = open ? "simple-popover" : undefined;
 
   return (
     <Box
@@ -42,7 +56,34 @@ const NavBar = () => {
               marginRight={1}>
               Shelby
             </Typography>
-            <AccountCircleIcon sx={{ fontSize: "30px", color: theme.primary.dark }} />
+            <AccountCircleIcon
+              sx={{ fontSize: "30px", color: theme.primary.dark }}
+              aria-describedby={id}
+              onClick={handleClick}
+              style={{ cursor: "pointer" }}
+            />
+            <Popover
+              id={id}
+              open={open}
+              anchorEl={anchorEl}
+              onClose={handleClose}
+              anchorOrigin={{
+                vertical: "bottom",
+                horizontal: "left"
+              }}>
+              <Box backgroundColor={theme.primary.dark}>
+                <Typography
+                  variant="p"
+                  component="p"
+                  fontSize={20}
+                  fontWeight={"800"}
+                  color={"white"}
+                  marginRight={1}
+                  marginLeft={4.5}>
+                  Sign out
+                </Typography>
+              </Box>
+            </Popover>
           </Box>
         </Grid>
       </Grid>
