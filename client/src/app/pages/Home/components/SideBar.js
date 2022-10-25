@@ -1,11 +1,32 @@
 import React from "react";
 
-const Sidebar = () => {
+// Components
+import { Box } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
+import SideBarRow from "./SideBarRow";
+
+const SideBar = () => {
+  const theme = useTheme();
+
   return (
-    <div>
-      <h1>Sidebar</h1>
-    </div>
+    <Box bgcolor={theme.primary.standard} height="100%" width="100%" padding={0} margin={0}>
+      <SideBarRow title="Sample" indent={0} bold to="/" />
+      <SideBarRow title="Login Sample" indent={1} to="/sample" />
+      <SideBarRow title="Manage Sample" indent={1} />
+
+      <SideBarRow title="Status" indent={0} bold />
+      <SideBarRow title="qPCR" indent={1} />
+      <SideBarRow title="Virology" indent={1} />
+      <SideBarRow title="ELISA" indent={1} />
+      <SideBarRow title="ATPase" indent={1} />
+
+      <SideBarRow title="Data/Report Templates" indent={0} bold />
+      <SideBarRow title="qPCR" indent={1} />
+      <SideBarRow title="Virology" indent={1} />
+      <SideBarRow title="ELISA" indent={1} />
+      <SideBarRow title="ATPase" indent={1} />
+    </Box>
   );
 };
 
-export default Sidebar;
+export default SideBar;
