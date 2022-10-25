@@ -3,7 +3,7 @@ const router = express.Router();
 const pool = require("../database");
 const bcrypt = require("bcryptjs");
 const cookieParser = require("cookie-parser");
-const sessions = require("express-session");
+const session = require("express-session");
 
 var client = null;
 
@@ -13,9 +13,6 @@ var client = null;
 (async () => {
   client = await pool.connect();
 })();
-
-//session cookie variable. 
-var session; 
 
 /**
 * The pool will emit an error on behalf of any idle clients
@@ -30,7 +27,7 @@ pool.on('error', (err, client) => {
 const cookieTTL = 100 * 60 * 60 * 8
 
 //session middleware
-router.use(sessions({
+router.use(session({
   secret: "thisIsMySecreteCode",
   saveUninitialized: true,
   cookie: {maxAge: cookieTTL},
@@ -52,6 +49,8 @@ router.get("/", (req, res) => {
 router.post("/login", async (req, res) => {
   // Max area
 
+  // Think about the need of a unique username
+  console.log(req.session);
   const { username, password } = req.body;
 
   const usernameCheck = `SELECT *
@@ -60,14 +59,14 @@ router.post("/login", async (req, res) => {
 
   try {
 
+   // possibly ensure that session is not already in existence.
+
     const data = await client.query(usernameCheck);
     const user = data.rows;
 
-    console.log(user[0]);
-
     //confirms existence of user in DB.
     if (user.length == 0) {
-      
+
       res.status(400).json({
         error: "No user registered with that name. Sign up first."
       });
@@ -81,8 +80,7 @@ router.post("/login", async (req, res) => {
             });
 
           } else if (result === true) {
-              session = req.session;
-              session.userid = username;
+              req.session.user = user[0];
               res.status(200).json({
                 msg: "User signed in!",
               });
