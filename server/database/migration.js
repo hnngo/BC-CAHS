@@ -71,7 +71,7 @@ const migrate = async (pool) => {
     END $$;
     
     CREATE TABLE IF NOT EXISTS public.submission_details (
-    submission_num VARCHAR(20) PRIMARY KEY NOT NULL UNIQUE,
+    submission_num VARCHAR(30) PRIMARY KEY NOT NULL UNIQUE,
     company_name VARCHAR(25) NOT NULL,
     submitter VARCHAR(25) NOT NULL,
     receipt_date DATE NOT NULL,
@@ -175,16 +175,21 @@ const migrate = async (pool) => {
       cut_date_initials VARCHAR(3),
       extraction_date TIMESTAMP,
       extraction_date_initials VARCHAR(3),
-      re-cut_date TIMESTAMP,
-      re-cut_date_initials VARCHAR(3),
-      re-extracted_date TIMESTAMP,
-      re-extracted_date_initials VARCHAR(3),
-      reason_for_re-extraction VARCHAR(255),
+      recut_date TIMESTAMP,
+      recut_date_initials VARCHAR(3),
+      reextracted_date TIMESTAMP,
+      reextracted_date_initials VARCHAR(3),
+      reason_for_reextraction VARCHAR(255),
       qcpr_completed TIMESTAMP,
-      submission_num INT NOT NULL,
+      submission_num VARCHAR(30) NOT NULL,
       FOREIGN KEY (submission_num) REFERENCES public.submission_details(submission_num)
     )
-    `
+    `,
+    (err, res) => {
+      if (!err) {
+        console.log("Created status_information table");
+      }
+    }
   );
 
   // report table
@@ -195,23 +200,33 @@ const migrate = async (pool) => {
       report_date TIMESTAMP,
       discard_date TIMESTAMP,
       second_discard_date TIMESTAMP,
-      submission_num INT NOT NULL,
+      submission_num VARCHAR(30) NOT NULL,
       FOREIGN KEY (submission_num) REFERENCES public.submission_details(submission_num)
     )
-    `
+    `,
+    (err, res) => {
+      if (!err) {
+        console.log("Created report table");
+      }
+    }
   );
 
   // invoice table
   await pool.query(
     `
     CREATE TABLE IF NOT EXISTS public.invoice(
-      invoice_num PRIMARY KEY INT NOT NULL UNIQUE,
+      invoice_num INT PRIMARY KEY NOT NULL UNIQUE,
       invoiced BOOLEAN,
       samples_invoiced SMALLINT,
       invoice_date TIMESTAMP,
-      submission_num INT NOT NULL,
+      submission_num VARCHAR(30) NOT NULL,
       FOREIGN KEY (submission_num) REFERENCES public.submission_details(submission_num)
-    )`
+    )`,
+    (err, res) => {
+      if (!err) {
+        console.log("Created invoice table");
+      }
+    }
   );
 };
 
