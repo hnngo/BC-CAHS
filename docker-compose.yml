@@ -45,8 +45,16 @@ services:
       - cahs
     hostname: postgres
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready", "-U", "postgres", "-d", "cahs"]
-      interval: 10s
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready",
+          "-U",
+          "postgres",
+          "-d",
+          "cahs"
+        ]
+      interval: 20s
       timeout: 5s
       retries: 3
 
