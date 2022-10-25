@@ -118,7 +118,10 @@ const migrate = async (pool) => {
       species VARCHAR(25) NOT NULL,
       other_details VARCHAR(255),
       sample_condition sample_condition NOT NULL,
-      sample_type sample_type NOT NULL
+      sample_type sample_type NOT NULL,
+      submission_num INT NOT NULL,
+      FOREIGN KEY (submission_num) REFERENCES public.submission_details(submission_num)
+
     )`,
     (err, res) => {
       if (!err) {
@@ -127,6 +130,7 @@ const migrate = async (pool) => {
     }
   );
 
+  // rtqpcr targets table
   await pool.query(
     `DO $$ BEGIN 
     CREATE TYPE rt_qpcr_type AS ENUM ('IHNv', 'IPNv', 'ISAv', 'VHSv', 'PRV-L1', 'A.sal', 'P.sal', 'R.sal', 'ELFa', 'N.perurans');
@@ -145,6 +149,7 @@ const migrate = async (pool) => {
     }
   );
 
+  // submission rtqpcr associative table
   await pool.query(
     `                                                                             
     CREATE TABLE IF NOT EXISTS public.submission_rt_qpcr (
@@ -159,6 +164,54 @@ const migrate = async (pool) => {
         console.log("Created submission_rt_qpcr table");
       }
     }
+  );
+
+  // sample status information Table
+  await pool.query(
+    `
+    CREATE TABLE IF NOT EXISTS public.sample_status_information (
+      sample_status_id SERIAL PRIMARY KEY NOT NULL UNIQUE,
+      cut_date TIMESTAMP,
+      cut_date_initials VARCHAR(3),
+      extraction_date TIMESTAMP,
+      extraction_date_initials VARCHAR(3),
+      re-cut_date TIMESTAMP,
+      re-cut_date_initials VARCHAR(3),
+      re-extracted_date TIMESTAMP,
+      re-extracted_date_initials VARCHAR(3),
+      reason_for_re-extraction VARCHAR(255),
+      qcpr_completed TIMESTAMP,
+      submission_num INT NOT NULL,
+      FOREIGN KEY (submission_num) REFERENCES public.submission_details(submission_num)
+    )
+    `
+  );
+
+  // report table
+  await pool.query(
+    `
+    CREATE TABLE IF NOT EXISTS public.report (
+      report_id SERIAL PRIMARY KEY NOT NULL UNIQUE,
+      report_date TIMESTAMP,
+      discard_date TIMESTAMP,
+      second_discard_date TIMESTAMP,
+      submission_num INT NOT NULL,
+      FOREIGN KEY (submission_num) REFERENCES public.submission_details(submission_num)
+    )
+    `
+  );
+
+  // invoice table
+  await pool.query(
+    `
+    CREATE TABLE IF NOT EXISTS public.invoice(
+      invoice_num PRIMARY KEY INT NOT NULL UNIQUE,
+      invoiced BOOLEAN,
+      samples_invoiced SMALLINT,
+      invoice_date TIMESTAMP,
+      submission_num INT NOT NULL,
+      FOREIGN KEY (submission_num) REFERENCES public.submission_details(submission_num)
+    )`
   );
 };
 
