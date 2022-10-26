@@ -11,6 +11,7 @@ const migrate = async (pool) => {
     last_name VARCHAR(25) NOT NULL
   )`
   );
+  console.log("Finished user table");
 
   /**
    * Create auth table
@@ -41,6 +42,7 @@ const migrate = async (pool) => {
     FOREIGN KEY (auth_id) REFERENCES public.auth(auth_id)
   )`
   );
+  console.log("Finished user auth table");
 
   /**
    * Create submission_details table
@@ -75,6 +77,7 @@ const migrate = async (pool) => {
     analysis_requested analysis_requested_type NOT NULL
   )`
   );
+  console.log("Finished submission details table");
 
   /**
    * Create sample_details
@@ -99,11 +102,12 @@ const migrate = async (pool) => {
       other_details VARCHAR(255),
       sample_condition sample_condition NOT NULL,
       sample_type sample_type NOT NULL,
-      submission_num INT NOT NULL,
+      submission_num VARCHAR(30) NOT NULL,
       FOREIGN KEY (submission_num) REFERENCES public.submission_details(submission_num)
 
     )`
   );
+  console.log("Finished sample details table");
 
   // rtqpcr targets table
   await pool.query(
@@ -118,6 +122,7 @@ const migrate = async (pool) => {
       rt_qpcr_type rt_qpcr_type NOT NULL
     )`
   );
+  console.log("Finished rtqpcr targets table");
 
   // submission rtqpcr associative table
   await pool.query(
@@ -130,6 +135,7 @@ const migrate = async (pool) => {
     FOREIGN KEY (sample_id) REFERENCES public.sample_details(sample_id)
     )`
   );
+  console.log("Finished submission rtqpcr table");
 
   // sample status information Table
   await pool.query(
@@ -151,6 +157,7 @@ const migrate = async (pool) => {
     )
     `
   );
+  console.log("Finished sample status table");
 
   // report table
   await pool.query(
@@ -165,6 +172,7 @@ const migrate = async (pool) => {
     )
     `
   );
+  console.log("Finished report table");
 
   // invoice table
   await pool.query(
@@ -178,6 +186,7 @@ const migrate = async (pool) => {
       FOREIGN KEY (submission_num) REFERENCES public.submission_details(submission_num)
     )`
   );
+  console.log("Finished invoice table");
 };
 
 module.exports = migrate;
