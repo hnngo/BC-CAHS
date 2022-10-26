@@ -75,7 +75,11 @@ const SampleInput = ({
             sx={{ backgroundColor: theme.primary.light }}
           />
         ) : type == "select" ? (
-          <Select fullWidth sx={{ backgroundColor: theme.primary.light }} onChange={() => {}}>
+          <Select
+            defaultValue=""
+            fullWidth
+            sx={{ backgroundColor: theme.primary.light }}
+            onChange={() => {}}>
             {Object.entries(options).map((option) => (
               <MenuItem key={option[0]} value={option[0]}>
                 {option[1]}
@@ -108,6 +112,7 @@ const SampleInput = ({
         ) : type == "multi-select" ? (
           <FormGroup>
             <Select
+              defaultValue=""
               multiple
               value={selectedOptions}
               onChange={handleChangeSelect}
