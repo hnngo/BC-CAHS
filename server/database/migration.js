@@ -9,12 +9,7 @@ const migrate = async (pool) => {
     password VARCHAR(25) NOT NULL,
     first_name VARCHAR(25) NOT NULL,
     last_name VARCHAR(25) NOT NULL
-  )`,
-    (err, res) => {
-      if (!err) {
-        console.log("Created User Table");
-      }
-    }
+  )`
   );
 
   /**
@@ -31,12 +26,7 @@ const migrate = async (pool) => {
     CREATE TABLE IF NOT EXISTS public.auth (
     auth_id SERIAL PRIMARY KEY NOT NULL UNIQUE,
     auth_type auth_type NOT NULL
-  )`,
-    (err, res) => {
-      if (!err) {
-        console.log("Created auth table");
-      }
-    }
+  )`
   );
 
   /**
@@ -49,12 +39,7 @@ const migrate = async (pool) => {
     auth_id int NOT NULL,
     FOREIGN KEY (user_id) REFERENCES public.user(user_id),
     FOREIGN KEY (auth_id) REFERENCES public.auth(auth_id)
-  )`,
-    (err, res) => {
-      if (!err) {
-        console.log("Created user_auth table");
-      }
-    }
+  )`
   );
 
   /**
@@ -88,12 +73,7 @@ const migrate = async (pool) => {
     bc_cahs_project VARCHAR(30) NOT NULL,
     initial_placement VARCHAR(20) NOT NULL,
     analysis_requested analysis_requested_type NOT NULL
-  )`,
-    (err, res) => {
-      if (!err) {
-        console.log("Created submission_details table");
-      }
-    }
+  )`
   );
 
   /**
@@ -122,12 +102,7 @@ const migrate = async (pool) => {
       submission_num INT NOT NULL,
       FOREIGN KEY (submission_num) REFERENCES public.submission_details(submission_num)
 
-    )`,
-    (err, res) => {
-      if (!err) {
-        console.log("Created sample_details table");
-      }
-    }
+    )`
   );
 
   // rtqpcr targets table
@@ -141,12 +116,7 @@ const migrate = async (pool) => {
     CREATE TABLE IF NOT EXISTS public.rt_qpcr_targets (
       rt_qpcr_id SERIAL PRIMARY KEY NOT NULL UNIQUE,
       rt_qpcr_type rt_qpcr_type NOT NULL
-    )`,
-    (err, res) => {
-      if (!err) {
-        console.log("Created rt_qpcr_targets table");
-      }
-    }
+    )`
   );
 
   // submission rtqpcr associative table
@@ -158,12 +128,7 @@ const migrate = async (pool) => {
     sample_id INT NOT NULL,
     FOREIGN KEY (rt_qpcr_id) REFERENCES public.rt_qpcr_targets(rt_qpcr_id),
     FOREIGN KEY (sample_id) REFERENCES public.sample_details(sample_id)
-    )`,
-    (err, res) => {
-      if (!err) {
-        console.log("Created submission_rt_qpcr table");
-      }
-    }
+    )`
   );
 
   // sample status information Table
@@ -184,12 +149,7 @@ const migrate = async (pool) => {
       submission_num VARCHAR(30) NOT NULL,
       FOREIGN KEY (submission_num) REFERENCES public.submission_details(submission_num)
     )
-    `,
-    (err, res) => {
-      if (!err) {
-        console.log("Created status_information table");
-      }
-    }
+    `
   );
 
   // report table
@@ -203,12 +163,7 @@ const migrate = async (pool) => {
       submission_num VARCHAR(30) NOT NULL,
       FOREIGN KEY (submission_num) REFERENCES public.submission_details(submission_num)
     )
-    `,
-    (err, res) => {
-      if (!err) {
-        console.log("Created report table");
-      }
-    }
+    `
   );
 
   // invoice table
@@ -221,12 +176,7 @@ const migrate = async (pool) => {
       invoice_date TIMESTAMP,
       submission_num VARCHAR(30) NOT NULL,
       FOREIGN KEY (submission_num) REFERENCES public.submission_details(submission_num)
-    )`,
-    (err, res) => {
-      if (!err) {
-        console.log("Created invoice table");
-      }
-    }
+    )`
   );
 };
 
