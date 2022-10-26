@@ -1,13 +1,10 @@
 import React from "react";
-import { Routes, Route } from "react-router-dom";
+import { Outlet } from "react-router-dom";
 
 // Components
 import { Grid, Box, Breadcrumbs, Chip } from "@mui/material";
 import Sidebar from "./components/SideBar";
 import NavBar from "./components/NavBar";
-import Status from "./Status";
-import Sample from "./Sample";
-import Templates from "./Templates";
 import ReceiptLongIcon from "@mui/icons-material/ReceiptLong";
 import { useTheme } from "@mui/material/styles";
 
@@ -73,11 +70,12 @@ const Home = () => {
               borderRadius={4}
               flex={1}
               sx={{ overflowY: "scroll" }}>
-              <Routes>
-                <Route path="sample" element={<Sample />} />
-                <Route path="status" element={<Status />} />
-                <Route path="templates" element={<Templates />} />
-              </Routes>
+              <Outlet />
+              {/* <Routes>
+                <Route path="/sample" element={<Sample />} />
+                <Route path="/status" element={<Status />} />
+                <Route path="/templates" element={<Templates />} />
+              </Routes> */}
             </Box>
           </Grid>
         </Box>

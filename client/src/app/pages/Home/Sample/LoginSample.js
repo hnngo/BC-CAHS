@@ -1,9 +1,9 @@
 import React from "react";
 
 import { Grid } from "@mui/material";
-import SampleInput from "./components/SampleInput";
+import SampleInput from "../components/SampleInput";
 
-import { SAMPLE_CONDITION, SAMPLE_TYPE, ANALYSIS_REQUESTS, RT_QPCR_TARGETS } from "./constants";
+import { SAMPLE_CONDITION, SAMPLE_TYPE, ANALYSIS_REQUESTS, RT_QPCR_TARGETS } from "../constants";
 
 const Sample = () => {
   return (

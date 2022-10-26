@@ -10,21 +10,21 @@ const SideBar = () => {
 
   return (
     <Box bgcolor={theme.primary.standard} height="100%" width="100%" padding={0} margin={0}>
-      <SideBarRow title="Sample" indent={0} bold to="/" />
-      <SideBarRow title="Login Sample" indent={1} to="/sample" />
-      <SideBarRow title="Manage Sample" indent={1} />
+      <SideBarRow title="Sample" indent={0} bold to="/sample/manage" />
+      <SideBarRow title="Login Sample" indent={1} to="/sample/login" />
+      <SideBarRow title="Manage Sample" indent={1} to="/sample/manage" />
 
-      <SideBarRow title="Status" indent={0} bold />
-      <SideBarRow title="qPCR" indent={1} />
-      <SideBarRow title="Virology" indent={1} />
-      <SideBarRow title="ELISA" indent={1} />
-      <SideBarRow title="ATPase" indent={1} />
+      <SideBarRow title="Status" indent={0} bold to="/status" />
+      <SideBarRow title="qPCR" indent={1} to="/sample" />
+      <SideBarRow title="Virology" indent={1} to="/sample" />
+      <SideBarRow title="ELISA" indent={1} to="/sample" />
+      <SideBarRow title="ATPase" indent={1} to="/sample" />
 
-      <SideBarRow title="Data/Report Templates" indent={0} bold />
-      <SideBarRow title="qPCR" indent={1} />
-      <SideBarRow title="Virology" indent={1} />
-      <SideBarRow title="ELISA" indent={1} />
-      <SideBarRow title="ATPase" indent={1} />
+      <SideBarRow title="Data/Report Templates" indent={0} bold to="/templates" />
+      <SideBarRow title="qPCR" indent={1} to="/templates" />
+      <SideBarRow title="Virology" indent={1} to="/templates" />
+      <SideBarRow title="ELISA" indent={1} to="/templates" />
+      <SideBarRow title="ATPase" indent={1} to="/templates" />
     </Box>
   );
 };
