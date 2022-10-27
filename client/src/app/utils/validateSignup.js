@@ -2,7 +2,16 @@ import { ErrorSharp } from "@mui/icons-material";
 
 const validateSignup = (data) => {
     let errors = {};
-
+    if (!data.first_name) {
+        errors.first_name = "First name must be provided"
+    } else if (!/[\w'-]+/.test(data.first_name)) {
+        errors.first_name = "First name must only contain alphabet characters"
+    }
+    if (!data.last_name) {
+        errors.last_name = "Last name must be provided"
+    } else if (!/[\w'-]+/.test(data.last_name)) {
+        errors.last_name = "Last name must only contain alphabet characters"
+    }
     if (!data.username) {
         errors.username = "Username is required"
     } else if (data.username.length < 4) {

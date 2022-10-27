@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, TextField, Typography, Button, Grid } from "@mui/material";
+import { Box, TextField, Typography, Button, Grid, useStepContext } from "@mui/material";
 import "./Login.css";
 import bgImage from "../../assets/images/background_auth.png";
 import { useTheme } from "@mui/material/styles";
@@ -8,6 +8,9 @@ import { Link } from "react-router-dom";
 import { createTheme } from "@mui/material/styles";
 import { ThemeProvider } from "@mui/material";
 import validateSignup from "../utils/validateSignup";
+import axios from "axios"; 
+import SuccessAlert from "./Home/components/SuccessAlert";
+import {isEmpty} from "lodash";
 
 export const customTheme = createTheme({
   typography: {
@@ -28,7 +31,7 @@ export const customTheme = createTheme({
   }
 });
 
-const Signup = () => {
+const Signup = () => {  
   const theme = useTheme();
 
   const loginPageStyle = {
@@ -39,13 +42,17 @@ const Signup = () => {
     height: "100vh",
     width: "100%",
     top: 0,
-    left: 0
+    left: 0,
+    overflow: "scroll",
+    paddingBottom: "5%"
   };
 
   const [data, setData] = useState({
-    username: "",
-    password: "",
-    confirmPassword: ""
+    username: "username",
+    password: "password",
+    confirmPassword: "password",
+    first_name: "firstname",
+    last_name: "lastname"
   });
 
   const [errors, setErrors] = useState({});
@@ -57,11 +64,21 @@ const Signup = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     setErrors(validateSignup(data));
+
+    if (isEmpty(validateSignup(data))) {
+      console.log("success!");
+    } else {
+      console.log("not success!");
+    }
     console.log(data);
   };
 
+  async function loginCall() {
+    await axios.post('http://localhost:8000/api/auth/signup', data);
+  }
+
   useEffect(() => {
-  }, [data.username, data.password, data.confirmPassword]);
+  }, [data.first_name, data.last_name, data.username, data.password, data.confirmPassword]);
 
   return (
     <div className="Login-component" style={loginPageStyle}>
@@ -101,10 +118,39 @@ const Signup = () => {
           <TextField
             margin="normal"
             type={"text"}
+            name="first_name"
+            variant="outlined"
+            placeholder="First name"
+            style={{ width: 300, height: 40
+             }}
+            InputProps={{ inputProps: { style: { color: theme.primary.dark } } }}
+            value={data.first_name}
+            onChange={changeHandler}
+          />
+          {errors.first_name && <p className="error">{errors.first_name}</p>}
+
+          <TextField
+            margin="normal"
+            type={"text"}
+            name="last_name"
+            variant="outlined"
+            placeholder="Last name"
+            style={{ width: 300, height: 40
+             }}
+            InputProps={{ inputProps: { style: { color: theme.primary.dark } } }}
+            value={data.last_name}
+            onChange={changeHandler}
+          />
+          {errors.last_name && <p className="error">{errors.last_name}</p>}
+
+          <TextField
+            margin="normal"
+            type={"text"}
             name="username"
             variant="outlined"
             placeholder="Username"
-            style={{ width: 300, height: 50 }}
+            style={{ width: 300, height: 40
+             }}
             InputProps={{ inputProps: { style: { color: theme.primary.dark } } }}
             value={data.username}
             onChange={changeHandler}
@@ -117,7 +163,8 @@ const Signup = () => {
             type={"password"}
             variant="outlined"
             placeholder="Password"
-            style={{ width: 300, height: 50 }}
+            style={{ width: 300, height: 40
+             }}
             value={data.password}
             onChange={changeHandler}
           />
@@ -129,7 +176,8 @@ const Signup = () => {
             type={"password"}
             variant="outlined"
             placeholder="Confirm Password"
-            style={{ width: 300, height: 50 }}
+            style={{ width: 300, height: 40
+             }}
             value={data.confirmPassword}
             onChange={changeHandler}
           />
@@ -138,7 +186,8 @@ const Signup = () => {
           <Button
             sx={{ marginTop: 3 }}
             variant="contained"
-            style={{ width: 300, height: 50, background: theme.secondary.dark }}
+            style={{ width: 300, height: 40
+              , background: theme.secondary.dark }}
             type="submit"
             onClick={handleSubmit}>
             Signup

@@ -6,7 +6,6 @@ const cookieParser = require("cookie-parser");
 const session = require("express-session");
 const bodyParser = require("body-parser");
 const bcrypt = require("bcrypt");
-const flash = require("express-flash")
 
 var client = null;
 
@@ -61,7 +60,6 @@ router.post("/login", async (req, res) => {
                WHERE username = '${username}'`;
 
   try {
-
    // possibly ensure that session is not already in existence.
 
     const data = await client.query(usernameCheck);
@@ -109,6 +107,8 @@ router.post("/login", async (req, res) => {
  */
 router.use(bodyParser.json())
 router.post("/signup", async (req, res) => {
+  console.log(req.body);
+
   let { username, password, confirmPassword } = req.body;
 
     let hashedPw = await bcrypt.hash(password, 10);
@@ -134,7 +134,7 @@ router.post("/signup", async (req, res) => {
           pool.query(
             `INSERT INTO public.user (username, password)
             VALUES ($1, $2)
-            RETURNING id, password`, [username, hashedPw], (err, result) => {
+            RETURNING username, password, first_name, last_name`, [username, hashedPw], (err, result) => {
             if (err) {
               res.send({ errMsg: "error" });
             } else {
