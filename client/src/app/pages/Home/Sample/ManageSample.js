@@ -1,8 +1,9 @@
 import React from "react";
 
 // Components
-import { DataGrid, gridDateFormatter } from "@mui/x-data-grid";
-import { Chip, Grid, Stack, Modal, Box, Typography } from "@mui/material";
+import { DataGrid } from "@mui/x-data-grid";
+import EditSample from "./components/EditSample";
+import { Chip, Grid, Stack } from "@mui/material";
 import { styled, useTheme } from "@mui/material/styles";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
@@ -13,28 +14,18 @@ import EditIcon from "@mui/icons-material/Edit";
 // Utils
 import { getMockFormData } from "../../../../mocks/mock-sample";
 
-const style = {
-  position: "absolute",
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%, -50%)",
-  width: 400,
-  bgcolor: "background.paper",
-  border: "2px solid #000",
-  boxShadow: 24,
-  p: 4
-};
-
 const ManageSample = () => {
   const theme = useTheme();
   const [data, setData] = React.useState(null);
   const [columns, setColumns] = React.useState([]);
   const [openFormDetail, setOpenFormDetail] = React.useState(false);
+  const [selectedFormData, setSelectedFormData] = React.useState(null);
 
   const handleOpen = () => setOpenFormDetail(true);
   const handleClose = () => setOpenFormDetail(false);
 
   React.useEffect(() => {
+    // NOTE: Using mock data for now
     setData(getMockFormData(100));
   }, []);
 
@@ -44,7 +35,7 @@ const ManageSample = () => {
         field: "action",
         headerName: "Action",
         width: 120,
-        renderCell: () => {
+        renderCell: (params) => {
           return (
             <Stack direction="row" flexWrap={"wrap"}>
               <Chip
@@ -58,6 +49,7 @@ const ManageSample = () => {
                 }}
                 variant="filled"
                 onClick={() => {
+                  setSelectedFormData(params);
                   handleOpen();
                 }}
               />
@@ -65,7 +57,7 @@ const ManageSample = () => {
           );
         }
       },
-      { field: "id", headerName: "Submission #", width: 120 },
+      { field: "submission_num", headerName: "Submission #", width: 120 },
       {
         field: "receipt_date",
         headerName: "Date Received",
@@ -162,16 +154,11 @@ const ManageSample = () => {
         getRowHeight={() => "auto"}
         getRowClassName={() => "sample-form-table-row"}
       />
-      <Modal open={openFormDetail} onClose={handleClose}>
-        <Box sx={style}>
-          <Typography id="modal-modal-title" variant="h6" component="h2">
-            Form Detail
-          </Typography>
-          <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-            Duis mollis, est non commodo luctus, nisi erat porttitor ligula.
-          </Typography>
-        </Box>
-      </Modal>
+      <EditSample
+        isOpen={openFormDetail}
+        onClose={handleClose}
+        data={selectedFormData && selectedFormData.row}
+      />
     </Grid>
   );
 };
