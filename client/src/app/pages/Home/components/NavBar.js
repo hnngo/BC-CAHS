@@ -2,12 +2,25 @@ import React from "react";
 import { Box, Grid, Typography } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import Popover from "@mui/material/Popover";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 // Components
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 
 const NavBar = () => {
   const theme = useTheme();
+
+  //logout
+
+  const navigate = useNavigate();
+
+  const logout = async () => {
+    await axios.post("http://localhost:8000/api/auth/logout");
+
+    navigate("/login", { replace: true });
+  };
+
   const [anchorEl, setAnchorEl] = React.useState(null);
 
   //popup for logout sign
@@ -79,7 +92,9 @@ const NavBar = () => {
                   fontWeight={"800"}
                   color={"white"}
                   marginRight={1}
-                  marginLeft={4.5}>
+                  marginLeft={4.5}
+                  style={{ textDecoration: "none" }}
+                  onClick={logout}>
                   Sign out
                 </Typography>
               </Box>
