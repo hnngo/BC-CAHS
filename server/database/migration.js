@@ -103,9 +103,9 @@ const migrate = async (pool) => {
       sample_type VARCHAR(100),
       sample_condition sample_condition NOT NULL,
       sample_origin sample_origin NOT NULL,
-      submission_num VARCHAR(30) NOT NULL,
+      submission_num VARCHAR(30) NOT NULL,  
+      UNIQUE(submission_num),
       FOREIGN KEY (submission_num) REFERENCES public.submission_details(submission_num)
-
     )`
   );
   console.log("Finished sample details table");
@@ -171,6 +171,7 @@ const migrate = async (pool) => {
       reason_for_reextraction VARCHAR(255),
       qcpr_completed TIMESTAMP,
       submission_num VARCHAR(30) NOT NULL,
+      UNIQUE(submission_num),
       FOREIGN KEY (submission_num) REFERENCES public.submission_details(submission_num)
     )
     `
@@ -186,6 +187,7 @@ const migrate = async (pool) => {
       discard_date TIMESTAMP,
       second_discard_date TIMESTAMP,
       submission_num VARCHAR(30) NOT NULL,
+      UNIQUE(submission_num),
       FOREIGN KEY (submission_num) REFERENCES public.submission_details(submission_num)
     )
     `
@@ -201,6 +203,7 @@ const migrate = async (pool) => {
       samples_invoiced SMALLINT,
       invoice_date TIMESTAMP,
       submission_num VARCHAR(30) NOT NULL,
+      UNIQUE(submission_num),
       FOREIGN KEY (submission_num) REFERENCES public.submission_details(submission_num)
     )`
   );
