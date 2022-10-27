@@ -93,7 +93,7 @@ const NavBar = () => {
                   color={"white"}
                   marginRight={1}
                   marginLeft={4.5}
-                  style={{ textDecoration: "none" }}
+                  style={{ textDecoration: "none", cursor: "pointer" }}
                   onClick={logout}>
                   Sign out
                 </Typography>
