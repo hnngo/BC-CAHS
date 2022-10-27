@@ -48,14 +48,16 @@ const Signup = () => {
   };
 
   const [data, setData] = useState({
-    username: "username",
-    password: "password",
-    confirmPassword: "password",
-    first_name: "firstname",
-    last_name: "lastname"
+    username: "",
+    password: "",
+    confirmPassword: "",
+    first_name: "",
+    last_name: ""
   });
 
   const [errors, setErrors] = useState({});
+
+  const [isValid, setValid] = useState(false);
 
   const changeHandler = (e) => {
     setData({ ...data, [e.target.name]: e.target.value });
@@ -66,10 +68,10 @@ const Signup = () => {
     setErrors(validateSignup(data));
 
     if (isEmpty(validateSignup(data))) {
+      setValid(true);
       console.log("success!");
-    } else {
-      console.log("not success!");
     }
+
     console.log(data);
   };
 
@@ -206,6 +208,7 @@ const Signup = () => {
             </Grid>
           </Grid>
         </Box>
+        {isValid && <SuccessAlert/>}
       </ThemeProvider>
     </div>
   );

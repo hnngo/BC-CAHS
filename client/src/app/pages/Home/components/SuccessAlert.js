@@ -1,4 +1,5 @@
 import * as React from "react";
+import {useNavigate} from "react-router-dom";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
@@ -7,11 +8,17 @@ import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 
 export default function AlertDialog() {
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = React.useState(true);
 
   const handleClose = () => {
     setOpen(false);
-  };
+  };  
+
+  const navigate = useNavigate();
+
+  const navigateUser = () => {
+    navigate("/login")
+  }
 
   return (
     <div>
@@ -30,7 +37,7 @@ export default function AlertDialog() {
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose} autoFocus>
+          <Button onClick={navigateUser} autoFocus>
             Ok
           </Button>
         </DialogActions>
