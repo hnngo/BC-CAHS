@@ -61,17 +61,17 @@ const migrate = async (pool) => {
     submission_num VARCHAR(30) PRIMARY KEY NOT NULL UNIQUE,
     company_name VARCHAR(25) NOT NULL,
     submitter VARCHAR(25) NOT NULL,
-    receipt_date DATE NOT NULL,
-    sampling_time_submission TIMESTAMP NOT NULL,
+    receive_date DATE NOT NULL,
+    submit_time TIMESTAMP NOT NULL,
+    sampling_location VARCHAR(50) NOT NULL,
+    sampling_date TIMESTAMP NOT NULL,
     contact_phone_num VARCHAR(15) NOT NULL,
     purchase_order_num VARCHAR(15) NOT NULL,
     bc_cahs_receiver_last_name VARCHAR(15) NOT NULL,
     bc_cahs_receiver_first_name VARCHAR(15) NOT NULL,
     bc_cahs_custodian_initials VARCHAR(5) NOT NULL,
-    client_case_num INT NOT NULL,
-    sampling_date TIMESTAMP NOT NULL,
+    client_case_num VARCHAR(30) NOT NULL,
     bc_cahs_p_i VARCHAR(5) NOT NULL,
-    sampling_location VARCHAR(50) NOT NULL,
     bc_cahs_project VARCHAR(30) NOT NULL,
     initial_placement VARCHAR(20) NOT NULL,
     analysis_requested analysis_requested_type NOT NULL
@@ -113,14 +113,14 @@ const migrate = async (pool) => {
   // rtqpcr targets table
   await pool.query(
     `DO $$ BEGIN 
-    CREATE TYPE rt_qpcr_type AS ENUM ('IHNv', 'IPNv', 'ISAv', 'VHSv', 'PRV-L1', 'A.sal', 'P.sal', 'R.sal', 'ELFa', 'N.perurans');
+    CREATE TYPE rt_qpcr_target AS ENUM ('IHNv', 'IPNv', 'ISAv', 'VHSv', 'PRV-L1', 'A.sal', 'P.sal', 'R.sal', 'ELFa', 'N.perurans');
     EXCEPTION
       WHEN duplicate_object THEN null;
     END $$;                                                                                   
 
     CREATE TABLE IF NOT EXISTS public.rt_qpcr_targets (
       rt_qpcr_id SERIAL PRIMARY KEY NOT NULL UNIQUE,
-      rt_qpcr_type rt_qpcr_type NOT NULL
+      rt_qpcr_target rt_qpcr_target NOT NULL
     )`
   );
   console.log("Finished rtqpcr targets table");
