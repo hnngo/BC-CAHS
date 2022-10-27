@@ -38,8 +38,9 @@ const migrate = async (pool) => {
     created_at TIMESTAMP NOT NULL,
     user_id int NOT NULL,
     auth_id int NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES public.user(user_id),
-    FOREIGN KEY (auth_id) REFERENCES public.auth(auth_id)
+    FOREIGN KEY (user_id) REFERENCES public.user(user_id) ON UPDATE CASCADE ON DELETE CASCADE,
+    FOREIGN KEY (auth_id) REFERENCES public.auth(auth_id) ON UPDATE CASCADE ON DELETE CASCADE,
+    CONSTRAINT user_auth_pkey PRIMARY KEY (user_id, auth_id)
   )`
   );
   console.log("Finished user auth table");
@@ -64,16 +65,15 @@ const migrate = async (pool) => {
     receive_date DATE NOT NULL,
     submit_time TIMESTAMP NOT NULL,
     sampling_location VARCHAR(50) NOT NULL,
-    sampling_date TIMESTAMP NOT NULL,
+    sampling_date DATE NOT NULL,
     contact_phone_num VARCHAR(15) NOT NULL,
     purchase_order_num VARCHAR(15) NOT NULL,
-    bc_cahs_receiver_last_name VARCHAR(15) NOT NULL,
-    bc_cahs_receiver_first_name VARCHAR(15) NOT NULL,
+    bc_cahs_receiver_name VARCHAR(50) NOT NULL,
     bc_cahs_custodian_initials VARCHAR(5) NOT NULL,
     client_case_num VARCHAR(30) NOT NULL,
-    bc_cahs_p_i VARCHAR(5) NOT NULL,
+    bc_cahs_pi VARCHAR(5) NOT NULL,
     bc_cahs_project VARCHAR(30) NOT NULL,
-    initial_placement VARCHAR(20) NOT NULL,
+    initial_storage VARCHAR(20) NOT NULL,
     analysis_requested analysis_requested_type NOT NULL
   )`
   );
@@ -121,7 +121,21 @@ const migrate = async (pool) => {
     CREATE TABLE IF NOT EXISTS public.rt_qpcr_targets (
       rt_qpcr_id SERIAL PRIMARY KEY NOT NULL UNIQUE,
       rt_qpcr_target rt_qpcr_target NOT NULL
-    )`
+    )
+    
+    DO $$ BEGIN
+    INSERT INTO public.rt_qpcr_targets VALUES(1, 'IHNv');
+    INSERT INTO public.rt_qpcr_targets VALUES(2, 'IPNv');
+    INSERT INTO public.rt_qpcr_targets VALUES(3, 'ISAv');
+    INSERT INTO public.rt_qpcr_targets VALUES(4, 'VHSv');
+    INSERT INTO public.rt_qpcr_targets VALUES(5, 'PRV-L1');
+    INSERT INTO public.rt_qpcr_targets VALUES(6, 'A.sal');
+    INSERT INTO public.rt_qpcr_targets VALUES(7, 'P.sal');
+    INSERT INTO public.rt_qpcr_targets VALUES(8, 'R.sal');
+    INSERT INTO public.rt_qpcr_targets VALUES(9, 'ELFa');
+    INSERT INTO public.rt_qpcr_targets VALUES(10, 'N.perurans');
+    END $$;
+    `
   );
   console.log("Finished rtqpcr targets table");
 
@@ -129,11 +143,12 @@ const migrate = async (pool) => {
   await pool.query(
     `                                                                             
     CREATE TABLE IF NOT EXISTS public.submission_rt_qpcr (
-    other_description VARCHAR(255),
     rt_qpcr_id INT NOT NULL,
-    sample_id INT NOT NULL,
-    FOREIGN KEY (rt_qpcr_id) REFERENCES public.rt_qpcr_targets(rt_qpcr_id),
-    FOREIGN KEY (sample_id) REFERENCES public.sample_details(sample_id)
+    submission_num INT NOT NULL,
+    FOREIGN KEY (rt_qpcr_id) REFERENCES public.rt_qpcr_targets(rt_qpcr_id) ON UPDATE CASCADE ON DELETE CASCADE,
+    FOREIGN KEY (submission_num) REFERENCES public.submission_details(submission_num) ON UPDATE CASCADE ON DELETE CASCADE,
+    CONSTRAINT rtqpcr_submission_pkey PRIMARY KEY (rt_qpcr_id, submission_num),
+    other_description VARCHAR(255)
     )`
   );
   console.log("Finished submission rtqpcr table");
