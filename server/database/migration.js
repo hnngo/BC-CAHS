@@ -90,7 +90,7 @@ const migrate = async (pool) => {
     END $$;
 
     DO $$ BEGIN
-    CREATE TYPE sample_type AS ENUM ('Wild', 'Brood Stock', 'Freshwater', 'Saltwater', 'Other');
+    CREATE TYPE sample_origin AS ENUM ('Wild', 'Brood Stock', 'Freshwater', 'Saltwater', 'Other');
     EXCEPTION
       WHEN duplicate_object THEN null;
     END $$;
@@ -100,8 +100,9 @@ const migrate = async (pool) => {
       num_of_samples SMALLINT NOT NULL,
       species VARCHAR(25) NOT NULL,
       other_details VARCHAR(255),
+      sample_type VARCHAR(100),
       sample_condition sample_condition NOT NULL,
-      sample_type sample_type NOT NULL,
+      sample_origin sample_origin NOT NULL,
       submission_num VARCHAR(30) NOT NULL,
       FOREIGN KEY (submission_num) REFERENCES public.submission_details(submission_num)
 
