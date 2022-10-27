@@ -121,19 +121,21 @@ const migrate = async (pool) => {
     CREATE TABLE IF NOT EXISTS public.rt_qpcr_targets (
       rt_qpcr_id SERIAL PRIMARY KEY NOT NULL UNIQUE,
       rt_qpcr_target rt_qpcr_target NOT NULL
-    )
+    );
     
     DO $$ BEGIN
-    INSERT INTO public.rt_qpcr_targets VALUES(1, 'IHNv');
-    INSERT INTO public.rt_qpcr_targets VALUES(2, 'IPNv');
-    INSERT INTO public.rt_qpcr_targets VALUES(3, 'ISAv');
-    INSERT INTO public.rt_qpcr_targets VALUES(4, 'VHSv');
-    INSERT INTO public.rt_qpcr_targets VALUES(5, 'PRV-L1');
-    INSERT INTO public.rt_qpcr_targets VALUES(6, 'A.sal');
-    INSERT INTO public.rt_qpcr_targets VALUES(7, 'P.sal');
-    INSERT INTO public.rt_qpcr_targets VALUES(8, 'R.sal');
-    INSERT INTO public.rt_qpcr_targets VALUES(9, 'ELFa');
-    INSERT INTO public.rt_qpcr_targets VALUES(10, 'N.perurans');
+      INSERT INTO public.rt_qpcr_targets(rt_qpcr_id, rt_qpcr_target) VALUES(1, 'IHNv') ON CONFLICT (rt_qpcr_id) DO NOTHING;
+      INSERT INTO public.rt_qpcr_targets(rt_qpcr_id, rt_qpcr_target) VALUES(2, 'IPNv') ON CONFLICT (rt_qpcr_id) DO NOTHING;
+      INSERT INTO public.rt_qpcr_targets(rt_qpcr_id, rt_qpcr_target) VALUES(3, 'ISAv') ON CONFLICT (rt_qpcr_id) DO NOTHING;
+      INSERT INTO public.rt_qpcr_targets(rt_qpcr_id, rt_qpcr_target) VALUES(4, 'VHSv') ON CONFLICT (rt_qpcr_id) DO NOTHING;
+      INSERT INTO public.rt_qpcr_targets(rt_qpcr_id, rt_qpcr_target) VALUES(5, 'PRV-L1') ON CONFLICT (rt_qpcr_id) DO NOTHING;
+      INSERT INTO public.rt_qpcr_targets(rt_qpcr_id, rt_qpcr_target) VALUES(6, 'A.sal') ON CONFLICT (rt_qpcr_id) DO NOTHING;
+      INSERT INTO public.rt_qpcr_targets(rt_qpcr_id, rt_qpcr_target) VALUES(7, 'P.sal') ON CONFLICT (rt_qpcr_id) DO NOTHING;
+      INSERT INTO public.rt_qpcr_targets(rt_qpcr_id, rt_qpcr_target) VALUES(8, 'R.sal') ON CONFLICT (rt_qpcr_id) DO NOTHING;
+      INSERT INTO public.rt_qpcr_targets(rt_qpcr_id, rt_qpcr_target) VALUES(9, 'ELFa') ON CONFLICT (rt_qpcr_id) DO NOTHING;
+      INSERT INTO public.rt_qpcr_targets(rt_qpcr_id, rt_qpcr_target) VALUES(10, 'N.perurans') ON CONFLICT (rt_qpcr_id) DO NOTHING;
+    EXCEPTION
+      WHEN duplicate_object THEN NULL;
     END $$;
     `
   );
@@ -144,7 +146,7 @@ const migrate = async (pool) => {
     `                                                                             
     CREATE TABLE IF NOT EXISTS public.submission_rt_qpcr (
     rt_qpcr_id INT NOT NULL,
-    submission_num INT NOT NULL,
+    submission_num VARCHAR(30) NOT NULL,
     FOREIGN KEY (rt_qpcr_id) REFERENCES public.rt_qpcr_targets(rt_qpcr_id) ON UPDATE CASCADE ON DELETE CASCADE,
     FOREIGN KEY (submission_num) REFERENCES public.submission_details(submission_num) ON UPDATE CASCADE ON DELETE CASCADE,
     CONSTRAINT rtqpcr_submission_pkey PRIMARY KEY (rt_qpcr_id, submission_num),
