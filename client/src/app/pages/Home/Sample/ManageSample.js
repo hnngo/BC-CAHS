@@ -1,7 +1,7 @@
 import React from "react";
 
 // Components
-import { DataGrid } from "@mui/x-data-grid";
+import { DataGrid, gridDateFormatter } from "@mui/x-data-grid";
 import { Chip, Grid, Stack, Modal, Box, Typography } from "@mui/material";
 import { styled, useTheme } from "@mui/material/styles";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
@@ -27,7 +27,7 @@ const style = {
 
 const ManageSample = () => {
   const theme = useTheme();
-  const [data, setData] = React.useState(getMockFormData(100));
+  const [data, setData] = React.useState(null);
   const [columns, setColumns] = React.useState([]);
   const [openFormDetail, setOpenFormDetail] = React.useState(false);
 
@@ -35,12 +35,16 @@ const ManageSample = () => {
   const handleClose = () => setOpenFormDetail(false);
 
   React.useEffect(() => {
+    setData(getMockFormData(100));
+  }, []);
+
+  React.useEffect(() => {
     const col = [
       {
         field: "action",
         headerName: "Action",
         width: 120,
-        renderCell: (params) => {
+        renderCell: () => {
           return (
             <Stack direction="row" flexWrap={"wrap"}>
               <Chip
@@ -54,7 +58,6 @@ const ManageSample = () => {
                 }}
                 variant="filled"
                 onClick={() => {
-                  console.log("aaa");
                   handleOpen();
                 }}
               />
@@ -63,7 +66,17 @@ const ManageSample = () => {
         }
       },
       { field: "id", headerName: "Submission #", width: 120 },
-      { field: "receipt_date", headerName: "Date Received", width: 140 },
+      {
+        field: "receipt_date",
+        headerName: "Date Received",
+        width: 140,
+        valueFormatter: (params) => {
+          return new Date(params.value).toLocaleDateString();
+        },
+        valueGetter: (params) => {
+          return new Date(params.value);
+        }
+      },
       { field: "sampling_time_submission", headerName: "Time Received", width: 120 },
       { field: "bc_cahs_receiver_first_name", headerName: "Receiver First Name", width: 150 },
       { field: "bc_cahs_receiver_last_name", headerName: "Receiver Last Name", width: 150 },
@@ -113,6 +126,7 @@ const ManageSample = () => {
   return (
     <Grid height={"100%"}>
       <DataGrid
+        loading={!data}
         components={{
           ColumnMenuIcon: styled(MoreVertIcon)({
             fill: theme.primary.white
@@ -130,7 +144,8 @@ const ManageSample = () => {
         sx={{
           "& .sample-form-table-header": {
             backgroundColor: theme.primary.dark,
-            color: theme.primary.white
+            color: theme.primary.white,
+            fontWeight: "800"
           },
           "& .sample-form-table-row": {
             backgroundColor: theme.primary.standard
@@ -139,12 +154,10 @@ const ManageSample = () => {
             cursor: "pointer"
           }
         }}
-        rows={data}
+        rows={data || []}
         columns={columns}
-        onRowClick={() => {
-          // handleOpen();
-        }}
         pageSize={20}
+        isRowSelectable={() => false}
         rowsPerPageOptions={[20]}
         getRowHeight={() => "auto"}
         getRowClassName={() => "sample-form-table-row"}
