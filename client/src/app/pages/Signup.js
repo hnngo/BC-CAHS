@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { createTheme } from "@mui/material/styles";
 import { ThemeProvider } from "@mui/material";
+import validateSignup from "../utils/validateSignup";
 
 export const customTheme = createTheme({
   typography: {
@@ -27,17 +28,6 @@ export const customTheme = createTheme({
   }
 });
 
-const users = [
-  {
-    username: "admin1",
-    password: "12345678"
-  },
-  {
-    username: "admin2",
-    password: "012345678"
-  }
-];
-
 const Signup = () => {
   const theme = useTheme();
 
@@ -54,8 +44,11 @@ const Signup = () => {
 
   const [data, setData] = useState({
     username: "",
-    password: ""
+    password: "",
+    confirmPassword: ""
   });
+
+  const [errors, setErrors] = useState({});
 
   const changeHandler = (e) => {
     setData({ ...data, [e.target.name]: e.target.value });
@@ -63,27 +56,12 @@ const Signup = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    checkUser();
-    console.log(checkUser());
-  };
-
-  const checkUser = () => {
-    const usercheck = users.find(
-      (user) => user.username === data.username && user.password === data.password
-    );
-    if (usercheck) {
-      console.log("Login successful");
-    } else {
-      console.log("Wrong password or username");
-    }
-    console.log(usercheck);
+    setErrors(validateSignup(data));
+    console.log(data);
   };
 
   useEffect(() => {
-    checkUser(users);
-  }, [data.username, data.password]);
-
-  console.log(data);
+  }, [data.username, data.password, data.confirmPassword]);
 
   return (
     <div className="Login-component" style={loginPageStyle}>
@@ -119,6 +97,7 @@ const Signup = () => {
           marginTop={5}
           padding={3}
           backgroundColor="rgba(125, 216, 255, 0.8)">
+
           <TextField
             margin="normal"
             type={"text"}
@@ -130,6 +109,7 @@ const Signup = () => {
             value={data.username}
             onChange={changeHandler}
           />
+          {errors.username && <p className="error">{errors.username}</p>}
 
           <TextField
             margin="normal"
@@ -141,29 +121,33 @@ const Signup = () => {
             value={data.password}
             onChange={changeHandler}
           />
+          {errors.password && <p className="error">{errors.password}</p>}
 
           <TextField
             margin="normal"
-            name="Confirm Password"
+            name="confirmPassword"
             type={"password"}
             variant="outlined"
             placeholder="Confirm Password"
             style={{ width: 300, height: 50 }}
-            value={data.password}
+            value={data.confirmPassword}
             onChange={changeHandler}
           />
+          {errors.confirmPassword && <p className="error">{errors.confirmPassword}</p>}
+
           <Button
             sx={{ marginTop: 3 }}
             variant="contained"
             style={{ width: 300, height: 50, background: theme.secondary.dark }}
             type="submit"
             onClick={handleSubmit}>
-            Login
+            Signup
           </Button>
+
           <Grid container>
             <Grid item xs={1}></Grid>
             <Grid item xs={7} pt={1}>
-              <Typography>Already had an account?</Typography>
+              <Typography>Already have an account?</Typography>
             </Grid>
 
             <Grid item xs={3} pt={1}>
