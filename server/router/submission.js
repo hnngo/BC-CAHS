@@ -2,6 +2,7 @@ const { application } = require("express");
 const express = require("express");
 const router = express.Router();
 const pool = require("../database");
+const errors = require("../utils/errors");
 
 pool.on("error", (err, client) => {
   console.error("Unexpected error on idle client", err);
@@ -9,7 +10,7 @@ pool.on("error", (err, client) => {
 });
 
 let testData = {
-  submissionNum: "123ABC12",
+  submissionNum: "123ABC123",
   companyName: "Test Company",
   submitter: "Nick",
   receiver: "NL",
@@ -99,9 +100,17 @@ router.post("/submit", async (req, res) => {
 
     query += `END $$;`;
     await pool.query(query);
-    res.send("Succesfully written to database!");
+    res.json({
+      error: 0,
+      msg: "Successfully saved form data to database!",
+      data: testData,
+    });
   } catch (err) {
-    res.status(400).send(`Error: ${err}`);
+    res.status(errors.ERROR_CODE.DATABASE_ERROR).json({
+      error: errors.ERROR_CODE.DATABASE_ERROR,
+      msg: err,
+      data: {},
+    });
   }
 });
 
