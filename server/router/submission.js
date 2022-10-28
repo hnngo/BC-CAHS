@@ -40,6 +40,7 @@ let testData = {
 
 router.post("/submit", async (req, res) => {
   try {
+    // main query
     let query = `
     DO $$ BEGIN
     INSERT INTO public.submission_details (submission_num, 
@@ -73,26 +74,31 @@ router.post("/submit", async (req, res) => {
         '${testData.sampleCondition}',
         '${testData.sampleOrigin}',
         '${testData.submissionNum}');
-    END $$;
+    
     `;
 
-    await pool.query(query);
+    // get all rtqpcr id and targets
+    let rtqpcrTargets = await pool.query(
+      `SELECT rt_qpcr_id, rt_qpcr_target FROM public.rt_qpcr_targets`
+    );
+    rtqpcrTargets = rtqpcrTargets.rows;
 
-    testData.rtqpcrTarget.forEach(async (target) => {
-      await pool.query(
-        `DO $$ BEGIN
-      INSERT INTO public.submission_rt_qpcr (rt_qpcr_id, sample_id, other_description)
+    //loop through all targets, match rtqpcr key to target, append to main query
+    testData.rtqpcrTarget.forEach((target) => {
+      let rtqpcr = rtqpcrTargets.find((obj) => obj.rt_qpcr_target === target);
+      let insert = `
+      INSERT INTO public.submission_rt_qpcr (rt_qpcr_id, submission_num, other_description)
       VALUES(
-        '${await pool.query(
-          `SELECT rt_qpcr_id FROM public.rt_qpcr_targets WHERE public.rt_qpcr_targets.rt_qpcr_target = ${target}`
-        )}',
+        '${rtqpcr.rt_qpcr_id}',
         '${testData.submissionNum}',
-        '${testData.otherDetails}')
-      END $$;
-      `
-      );
+        '${testData.otherDetails}');
+        `;
+
+      query += insert;
     });
 
+    query += `END $$;`;
+    await pool.query(query);
     res.send("Succesfully written to database!");
   } catch (err) {
     res.status(400).send(`Error: ${err}`);
