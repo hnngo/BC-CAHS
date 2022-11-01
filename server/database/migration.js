@@ -6,7 +6,7 @@ const migrate = async (pool) => {
     `CREATE TABLE IF NOT EXISTS public.user ( \
     user_id SERIAL PRIMARY KEY NOT NULL UNIQUE, \
     username VARCHAR(25) NOT NULL, \
-    password VARCHAR(25) NOT NULL,
+    password VARCHAR(60) NOT NULL,
     first_name VARCHAR(25) NOT NULL,
     last_name VARCHAR(25) NOT NULL
   )`
@@ -38,8 +38,9 @@ const migrate = async (pool) => {
     created_at TIMESTAMP NOT NULL,
     user_id int NOT NULL,
     auth_id int NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES public.user(user_id),
-    FOREIGN KEY (auth_id) REFERENCES public.auth(auth_id)
+    FOREIGN KEY (user_id) REFERENCES public.user(user_id) ON UPDATE CASCADE ON DELETE CASCADE,
+    FOREIGN KEY (auth_id) REFERENCES public.auth(auth_id) ON UPDATE CASCADE ON DELETE CASCADE,
+    CONSTRAINT user_auth_pkey PRIMARY KEY (user_id, auth_id)
   )`
   );
   console.log("Finished user auth table");
@@ -61,19 +62,18 @@ const migrate = async (pool) => {
     submission_num VARCHAR(30) PRIMARY KEY NOT NULL UNIQUE,
     company_name VARCHAR(25) NOT NULL,
     submitter VARCHAR(25) NOT NULL,
-    receipt_date DATE NOT NULL,
-    sampling_time_submission TIMESTAMP NOT NULL,
+    receive_date DATE NOT NULL,
+    submit_time TIMESTAMP NOT NULL,
+    sampling_location VARCHAR(50) NOT NULL,
+    sampling_date DATE NOT NULL,
     contact_phone_num VARCHAR(15) NOT NULL,
     purchase_order_num VARCHAR(15) NOT NULL,
-    bc_cahs_receiver_last_name VARCHAR(15) NOT NULL,
-    bc_cahs_receiver_first_name VARCHAR(15) NOT NULL,
+    bc_cahs_receiver_name VARCHAR(50) NOT NULL,
     bc_cahs_custodian_initials VARCHAR(5) NOT NULL,
-    client_case_num INT NOT NULL,
-    sampling_date TIMESTAMP NOT NULL,
-    bc_cahs_p_i VARCHAR(5) NOT NULL,
-    sampling_location VARCHAR(50) NOT NULL,
+    client_case_num VARCHAR(30) NOT NULL,
+    bc_cahs_pi VARCHAR(5) NOT NULL,
     bc_cahs_project VARCHAR(30) NOT NULL,
-    initial_placement VARCHAR(20) NOT NULL,
+    initial_storage VARCHAR(20) NOT NULL,
     analysis_requested analysis_requested_type NOT NULL
   )`
   );
@@ -90,7 +90,7 @@ const migrate = async (pool) => {
     END $$;
 
     DO $$ BEGIN
-    CREATE TYPE sample_type AS ENUM ('Wild', 'Brood Stock', 'Freshwater', 'Saltwater', 'Other');
+    CREATE TYPE sample_origin AS ENUM ('Wild', 'Brood Stock', 'Freshwater', 'Saltwater', 'Other');
     EXCEPTION
       WHEN duplicate_object THEN null;
     END $$;
@@ -100,11 +100,12 @@ const migrate = async (pool) => {
       num_of_samples SMALLINT NOT NULL,
       species VARCHAR(25) NOT NULL,
       other_details VARCHAR(255),
+      sample_type VARCHAR(100),
       sample_condition sample_condition NOT NULL,
-      sample_type sample_type NOT NULL,
-      submission_num VARCHAR(30) NOT NULL,
+      sample_origin sample_origin NOT NULL,
+      submission_num VARCHAR(30) NOT NULL,  
+      UNIQUE(submission_num),
       FOREIGN KEY (submission_num) REFERENCES public.submission_details(submission_num)
-
     )`
   );
   console.log("Finished sample details table");
@@ -112,15 +113,31 @@ const migrate = async (pool) => {
   // rtqpcr targets table
   await pool.query(
     `DO $$ BEGIN 
-    CREATE TYPE rt_qpcr_type AS ENUM ('IHNv', 'IPNv', 'ISAv', 'VHSv', 'PRV-L1', 'A.sal', 'P.sal', 'R.sal', 'ELFa', 'N.perurans');
+    CREATE TYPE rt_qpcr_target AS ENUM ('IHNv', 'IPNv', 'ISAv', 'VHSv', 'PRV-L1', 'A.sal', 'P.sal', 'R.sal', 'ELFa', 'N.perurans');
     EXCEPTION
       WHEN duplicate_object THEN null;
     END $$;                                                                                   
 
     CREATE TABLE IF NOT EXISTS public.rt_qpcr_targets (
       rt_qpcr_id SERIAL PRIMARY KEY NOT NULL UNIQUE,
-      rt_qpcr_type rt_qpcr_type NOT NULL
-    )`
+      rt_qpcr_target rt_qpcr_target NOT NULL
+    );
+    
+    DO $$ BEGIN
+      INSERT INTO public.rt_qpcr_targets(rt_qpcr_id, rt_qpcr_target) VALUES(1, 'IHNv') ON CONFLICT (rt_qpcr_id) DO NOTHING;
+      INSERT INTO public.rt_qpcr_targets(rt_qpcr_id, rt_qpcr_target) VALUES(2, 'IPNv') ON CONFLICT (rt_qpcr_id) DO NOTHING;
+      INSERT INTO public.rt_qpcr_targets(rt_qpcr_id, rt_qpcr_target) VALUES(3, 'ISAv') ON CONFLICT (rt_qpcr_id) DO NOTHING;
+      INSERT INTO public.rt_qpcr_targets(rt_qpcr_id, rt_qpcr_target) VALUES(4, 'VHSv') ON CONFLICT (rt_qpcr_id) DO NOTHING;
+      INSERT INTO public.rt_qpcr_targets(rt_qpcr_id, rt_qpcr_target) VALUES(5, 'PRV-L1') ON CONFLICT (rt_qpcr_id) DO NOTHING;
+      INSERT INTO public.rt_qpcr_targets(rt_qpcr_id, rt_qpcr_target) VALUES(6, 'A.sal') ON CONFLICT (rt_qpcr_id) DO NOTHING;
+      INSERT INTO public.rt_qpcr_targets(rt_qpcr_id, rt_qpcr_target) VALUES(7, 'P.sal') ON CONFLICT (rt_qpcr_id) DO NOTHING;
+      INSERT INTO public.rt_qpcr_targets(rt_qpcr_id, rt_qpcr_target) VALUES(8, 'R.sal') ON CONFLICT (rt_qpcr_id) DO NOTHING;
+      INSERT INTO public.rt_qpcr_targets(rt_qpcr_id, rt_qpcr_target) VALUES(9, 'ELFa') ON CONFLICT (rt_qpcr_id) DO NOTHING;
+      INSERT INTO public.rt_qpcr_targets(rt_qpcr_id, rt_qpcr_target) VALUES(10, 'N.perurans') ON CONFLICT (rt_qpcr_id) DO NOTHING;
+    EXCEPTION
+      WHEN duplicate_object THEN NULL;
+    END $$;
+    `
   );
   console.log("Finished rtqpcr targets table");
 
@@ -128,11 +145,12 @@ const migrate = async (pool) => {
   await pool.query(
     `                                                                             
     CREATE TABLE IF NOT EXISTS public.submission_rt_qpcr (
-    other_description VARCHAR(255),
     rt_qpcr_id INT NOT NULL,
-    sample_id INT NOT NULL,
-    FOREIGN KEY (rt_qpcr_id) REFERENCES public.rt_qpcr_targets(rt_qpcr_id),
-    FOREIGN KEY (sample_id) REFERENCES public.sample_details(sample_id)
+    submission_num VARCHAR(30) NOT NULL,
+    FOREIGN KEY (rt_qpcr_id) REFERENCES public.rt_qpcr_targets(rt_qpcr_id) ON UPDATE CASCADE ON DELETE CASCADE,
+    FOREIGN KEY (submission_num) REFERENCES public.submission_details(submission_num) ON UPDATE CASCADE ON DELETE CASCADE,
+    CONSTRAINT rtqpcr_submission_pkey PRIMARY KEY (rt_qpcr_id, submission_num),
+    other_description VARCHAR(255)
     )`
   );
   console.log("Finished submission rtqpcr table");
@@ -153,6 +171,7 @@ const migrate = async (pool) => {
       reason_for_reextraction VARCHAR(255),
       qcpr_completed TIMESTAMP,
       submission_num VARCHAR(30) NOT NULL,
+      UNIQUE(submission_num),
       FOREIGN KEY (submission_num) REFERENCES public.submission_details(submission_num)
     )
     `
@@ -168,6 +187,7 @@ const migrate = async (pool) => {
       discard_date TIMESTAMP,
       second_discard_date TIMESTAMP,
       submission_num VARCHAR(30) NOT NULL,
+      UNIQUE(submission_num),
       FOREIGN KEY (submission_num) REFERENCES public.submission_details(submission_num)
     )
     `
@@ -183,6 +203,7 @@ const migrate = async (pool) => {
       samples_invoiced SMALLINT,
       invoice_date TIMESTAMP,
       submission_num VARCHAR(30) NOT NULL,
+      UNIQUE(submission_num),
       FOREIGN KEY (submission_num) REFERENCES public.submission_details(submission_num)
     )`
   );
