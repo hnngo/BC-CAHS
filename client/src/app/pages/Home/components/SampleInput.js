@@ -15,6 +15,9 @@ import {
   Box,
   Chip
 } from "@mui/material";
+import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { useTheme } from "@mui/material/styles";
 
 const ITEM_HEIGHT = 48;
@@ -31,11 +34,15 @@ const MenuProps = {
 const SampleInput = ({
   label,
   name,
+  value,
+  onChange = () => {},
   type,
   labelStyle = {},
   options = {},
   placeholder = "",
-  disableText = false
+  disableText = false,
+  submitText = "Submit",
+  ...props
 }) => {
   // This is for type select
   const [selectedOptions, setSelectedOptions] = React.useState([]);
@@ -52,7 +59,17 @@ const SampleInput = ({
   };
 
   return (
-    <Grid container direction={"row"} paddingY={1}>
+    <Grid
+      container
+      direction={"row"}
+      paddingY={1}
+      sx={{
+        ".DatePicker-Div": {
+          width: "100%",
+          backgroundColor: theme.primary.light,
+          color: theme.primary.dark
+        }
+      }}>
       <Grid
         item
         xs={type ? 5 : 12}
@@ -68,6 +85,8 @@ const SampleInput = ({
         {type == "text" ? (
           <TextField
             name={name}
+            value={value}
+            onChange={onChange}
             fullWidth
             size="small"
             placeholder={placeholder}
@@ -76,10 +95,10 @@ const SampleInput = ({
           />
         ) : type == "select" ? (
           <Select
-            defaultValue=""
+            defaultValue={value}
             fullWidth
             sx={{ backgroundColor: theme.primary.light }}
-            onChange={() => {}}>
+            onChange={onChange}>
             {Object.entries(options).map((option) => (
               <MenuItem key={option[0]} value={option[0]}>
                 {option[1]}
@@ -93,7 +112,7 @@ const SampleInput = ({
           />
         ) : type == "submit" ? (
           <Button variant="contained" fullWidth sx={{ backgroundColor: theme.primary.dark }}>
-            Submit
+            {submitText}
           </Button>
         ) : type == "checkbox" ? (
           <FormGroup
@@ -137,6 +156,46 @@ const SampleInput = ({
               ))}
             </Select>
           </FormGroup>
+        ) : type == "date" ? (
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <DesktopDatePicker
+              className={"DatePicker-Div"}
+              inputFormat="MM/DD/YYYY"
+              value={value}
+              closeOnSelect
+              onChange={onChange}
+              renderInput={(params) => <TextField {...params} />}
+            />
+          </LocalizationProvider>
+        ) : type == "doubleInput" ? (
+          <Grid container>
+            <Grid xs={6} item>
+              <TextField
+                name={name}
+                label={props.lowerText || "Lower"}
+                value={value[0] || null}
+                onChange={onChange}
+                fullWidth
+                size="small"
+                placeholder={placeholder}
+                disabled={disableText}
+                sx={{ backgroundColor: theme.primary.light }}
+              />
+            </Grid>
+            <Grid xs={6} item>
+              <TextField
+                name={name}
+                label={props.upperText || "Upper"}
+                value={value[1] || null}
+                onChange={onChange}
+                fullWidth
+                size="small"
+                placeholder={placeholder}
+                disabled={disableText}
+                sx={{ backgroundColor: theme.primary.light }}
+              />
+            </Grid>
+          </Grid>
         ) : (
           <div />
         )}
