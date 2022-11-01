@@ -41,7 +41,8 @@ const SampleInput = ({
   options = {},
   placeholder = "",
   disableText = false,
-  submitText = "Submit"
+  submitText = "Submit",
+  ...props
 }) => {
   // This is for type select
   const [selectedOptions, setSelectedOptions] = React.useState([]);
@@ -166,6 +167,35 @@ const SampleInput = ({
               renderInput={(params) => <TextField {...params} />}
             />
           </LocalizationProvider>
+        ) : type == "doubleInput" ? (
+          <Grid container>
+            <Grid xs={6} item>
+              <TextField
+                name={name}
+                label={props.lowerText || "Lower"}
+                value={value[0] || null}
+                onChange={onChange}
+                fullWidth
+                size="small"
+                placeholder={placeholder}
+                disabled={disableText}
+                sx={{ backgroundColor: theme.primary.light }}
+              />
+            </Grid>
+            <Grid xs={6} item>
+              <TextField
+                name={name}
+                label={props.upperText || "Upper"}
+                value={value[1] || null}
+                onChange={onChange}
+                fullWidth
+                size="small"
+                placeholder={placeholder}
+                disabled={disableText}
+                sx={{ backgroundColor: theme.primary.light }}
+              />
+            </Grid>
+          </Grid>
         ) : (
           <div />
         )}

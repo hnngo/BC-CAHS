@@ -2,7 +2,7 @@ import React from "react";
 
 // Components
 import SampleInput from "../../components/SampleInput";
-import { Modal, Box, Typography, FormControl } from "@mui/material";
+import { Modal, Box, Typography, FormControl, Grid } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 
 // Constants
@@ -38,67 +38,113 @@ const EditSample = ({ isOpen, onClose, data }) => {
   return (
     <Modal open={isOpen} onClose={onClose}>
       <Box sx={style}>
-        <Typography
-          id="modal-modal-title"
-          variant="h5"
-          component="h2"
-          fontWeight={"bold"}
-          marginBottom={"30px"}
-          color={theme.primary.dark}>
-          Submission Form #{data.submission_num}
-        </Typography>
-        <FormControl>
-          <SampleInput
-            label={"Status"}
-            name="sampleStatus"
-            type="select"
-            options={SAMPLE_STATUS}
-            value={inputs.sampleStatus || "outstanding"}
-          />
-          <SampleInput
-            label={"Cut Date"}
-            name="cutDate"
-            type="date"
-            value={inputs.cutDate || null}
-            onChange={(value) => onChangeDate("cutDate", value)}
-          />
-          <SampleInput
-            label={"Extraction Date"}
-            name="extractionDate"
-            type="date"
-            value={inputs.extractionDate || null}
-            onChange={(value) => onChangeDate("extractionDate", value)}
-          />
-          <SampleInput
-            label={"ReCut Date"}
-            name="reCutDate"
-            type="date"
-            value={inputs.reCutDate || null}
-            onChange={(value) => onChangeDate("reCutDate", value)}
-          />
-          <SampleInput
-            label={"ReExtraction Date"}
-            name="reExtractionDate"
-            type="date"
-            value={inputs.reExtractionDate || null}
-            onChange={(value) => onChangeDate("reExtractionDate", value)}
-          />
-          <SampleInput
-            label={"QPCR Complete Date"}
-            name="qpcrCompleteDate"
-            type="date"
-            value={inputs.qpcrCompleteDate || null}
-            onChange={(value) => onChangeDate("qpcrCompleteDate", value)}
-          />
-          <SampleInput
-            label={"Signed off by"}
-            name="signOffBy"
-            type="text"
-            value={"Shelby"}
-            disableText
-          />
-          <SampleInput label="" name="submit" type="submit" submitText="Save" />
-        </FormControl>
+        <Grid container>
+          <Typography
+            id="modal-modal-title"
+            variant="h5"
+            component="h2"
+            fontWeight={"bold"}
+            marginBottom={"30px"}
+            color={theme.primary.dark}>
+            Submission Form #{data.submission_num}
+          </Typography>
+          <FormControl>
+            <Grid item xs={6}>
+              <SampleInput
+                label={"Status"}
+                name="sampleStatus"
+                type="select"
+                options={SAMPLE_STATUS}
+                value={inputs.sampleStatus || "outstanding"}
+              />
+            </Grid>
+            <Grid container display="row">
+              <Grid item xs={6} zIndex={1}>
+                <SampleInput
+                  label={"Cut Date"}
+                  name="cutDate"
+                  type="date"
+                  value={inputs.cutDate || null}
+                  onChange={(value) => onChangeDate("cutDate", value)}
+                />
+              </Grid>
+              <Grid item xs={6} zIndex={1}>
+                <SampleInput
+                  label={"Scale Verification"}
+                  name="scaleVerification"
+                  type="doubleInput"
+                  value={inputs.scaleVerification || []}
+                  onChange={(value) => onChangeDate("scaleVerification", value)}
+                />
+              </Grid>
+            </Grid>
+            <Grid item xs={6}>
+              <SampleInput
+                label={"Extraction Date"}
+                name="extractionDate"
+                type="date"
+                value={inputs.extractionDate || null}
+                onChange={(value) => onChangeDate("extractionDate", value)}
+              />
+            </Grid>
+            <Grid item xs={6}>
+              <SampleInput
+                label={"ReCut Date"}
+                name="reCutDate"
+                type="date"
+                value={inputs.reCutDate || null}
+                onChange={(value) => onChangeDate("reCutDate", value)}
+              />
+            </Grid>
+            <Grid item xs={6}>
+              <SampleInput
+                label={"ReExtraction Date"}
+                name="reExtractionDate"
+                type="date"
+                value={inputs.reExtractionDate || null}
+                onChange={(value) => onChangeDate("reExtractionDate", value)}
+              />
+            </Grid>
+            <Grid container display="row">
+              <Grid item xs={6}>
+                <SampleInput
+                  label={"QPCR Complete Date"}
+                  name="qpcrCompleteDate"
+                  type="date"
+                  value={inputs.qpcrCompleteDate || null}
+                  onChange={(value) => onChangeDate("qpcrCompleteDate", value)}
+                />
+              </Grid>
+              <Grid item xs={6} zIndex={1}>
+                <SampleInput
+                  label={"Positive Control Ct"}
+                  name="positiveControlCT"
+                  type="doubleInput"
+                  value={inputs.positiveControlCT || []}
+                  onChange={(value) => onChangeDate("positiveControlCT", value)}
+                />
+              </Grid>
+            </Grid>
+            <Grid container display="row">
+              <Grid item xs={6}></Grid>
+              <Grid item xs={6} zIndex={1}>
+                <SampleInput
+                  label={"Negative Control Ct"}
+                  name="negativeControlCT"
+                  type="doubleInput"
+                  value={inputs.positiveControlCT || []}
+                  onChange={(value) => onChangeDate("negativeControlCT", value)}
+                />
+              </Grid>
+            </Grid>
+            <Grid container display="row">
+              <Grid item xs={6}></Grid>
+              <Grid item xs={6} zIndex={1}>
+                <SampleInput label="" name="submit" type="submit" submitText="Save" />
+              </Grid>
+            </Grid>
+          </FormControl>
+        </Grid>
       </Box>
     </Modal>
   );
