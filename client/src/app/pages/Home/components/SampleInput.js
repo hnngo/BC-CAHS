@@ -16,6 +16,7 @@ import {
   Chip
 } from "@mui/material";
 import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
+import { TimePicker } from "@mui/x-date-pickers/TimePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { useTheme } from "@mui/material/styles";
@@ -108,6 +109,8 @@ const SampleInput = ({
         ) : type == "text-area" ? (
           <TextareaAutosize
             minRows={5}
+            placeholder={placeholder}
+            onChange={onChange}
             style={{ backgroundColor: theme.primary.light, width: "100%" }}
           />
         ) : type == "submit" ? (
@@ -165,6 +168,16 @@ const SampleInput = ({
               closeOnSelect
               onChange={onChange}
               renderInput={(params) => <TextField {...params} />}
+            />
+          </LocalizationProvider>
+        ) : type == "time" ? (
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <TimePicker
+              className={"DatePicker-Div"}
+              label={placeholder}
+              value={value}
+              onChange={onChange}
+              renderInput={(params) => <TextField {...params} fullWidth />}
             />
           </LocalizationProvider>
         ) : type == "doubleInput" ? (

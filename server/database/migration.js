@@ -74,7 +74,8 @@ const migrate = async (pool) => {
     bc_cahs_pi VARCHAR(5) NOT NULL,
     bc_cahs_project VARCHAR(30) NOT NULL,
     initial_storage VARCHAR(20) NOT NULL,
-    analysis_requested analysis_requested_type NOT NULL
+    analysis_requested analysis_requested_type NOT NULL,
+    comment VAR(255)
   )`
   );
   console.log("Finished submission details table");
@@ -99,7 +100,7 @@ const migrate = async (pool) => {
       sample_id SERIAL PRIMARY KEY NOT NULL UNIQUE,
       num_of_samples SMALLINT NOT NULL,
       species VARCHAR(25) NOT NULL,
-      other_details VARCHAR(255),
+      sample_details VARCHAR(255),
       sample_type VARCHAR(100),
       sample_condition sample_condition NOT NULL,
       sample_origin sample_origin NOT NULL,

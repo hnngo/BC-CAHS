@@ -34,9 +34,11 @@ let testData = {
   sampleType: "Something something",
   sampleOrigin: "Freshwater",
   sampleCondition: "Frozen",
-  otherDetails: null,
+  sampleDetails: null,
   requestedAnalysis: "ATPase",
   rtqpcrTarget: ["IHNv", "IPNv"],
+  otherDescription: "asdf",
+  comment: "hello",
 };
 
 router.post("/submit", async (req, res) => {
@@ -47,7 +49,7 @@ router.post("/submit", async (req, res) => {
     INSERT INTO public.submission_details (submission_num, 
       company_name, submitter, receive_date, submit_time, sampling_location, sampling_date, contact_phone_num, 
       purchase_order_num, bc_cahs_receiver_name, bc_cahs_custodian_initials, client_case_num, bc_cahs_pi, 
-      bc_cahs_project, initial_storage, analysis_requested) 
+      bc_cahs_project, initial_storage, analysis_requested, comment) 
       VALUES(
         '${testData.submissionNum}', 
         '${testData.companyName}', 
@@ -64,13 +66,14 @@ router.post("/submit", async (req, res) => {
         '${testData.PI}', 
         '${testData.BCCAHSProject}',
         '${testData.initialStorage}', 
-        '${testData.requestedAnalysis}');
+        '${testData.requestedAnalysis}',
+        '${testData.comment});
 
-    INSERT INTO public.sample_details (num_of_samples, species, other_details, sample_type, sample_condition, sample_origin, submission_num)
+    INSERT INTO public.sample_details (num_of_samples, species, sampleDetails, sample_type, sample_condition, sample_origin, submission_num)
     VALUES(
         ${testData.sampleNum}, 
         '${testData.sampleSpecies}', 
-        '${testData.otherDetails}', 
+        '${testData.sampleDetails}', 
         '${testData.sampleType}', 
         '${testData.sampleCondition}',
         '${testData.sampleOrigin}',
