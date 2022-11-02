@@ -5,12 +5,12 @@ const validateSignup = (data) => {
     if (!data.first_name) {
         errors.first_name = "First name must be provided"
     } else if (!/[\w'-]+/.test(data.first_name)) {
-        errors.first_name = "First name must only contain alphabet characters"
+        errors.first_name = "First name must contain only alphabet characters"
     }
     if (!data.last_name) {
         errors.last_name = "Last name must be provided"
     } else if (!/[\w'-]+/.test(data.last_name)) {
-        errors.last_name = "Last name must only contain alphabet characters"
+        errors.last_name = "Last name must contain only alphabet characters"
     }
     if (!data.username) {
         errors.username = "Username is required"
@@ -20,7 +20,7 @@ const validateSignup = (data) => {
     if (!data.password) {
         errors.password = "Password is required"
     } else if (data.password.length < 8) {
-        errors.password = "Password must be more than 8 characters long"
+        errors.password = "Password must be longer than 8 characters long"
     }
     if (!data.confirmPassword) {
         errors.confirmPassword = "Please confirm your password"
