@@ -1,4 +1,4 @@
-export const ERROR_CODE = {
+const ERROR_CODE = {
   NO_ERROR: 0,
 
   // Generic 1~99
@@ -16,3 +16,5 @@ export const ERROR_CODE = {
   FORM_INVALID_FIELDS: 200,
   FORM_EXISTED: 201,
 };
+
+module.exports = { ERROR_CODE };
