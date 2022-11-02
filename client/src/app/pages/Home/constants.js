@@ -43,3 +43,9 @@ export const RT_QPCR_TARGETS = {
   nperurans: "N.perurans",
   other: "Other"
 };
+
+export const SAMPLE_STATUS = {
+  outstanding: "Outstanding",
+  processing: "Processing",
+  ready: "Ready"
+};
