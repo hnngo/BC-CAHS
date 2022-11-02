@@ -55,6 +55,7 @@ export const getMockFormData = (numberOfForm = 1) => {
         "Water Analysis"
       ]),
 
+      status: faker.helpers.arrayElement(["outstanding", "processing", "ready"]),
       rt_qpcr_type: faker.helpers.arrayElements(
         ["IHNv", "IPNv", "ISAv", "VHSv", "PRV-L1", "A.sal", "P.sal", "R.sal", "ELFa", "N.perurans"],
         faker.datatype.number({ min: 1, max: 4 })
