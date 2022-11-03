@@ -1,8 +1,9 @@
-import ERROR_CODE from "../utils/errorCodes"
+const ERROR_CODE = require("../utils/errorCodes");
 
-export const validateSignup = (signupData) => {
+module.exports = function (signupData) {
+    let msg = [];
     if (!signupData.first_name) {
-        res.send(
+        msg.push(
             {
                 error: ERROR_CODE.AUTH_NO_FIRST_NAME,
                 msg: "First name must be provided",
@@ -12,9 +13,8 @@ export const validateSignup = (signupData) => {
             }
 
         );
-    }
-    if (!signupData.last_name) {
-        res.send(
+    } else if (!signupData.last_name) {
+        msg.push(
             {
                 error: ERROR_CODE.AUTH_NO_LAST_NAME,
                 msg: "Last name must be provided",
@@ -24,9 +24,8 @@ export const validateSignup = (signupData) => {
             }
 
         );
-    }
-    if (!/[\w'-]+/.test(signupData.first_name) || !/[\w'-]+/.test(signupData.last_name)) {
-        res.send(
+    } else if (!/[\w'-]+/.test(signupData.first_name) || !/[\w'-]+/.test(signupData.last_name)) {
+        msg.push(
             {
                 error: ERROR_CODE.AUTH_INVALID_FIRST_OR_LAST_NAME,
                 msg: "Name must contain only alphabet characters",
@@ -36,9 +35,8 @@ export const validateSignup = (signupData) => {
             }
 
         );
-    }
-    if (!signupData.username) {
-        res.send(
+    } else if (!signupData.username) {
+        msg.push(
             {
                 error: ERROR_CODE.AUTH_NO_USERNAME,
                 msg: "Username is required",
@@ -47,9 +45,8 @@ export const validateSignup = (signupData) => {
                 }
             }
         );
-    }
-    if (!signupData.password) {
-        res.send(
+    } else if (!signupData.password) {
+        msg.push(
             {
                 error: ERROR_CODE.AUTH_NO_PASSWORD,
                 msg: "Password is required",
@@ -58,9 +55,8 @@ export const validateSignup = (signupData) => {
                 }
             }
         );
-    }
-    if (!signupData.confirmPassword) {
-        res.send(
+    } else if (!signupData.confirmPassword) {
+        msg.push(
             {
                 error: ERROR_CODE.AUTH_NO_CONFIRM_PASSWORD,
                 msg: "Confirm password is required",
@@ -69,9 +65,8 @@ export const validateSignup = (signupData) => {
                 }
             }
         );
-    }
-    if (signupData.username.length < 4) {
-        res.send(
+    } else if (signupData.username.length < 4) {
+        msg.push(
             {
                 error: ERROR_CODE.AUTH_USERNAME_TOO_SHORT,
                 msg: "Username must be longer than 4 characters",
@@ -80,9 +75,8 @@ export const validateSignup = (signupData) => {
                 }
             }
         );
-    }
-    if (signupData.password.length < 8 || signupData.confirmPassword.length < 8) {
-        res.send(
+    }else if (signupData.password.length < 8 || signupData.confirmPassword.length < 8) {
+        msg.push(
             {
                 error: ERROR_CODE.AUTH_PASSWORD_TOO_SHORT,
                 msg: "Password must be longer than 8 characters long",
@@ -92,9 +86,8 @@ export const validateSignup = (signupData) => {
                 }
             }
         );
-    }
-    if (signupData.password != signupData.confirmPassword) {
-        res.send(
+    } else if (signupData.password != signupData.confirmPassword) {
+        msg.push(
             {
                 error: ERROR_CODE.AUTH_PASSWORD_DO_NOT_MATCH,
                 msg: "Password does not match",
@@ -105,4 +98,5 @@ export const validateSignup = (signupData) => {
             }
         );
     }
+    return new Promise((res, err) => res(msg));
 }

@@ -6,6 +6,8 @@ const cookieParser = require("cookie-parser");
 const session = require("express-session");
 const bodyParser = require("body-parser");
 const bcrypt = require("bcrypt");
+const ERROR_CODE = require("../utils/errorCodes");
+const validateSignup = require("../utils/validateSignup");
 
 var client = null;
 
@@ -107,48 +109,81 @@ router.post("/login", async (req, res) => {
  */
 router.use(bodyParser.json())
 router.post("/signup", async (req, res) => {
-  console.log(req.body);
-
-  let { username, password, confirmPassword } = req.body;
-
+  let { username, password, confirmPassword, first_name, last_name } = req.body;
+  try {
+    // validate user input again
     let hashedPw = await bcrypt.hash(password, 10);
-    // console.log(hashedPw);
-
-    pool.query(
-      `SELECT * FROM public.user
-      WHERE username = $1`, [username], (err, result) => {
-      if (err) {
-
-        console.log(err);
-
-      } else {
-
-        console.log(result.rows);
-
-        if (result.rows.length > 0) {
-
-          res.send({ errMsg: "Username is already registered. Please provide another." });
-
-        } else {
-
+    console.log(hashedPw);
+    await validateSignup(req.body)
+    .then((msg) => {
+      if (msg.length == 0) { // if there are no error messages returned
+          // see if user with provided username already exists in database
           pool.query(
-            `INSERT INTO public.user (username, password)
-            VALUES ($1, $2)
-            RETURNING username, password, first_name, last_name`, [username, hashedPw], (err, result) => {
+            `SELECT * FROM public.user
+            WHERE username = $1`, [username], (err, result) => {
             if (err) {
-              res.send({ errMsg: "error" });
+              console.log(err);
             } else {
-              alert("Signup complete! Please login using your login credentials.");
-              res.redirect("/login");
+              if (result.rows.length > 0) { // if username is a duplicate
+                res.send(
+                  {
+                    error: ERROR_CODE.AUTH_ACCOUNT_EXISTS,
+                    msg: "Account with that username already exists",
+                    data: {
+                      username: username
+                    }
+                  }
+                );
+              } else { // else, add user to database
+                pool.query(
+                  `INSERT INTO public.user (username, password, first_name, last_name)
+                  VALUES ($1, $2, $3, $4)
+                  RETURNING username, password, first_name, last_name`, [username, hashedPw, first_name, last_name], (err, result) => {
+                  if (err) {
+                    console.log(err);
+                    res.send(
+                      {
+                        error: ERROR_CODE.AUTH_ACCOUNT_EXISTS,
+                        msg: "User with that username already exists",
+                        data: {
+                          username: username
+                        }
+                      }
+                    );
+                  } else {
+                    // send json as response if user signup was successful
+                    res.send(
+                      {
+                        error: ERROR_CODE.NO_ERROR,
+                        msg: "You have signed up successfully",
+                        data: {
+                          username: username,
+                          first_name: first_name,
+                          last_name: last_name
+                        }
+                      }
+                      );
+                  }
+                }
+                );
+        
+              }
             }
           }
-
-          )
-        }
+          );
+          
+      } else { // if there is some sort of error
+        res.send(msg);
       }
-    }
-    );
 
+    }).catch((err) => {
+      console.log(err);
+    })
+  }
+  catch (err){
+    console.log(err);
+  }
+  
 });
 
 /**

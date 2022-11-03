@@ -68,10 +68,9 @@ const Signup = () => {
     setErrors(validateSignup(data));
 
     if (isEmpty(validateSignup(data))) {
+      loginCall();
       setValid(true);
-      console.log("success!");
     }
-
     console.log(data);
   };
 
