@@ -37,6 +37,8 @@ const SampleInput = ({
   name,
   value,
   onChange = () => {},
+  onClick = () => {},
+  onSelectionUpdate,
   type,
   labelStyle = {},
   options = {},
@@ -57,6 +59,7 @@ const SampleInput = ({
       // On autofill we get a stringified value.
       typeof value === "string" ? value.split(",") : value
     );
+    onSelectionUpdate(event);
   };
 
   return (
@@ -96,7 +99,7 @@ const SampleInput = ({
           />
         ) : type == "select" ? (
           <Select
-            defaultValue={value}
+            defaultValue={""}
             fullWidth
             sx={{ backgroundColor: theme.primary.light }}
             onChange={onChange}>
@@ -114,7 +117,11 @@ const SampleInput = ({
             style={{ backgroundColor: theme.primary.light, width: "100%" }}
           />
         ) : type == "submit" ? (
-          <Button variant="contained" fullWidth sx={{ backgroundColor: theme.primary.dark }}>
+          <Button
+            variant="contained"
+            fullWidth
+            sx={{ backgroundColor: theme.primary.dark }}
+            onClick={onClick}>
             {submitText}
           </Button>
         ) : type == "checkbox" ? (

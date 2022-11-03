@@ -1,9 +1,10 @@
 import React from "react";
-
 import { Grid } from "@mui/material";
 import SampleInput from "../components/SampleInput";
-
 import { SAMPLE_CONDITION, SAMPLE_TYPE, ANALYSIS_REQUESTS, RT_QPCR_TARGETS } from "../constants";
+import axios from "axios";
+
+const testUrl = "http://localhost:8000/api/form/submit";
 
 const Sample = () => {
   const [submissionData, setSubmissionData] = React.useState({
@@ -21,7 +22,7 @@ const Sample = () => {
     clientPO: null,
     clientCaseNum: null,
     contactPhoneNum: null,
-    samplingDate: null,
+    samplingDate: new Date().toISOString().substring(0, 10),
     samplingLocation: null,
     custodian: null,
     PI: null,
@@ -43,10 +44,24 @@ const Sample = () => {
     setSubmissionData({ ...submissionData, [name]: value });
   };
 
+  const submitData = async (data) => {
+    // data.submitTime = data.submitTime.split()[1];
+    // console.log(data);
+    await axios.post(
+      "http://localhost:8000/api/form/submit",
+      { data: data },
+      {
+        headers: {
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "*"
+        }
+      }
+    );
+  };
+
   // const extractTime = (name, event) => {
   //   setSubmissionData({ ...submissionData, [name]: `${event.$H}:${event.$m}:${event.$s}` });
   // };
-  console.log(submissionData);
 
   return (
     <Grid container direction={"row"}>
@@ -121,6 +136,7 @@ const Sample = () => {
           label={"Sampling Date"}
           name="samplingDate"
           type="date"
+          value={submissionData.samplingDate || ""}
           onChange={(e) => {
             onChangeValue("samplingDate", `${e.$y}-${e.$M + 1}-${e.$D}`);
           }}
@@ -184,7 +200,7 @@ const Sample = () => {
         <SampleInput
           label={"Sample Origin"}
           name="sampleOrigin"
-          value={"wild" || submissionData.sampleOrigin}
+          value={submissionData.sampleOrigin || ""}
           type="select"
           options={SAMPLE_TYPE}
           onChange={(e) => onChangeValue("sampleOrigin", e.target.value)}
@@ -194,7 +210,7 @@ const Sample = () => {
           name="sampleCondition"
           type="select"
           options={SAMPLE_CONDITION}
-          value={"dryIce" || submissionData.sampleCondition}
+          value={submissionData.sampleCondition || ""}
           onChange={(e) => onChangeValue("sampleCondition", e.target.value)}
         />
         <SampleInput
@@ -216,7 +232,7 @@ const Sample = () => {
           value={submissionData.requestedAnalysis || ""}
           type="multi-select"
           options={ANALYSIS_REQUESTS}
-          onChange={(e) => onChangeValue("requestedAnalysis", e.target.value)}
+          onSelectionUpdate={(e) => onChangeValue("requestedAnalysis", e.target.value)}
         />
         <SampleInput
           label={"RT-qPCR Targets"}
@@ -224,7 +240,7 @@ const Sample = () => {
           value={submissionData.rtqpcrTarget || ""}
           type="multi-select"
           options={RT_QPCR_TARGETS}
-          onChange={(e) => onChangeValue("rtqpcrTarget", e.target.value)}
+          onSelectionUpdate={(e) => onChangeValue("rtqpcrTarget", e.target.value)}
         />
         <SampleInput
           name="rtqpcrTargets_other"
@@ -243,7 +259,12 @@ const Sample = () => {
         />
         <br />
         <br />
-        <SampleInput label="" name="submit" type="submit" />
+        <SampleInput
+          label=""
+          name="submit"
+          type="submit"
+          onClick={() => submitData(submissionData)}
+        />
       </Grid>
     </Grid>
   );

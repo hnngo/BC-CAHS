@@ -17,4 +17,4 @@ const ERROR_CODE = {
   FORM_EXISTED: 201,
 };
 
-module.export = ERROR_CODE;
+module.exports = { ERROR_CODE };
