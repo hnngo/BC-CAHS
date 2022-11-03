@@ -49,11 +49,10 @@ const migrate = async (pool) => {
    * Create submission_details table
    */
 
-  // need to handle other
   await pool.query(
     `DO $$ BEGIN
-    CREATE TYPE analysis_requested_type AS ENUM ('ATPase', 'Bacteriology', 'Bio-Assay', 'ELISA Cortisol',
-    'ELISA R.sal','PCR', 'Plankton ID', 'RT-qPCR', 'Sea Lice ID', 'Virology', 'Water Analysis');
+    CREATE TYPE analysis_requested_type AS ENUM ('atpase', 'bacteriology', 'bioAssay', 'elisaCortisol',
+    'esliaRSal','pcr', 'planktonId', 'rtqPcr', 'seaLiceId', 'virology', 'waterAnalysis', 'other');
     EXCEPTION
       WHEN duplicate_object THEN null;
     END $$;
@@ -74,7 +73,8 @@ const migrate = async (pool) => {
     bc_cahs_pi VARCHAR(5) NOT NULL,
     bc_cahs_project VARCHAR(30) NOT NULL,
     initial_storage VARCHAR(20) NOT NULL,
-    analysis_requested analysis_requested_type NOT NULL
+    analysis_requested analysis_requested_type NOT NULL,
+    comment VARCHAR(255)
   )`
   );
   console.log("Finished submission details table");
@@ -84,13 +84,13 @@ const migrate = async (pool) => {
    */
   await pool.query(
     `DO $$ BEGIN
-    CREATE TYPE sample_condition AS ENUM ('Dry Ice', 'Frozen', 'Ice Packs', 'Thawed', 'RT', 'Other');
+    CREATE TYPE sample_condition AS ENUM ('dryIce', 'frozen', 'icePacks', 'thawed', 'rt', 'other');
     EXCEPTION
       WHEN duplicate_object THEN null;
     END $$;
 
     DO $$ BEGIN
-    CREATE TYPE sample_origin AS ENUM ('Wild', 'Brood Stock', 'Freshwater', 'Saltwater', 'Other');
+    CREATE TYPE sample_origin AS ENUM ('wild', 'broodStock', 'freshWater', 'saltWater', 'other');
     EXCEPTION
       WHEN duplicate_object THEN null;
     END $$;
@@ -99,7 +99,7 @@ const migrate = async (pool) => {
       sample_id SERIAL PRIMARY KEY NOT NULL UNIQUE,
       num_of_samples SMALLINT NOT NULL,
       species VARCHAR(25) NOT NULL,
-      other_details VARCHAR(255),
+      sample_details VARCHAR(255),
       sample_type VARCHAR(100),
       sample_condition sample_condition NOT NULL,
       sample_origin sample_origin NOT NULL,
@@ -113,7 +113,7 @@ const migrate = async (pool) => {
   // rtqpcr targets table
   await pool.query(
     `DO $$ BEGIN 
-    CREATE TYPE rt_qpcr_target AS ENUM ('IHNv', 'IPNv', 'ISAv', 'VHSv', 'PRV-L1', 'A.sal', 'P.sal', 'R.sal', 'ELFa', 'N.perurans');
+    CREATE TYPE rt_qpcr_target AS ENUM ('ihnv', 'ipnv', 'isav', 'vhsv', 'prvl1', 'asal', 'psal', 'rsal', 'elfa', 'nperurans', 'other');
     EXCEPTION
       WHEN duplicate_object THEN null;
     END $$;                                                                                   
@@ -124,16 +124,17 @@ const migrate = async (pool) => {
     );
     
     DO $$ BEGIN
-      INSERT INTO public.rt_qpcr_targets(rt_qpcr_id, rt_qpcr_target) VALUES(1, 'IHNv') ON CONFLICT (rt_qpcr_id) DO NOTHING;
-      INSERT INTO public.rt_qpcr_targets(rt_qpcr_id, rt_qpcr_target) VALUES(2, 'IPNv') ON CONFLICT (rt_qpcr_id) DO NOTHING;
-      INSERT INTO public.rt_qpcr_targets(rt_qpcr_id, rt_qpcr_target) VALUES(3, 'ISAv') ON CONFLICT (rt_qpcr_id) DO NOTHING;
-      INSERT INTO public.rt_qpcr_targets(rt_qpcr_id, rt_qpcr_target) VALUES(4, 'VHSv') ON CONFLICT (rt_qpcr_id) DO NOTHING;
-      INSERT INTO public.rt_qpcr_targets(rt_qpcr_id, rt_qpcr_target) VALUES(5, 'PRV-L1') ON CONFLICT (rt_qpcr_id) DO NOTHING;
-      INSERT INTO public.rt_qpcr_targets(rt_qpcr_id, rt_qpcr_target) VALUES(6, 'A.sal') ON CONFLICT (rt_qpcr_id) DO NOTHING;
-      INSERT INTO public.rt_qpcr_targets(rt_qpcr_id, rt_qpcr_target) VALUES(7, 'P.sal') ON CONFLICT (rt_qpcr_id) DO NOTHING;
-      INSERT INTO public.rt_qpcr_targets(rt_qpcr_id, rt_qpcr_target) VALUES(8, 'R.sal') ON CONFLICT (rt_qpcr_id) DO NOTHING;
-      INSERT INTO public.rt_qpcr_targets(rt_qpcr_id, rt_qpcr_target) VALUES(9, 'ELFa') ON CONFLICT (rt_qpcr_id) DO NOTHING;
-      INSERT INTO public.rt_qpcr_targets(rt_qpcr_id, rt_qpcr_target) VALUES(10, 'N.perurans') ON CONFLICT (rt_qpcr_id) DO NOTHING;
+      INSERT INTO public.rt_qpcr_targets(rt_qpcr_id, rt_qpcr_target) VALUES(1, 'ihnv') ON CONFLICT (rt_qpcr_id) DO NOTHING;
+      INSERT INTO public.rt_qpcr_targets(rt_qpcr_id, rt_qpcr_target) VALUES(2, 'ipnv') ON CONFLICT (rt_qpcr_id) DO NOTHING;
+      INSERT INTO public.rt_qpcr_targets(rt_qpcr_id, rt_qpcr_target) VALUES(3, 'isav') ON CONFLICT (rt_qpcr_id) DO NOTHING;
+      INSERT INTO public.rt_qpcr_targets(rt_qpcr_id, rt_qpcr_target) VALUES(4, 'vhsv') ON CONFLICT (rt_qpcr_id) DO NOTHING;
+      INSERT INTO public.rt_qpcr_targets(rt_qpcr_id, rt_qpcr_target) VALUES(5, 'prvl1') ON CONFLICT (rt_qpcr_id) DO NOTHING;
+      INSERT INTO public.rt_qpcr_targets(rt_qpcr_id, rt_qpcr_target) VALUES(6, 'asal') ON CONFLICT (rt_qpcr_id) DO NOTHING;
+      INSERT INTO public.rt_qpcr_targets(rt_qpcr_id, rt_qpcr_target) VALUES(7, 'psal') ON CONFLICT (rt_qpcr_id) DO NOTHING;
+      INSERT INTO public.rt_qpcr_targets(rt_qpcr_id, rt_qpcr_target) VALUES(8, 'rsal') ON CONFLICT (rt_qpcr_id) DO NOTHING;
+      INSERT INTO public.rt_qpcr_targets(rt_qpcr_id, rt_qpcr_target) VALUES(9, 'elfa') ON CONFLICT (rt_qpcr_id) DO NOTHING;
+      INSERT INTO public.rt_qpcr_targets(rt_qpcr_id, rt_qpcr_target) VALUES(10, 'nperurans') ON CONFLICT (rt_qpcr_id) DO NOTHING;
+      INSERT INTO public.rt_qpcr_targets(rt_qpcr_id, rt_qpcr_target) VALUES(11, 'other') ON CONFLICT (rt_qpcr_id) DO NOTHING;
     EXCEPTION
       WHEN duplicate_object THEN NULL;
     END $$;

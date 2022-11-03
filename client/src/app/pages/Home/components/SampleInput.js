@@ -16,6 +16,7 @@ import {
   Chip
 } from "@mui/material";
 import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
+import { TimePicker } from "@mui/x-date-pickers/TimePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { useTheme } from "@mui/material/styles";
@@ -36,6 +37,8 @@ const SampleInput = ({
   name,
   value,
   onChange = () => {},
+  onClick = () => {},
+  onSelectionUpdate,
   type,
   labelStyle = {},
   options = {},
@@ -56,6 +59,7 @@ const SampleInput = ({
       // On autofill we get a stringified value.
       typeof value === "string" ? value.split(",") : value
     );
+    onSelectionUpdate(event);
   };
 
   return (
@@ -95,7 +99,7 @@ const SampleInput = ({
           />
         ) : type == "select" ? (
           <Select
-            defaultValue={value}
+            defaultValue={""}
             fullWidth
             sx={{ backgroundColor: theme.primary.light }}
             onChange={onChange}>
@@ -108,10 +112,16 @@ const SampleInput = ({
         ) : type == "text-area" ? (
           <TextareaAutosize
             minRows={5}
+            placeholder={placeholder}
+            onChange={onChange}
             style={{ backgroundColor: theme.primary.light, width: "100%" }}
           />
         ) : type == "submit" ? (
-          <Button variant="contained" fullWidth sx={{ backgroundColor: theme.primary.dark }}>
+          <Button
+            variant="contained"
+            fullWidth
+            sx={{ backgroundColor: theme.primary.dark }}
+            onClick={onClick}>
             {submitText}
           </Button>
         ) : type == "checkbox" ? (
@@ -165,6 +175,16 @@ const SampleInput = ({
               closeOnSelect
               onChange={onChange}
               renderInput={(params) => <TextField {...params} />}
+            />
+          </LocalizationProvider>
+        ) : type == "time" ? (
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <TimePicker
+              className={"DatePicker-Div"}
+              label={placeholder}
+              value={value}
+              onChange={onChange}
+              renderInput={(params) => <TextField {...params} fullWidth />}
             />
           </LocalizationProvider>
         ) : type == "doubleInput" ? (

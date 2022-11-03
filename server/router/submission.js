@@ -1,8 +1,8 @@
+const { ERROR_CODE } = require("../utils/errors");
 const { application } = require("express");
 const express = require("express");
 const router = express.Router();
 const pool = require("../database");
-const errors = require("../utils/errors");
 
 pool.on("error", (err, client) => {
   console.error("Unexpected error on idle client", err);
@@ -32,14 +32,17 @@ let testData = {
   sampleNum: 50,
   sampleSpecies: "Atlantic",
   sampleType: "Something something",
-  sampleOrigin: "Freshwater",
-  sampleCondition: "Frozen",
-  otherDetails: null,
-  requestedAnalysis: "ATPase",
-  rtqpcrTarget: ["IHNv", "IPNv"],
+  sampleOrigin: "freshWater",
+  sampleCondition: "frozen",
+  sampleDetails: null,
+  requestedAnalysis: "atpase",
+  rtqpcrTarget: ["ihnv", "ipnv"],
+  otherDescription: "asdf",
+  comment: "hello",
 };
 
 router.post("/submit", async (req, res) => {
+  let data = req.body.data;
   try {
     // main query
     let query = `
@@ -47,34 +50,35 @@ router.post("/submit", async (req, res) => {
     INSERT INTO public.submission_details (submission_num, 
       company_name, submitter, receive_date, submit_time, sampling_location, sampling_date, contact_phone_num, 
       purchase_order_num, bc_cahs_receiver_name, bc_cahs_custodian_initials, client_case_num, bc_cahs_pi, 
-      bc_cahs_project, initial_storage, analysis_requested) 
+      bc_cahs_project, initial_storage, analysis_requested, comment) 
       VALUES(
-        '${testData.submissionNum}', 
-        '${testData.companyName}', 
-        '${testData.submitter}', 
-        '${testData.receiveDate}', 
-        '${testData.submitTime}', 
-        '${testData.samplingLocation}', 
-        '${testData.samplingDate}', 
-        '${testData.contactPhoneNum}', 
-        '${testData.clientPO}', 
-        '${testData.receiver}', 
-        '${testData.custodian}', 
-        '${testData.clientCaseNum}', 
-        '${testData.PI}', 
-        '${testData.BCCAHSProject}',
-        '${testData.initialStorage}', 
-        '${testData.requestedAnalysis}');
+        '${data.submissionNum}', 
+        '${data.companyName}', 
+        '${data.submitter}', 
+        '${data.receiveDate}', 
+        '${data.submitTime}', 
+        '${data.samplingLocation}', 
+        '${data.samplingDate}', 
+        '${data.contactPhoneNum}', 
+        '${data.clientPO}', 
+        '${data.receiver}', 
+        '${data.custodian}', 
+        '${data.clientCaseNum}', 
+        '${data.PI}', 
+        '${data.BCCAHSProject}',
+        '${data.initialStorage}', 
+        '${data.requestedAnalysis}',
+        '${data.comment}');
 
-    INSERT INTO public.sample_details (num_of_samples, species, other_details, sample_type, sample_condition, sample_origin, submission_num)
+    INSERT INTO public.sample_details (num_of_samples, species, sample_details, sample_type, sample_condition, sample_origin, submission_num)
     VALUES(
-        ${testData.sampleNum}, 
-        '${testData.sampleSpecies}', 
-        '${testData.otherDetails}', 
-        '${testData.sampleType}', 
-        '${testData.sampleCondition}',
-        '${testData.sampleOrigin}',
-        '${testData.submissionNum}');
+        ${data.sampleNum}, 
+        '${data.sampleSpecies}', 
+        '${data.sampleDetails}', 
+        '${data.sampleType}', 
+        '${data.sampleCondition}',
+        '${data.sampleOrigin}',
+        '${data.submissionNum}');
     
     `;
 
@@ -85,14 +89,14 @@ router.post("/submit", async (req, res) => {
     rtqpcrTargets = rtqpcrTargets.rows;
 
     //loop through all targets, match rtqpcr key to target, append to main query
-    testData.rtqpcrTarget.forEach((target) => {
+    data.rtqpcrTarget.forEach((target) => {
       let rtqpcr = rtqpcrTargets.find((obj) => obj.rt_qpcr_target === target);
       let insert = `
       INSERT INTO public.submission_rt_qpcr (rt_qpcr_id, submission_num, other_description)
       VALUES(
         '${rtqpcr.rt_qpcr_id}',
-        '${testData.submissionNum}',
-        '${testData.otherDetails}');
+        '${data.submissionNum}',
+        '${data.otherDetails}');
         `;
 
       query += insert;
@@ -103,11 +107,12 @@ router.post("/submit", async (req, res) => {
     res.json({
       error: 0,
       msg: "Successfully saved form data to database!",
-      data: testData,
+      data: data,
     });
   } catch (err) {
-    res.status(errors.ERROR_CODE.DATABASE_ERROR).json({
-      error: errors.ERROR_CODE.DATABASE_ERROR,
+    // console.log(err);
+    res.status(ERROR_CODE.DATABASE_ERROR).json({
+      error: ERROR_CODE.DATABASE_ERROR,
       msg: err,
       data: {},
     });

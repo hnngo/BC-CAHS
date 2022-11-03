@@ -64,7 +64,7 @@ const EditSample = ({ isOpen, onClose, data }) => {
                   label={"Cut Date"}
                   name="cutDate"
                   type="date"
-                  value={inputs.cutDate || null}
+                  value={inputs.cutDate || ''}
                   onChange={(value) => onChangeDate("cutDate", value)}
                 />
               </Grid>
@@ -83,7 +83,7 @@ const EditSample = ({ isOpen, onClose, data }) => {
                 label={"Extraction Date"}
                 name="extractionDate"
                 type="date"
-                value={inputs.extractionDate || null}
+                value={inputs.extractionDate || ''}
                 onChange={(value) => onChangeDate("extractionDate", value)}
               />
             </Grid>
@@ -92,7 +92,7 @@ const EditSample = ({ isOpen, onClose, data }) => {
                 label={"ReCut Date"}
                 name="reCutDate"
                 type="date"
-                value={inputs.reCutDate || null}
+                value={inputs.reCutDate || ''}
                 onChange={(value) => onChangeDate("reCutDate", value)}
               />
             </Grid>
@@ -101,7 +101,7 @@ const EditSample = ({ isOpen, onClose, data }) => {
                 label={"ReExtraction Date"}
                 name="reExtractionDate"
                 type="date"
-                value={inputs.reExtractionDate || null}
+                value={inputs.reExtractionDate || ''}
                 onChange={(value) => onChangeDate("reExtractionDate", value)}
               />
             </Grid>
@@ -111,7 +111,7 @@ const EditSample = ({ isOpen, onClose, data }) => {
                   label={"QPCR Complete Date"}
                   name="qpcrCompleteDate"
                   type="date"
-                  value={inputs.qpcrCompleteDate || null}
+                  value={inputs.qpcrCompleteDate || ''}
                   onChange={(value) => onChangeDate("qpcrCompleteDate", value)}
                 />
               </Grid>
