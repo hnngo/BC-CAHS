@@ -1,12 +1,15 @@
 import React from "react";
 import { Box, TextField, Typography, Button, Grid } from "@mui/material";
 import "./Login.css";
+import ErrorMessage from "./Home/components/ErrorMessage";
 import bgImage from "../../assets/images/background_auth.png";
 import { useTheme } from "@mui/material/styles";
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, Redirect, useNavigate } from "react-router-dom";
 import { createTheme } from "@mui/material/styles";
 import { ThemeProvider } from "@mui/material";
+
+const axios = require('axios').default;
 
 export const customTheme = createTheme({
   typography: {
@@ -27,19 +30,10 @@ export const customTheme = createTheme({
   }
 });
 
-const users = [
-  {
-    username: "admin1",
-    password: "12345678"
-  },
-  {
-    username: "admin2",
-    password: "012345678"
-  }
-];
-
 const Login = () => {
   const theme = useTheme();
+  const navigate = useNavigate();
+
   // const history = useHistory();
   const loginPageStyle = {
     backgroundImage: `url(${bgImage})`,
@@ -51,6 +45,8 @@ const Login = () => {
     top: 0,
     left: 0
   };
+
+  const [credentialError, setCredentialError] = useState(false);
 
   const [data, setData] = useState({
     username: "",
@@ -67,23 +63,51 @@ const Login = () => {
     console.log(checkUser());
   };
 
+  const loginCall = async () => {
+    const response = await axios.post('http://localhost:8000/api/auth/login', data);
+    return response;
+  }
+
   const checkUser = () => {
-    const usercheck = users.find(
-      (user) => user.username === data.username && user.password === data.password
-    );
-    if (usercheck) {
-      console.log("Login successful");
-    } else {
-      console.log("Wrong password or username");
-    }
-    console.log(usercheck);
+
+    loginCall()
+      .then(res => {
+        console.log(res);
+
+        if (res.request.status === 200) {
+
+          setCredentialError(false);
+          navigate("/");
+        }
+      })
+      .catch(err =>{
+        console.log(err);
+        console.log("in the error");
+        setCredentialError(true);
+        console.log("This is cred" + credentialError);
+      });
+  }
+
+  const isUserLoggedin = async () => {
+
+
+    var session = await axios.get('http://localhost:8000/api/auth/authUser');
+
+    console.log(session);
+    return session
+
+    // if (!session || !session.data.data.auth) 
+    // {
+
+    // } else {
+    //   // redirect
+    // }
+    
   };
 
   useEffect(() => {
-    checkUser(users);
-  }, [data.username, data.password]);
-
-  console.log(data);
+    isUserLoggedin();
+  }, []);
 
   return (
     <div className="Login-component" style={loginPageStyle}>
@@ -156,11 +180,12 @@ const Login = () => {
               <Typography>Don&apos;t have an anccount?</Typography>
             </Grid>
 
-            <Grid item xs={3} pt={1}>
+            <Grid item xs={4} pt={1}>
               <Button style={{ color: theme.secondary.dark }} as={Link} to={"/signup"}>
                 Sign Up
               </Button>
             </Grid>
+              {credentialError && <ErrorMessage/>}
           </Grid>
         </Box>
       </ThemeProvider>

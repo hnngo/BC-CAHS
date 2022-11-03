@@ -13,9 +13,10 @@ app.use(cors());
  
 app.use("/api/auth", authenticationRouter);
 
-app.get("/api", (req, res) => {
-  res.send("Hello from server"); 
-});
+// app.get("/api", (req, res) => {
+//   res.json({msg: "sup dumb guy"});
+//   res.send("Hello from server"); 
+// });
 
 app.listen(port, () => {
   console.log(`Server listen on port ${port}`);

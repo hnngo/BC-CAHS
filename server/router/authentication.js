@@ -7,7 +7,6 @@ const session = require("express-session");
 const bodyParser = require("body-parser");
 const bcrypt = require("bcrypt");
 
-
 var client = null;
 
 /**
@@ -29,12 +28,14 @@ pool.on('error', (err, client) => {
 // Time that a cookie lasts (8 hours in milliseconds)
 const cookieTTL = 100 * 60 * 60 * 8
 
+router.use(bodyParser.json())
+
 //session middleware
 router.use(session({
   secret: "thisIsMySecreteCode",
   saveUninitialized: true,
   cookie: {maxAge: cookieTTL},
-  resave:  false
+  resave:  true
 }));
 
 /**
@@ -46,6 +47,15 @@ router.get("/", (req, res) => {
   res.send("");
 });
 
+
+/**
+ * Check if session is currently valid.
+ */
+router.get("/authUser", async (req, res) => { 
+  console.log(req.session);
+  res.json({ error: 0, data: req.session});
+})
+
 /**
  * Login in
  */
@@ -53,7 +63,6 @@ router.post("/login", async (req, res) => {
   // Max area
 
   // Think about the need of a unique username
-  console.log(req.session);
   const { username, password } = req.body;
 
   const usernameCheck = `SELECT *
@@ -84,8 +93,9 @@ router.post("/login", async (req, res) => {
 
           } else if (result === true) {
               req.session.user = user[0];
+              req.session.auth = true;
               res.status(200).json({
-                msg: "User signed in!",
+                msg: "User signed in!"
               });
 
           } else if (result != true) {
@@ -107,7 +117,6 @@ router.post("/login", async (req, res) => {
 /**
  * Sign up
  */
-router.use(bodyParser.json())
 router.post("/signup", async (req, res) => {
   let { username, password, passwordConfirm } = req.body;
   let validation = true;
