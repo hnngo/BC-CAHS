@@ -8,8 +8,7 @@ import { useEffect, useState } from "react";
 import { Link, Redirect, useNavigate } from "react-router-dom";
 import { createTheme } from "@mui/material/styles";
 import { ThemeProvider } from "@mui/material";
-
-const axios = require('axios').default;
+import axios from "axios";
 
 export const customTheme = createTheme({
   typography: {
@@ -64,45 +63,45 @@ const Login = () => {
   };
 
   const loginCall = async () => {
-    const response = await axios.post('http://localhost:8000/api/auth/login', data);
+    const response = await axios.post("http://localhost:8000/api/auth/login", data, {
+      withCredentials: true
+    });
+    console.log(response);
     return response;
-  }
+  };
 
   const checkUser = () => {
-
     loginCall()
-      .then(res => {
+      .then((res) => {
         console.log(res);
 
         if (res.request.status === 200) {
-
           setCredentialError(false);
           navigate("/");
         }
       })
-      .catch(err =>{
+      .catch((err) => {
         console.log(err);
         console.log("in the error");
         setCredentialError(true);
         console.log("This is cred" + credentialError);
       });
-  }
+  };
 
   const isUserLoggedin = async () => {
-
-
-    var session = await axios.get('http://localhost:8000/api/auth/authUser');
+    var session = await axios.get("http://localhost:8000/api/auth/authUser", {
+      withCredentials: true
+    });
 
     console.log(session);
-    return session
+    return session;
 
-    // if (!session || !session.data.data.auth) 
+    // if (!session || !session.data.data.auth)
     // {
 
     // } else {
     //   // redirect
     // }
-    
   };
 
   useEffect(() => {
@@ -185,7 +184,7 @@ const Login = () => {
                 Sign Up
               </Button>
             </Grid>
-              {credentialError && <ErrorMessage/>}
+            {credentialError && <ErrorMessage />}
           </Grid>
         </Box>
       </ThemeProvider>
