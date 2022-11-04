@@ -1,12 +1,14 @@
 import React from "react";
 import { Box, TextField, Typography, Button, Grid } from "@mui/material";
 import "./Login.css";
+import ErrorMessage from "./Home/components/ErrorMessage";
 import bgImage from "../../assets/images/background_auth.png";
 import { useTheme } from "@mui/material/styles";
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { createTheme } from "@mui/material/styles";
 import { ThemeProvider } from "@mui/material";
+import axios from "axios";
 
 export const customTheme = createTheme({
   typography: {
@@ -27,20 +29,10 @@ export const customTheme = createTheme({
   }
 });
 
-const users = [
-  {
-    username: "admin1",
-    password: "12345678"
-  },
-  {
-    username: "admin2",
-    password: "012345678"
-  }
-];
-
 const Login = () => {
   const theme = useTheme();
-  // const history = useHistory();
+  const navigate = useNavigate();
+
   const loginPageStyle = {
     backgroundImage: `url(${bgImage})`,
     backgroundSize: "cover",
@@ -52,6 +44,8 @@ const Login = () => {
     left: 0
   };
 
+  const [credentialError, setCredentialError] = useState(false);
+
   const [data, setData] = useState({
     username: "",
     password: ""
@@ -61,29 +55,65 @@ const Login = () => {
     setData({ ...data, [e.target.name]: e.target.value });
   };
 
+  /**
+   * Handle submit action for login action.
+   * 
+   * @param {*} e an event
+   */
   const handleSubmit = (e) => {
     e.preventDefault();
     checkUser();
-    console.log(checkUser());
   };
 
+  /**
+   * Log user into Database through axios call. 
+   * 
+   * @returns a response either validating or rejecting user authentication.
+   */
+  const loginCall = async () => {
+    const response = await axios.post("http://localhost:8000/api/auth/login", data, {
+      withCredentials: true
+    });
+    return response;
+  };
+  
+  /**
+   * Check if login action is valid. Redirect if login action is valid,
+   * else set Credential Error to True, rendering an error message.
+   */
   const checkUser = () => {
-    const usercheck = users.find(
-      (user) => user.username === data.username && user.password === data.password
-    );
-    if (usercheck) {
-      console.log("Login successful");
-    } else {
-      console.log("Wrong password or username");
-    }
-    console.log(usercheck);
+    loginCall()
+      .then((res) => {
+        if (res.request.status === 200) {
+          setCredentialError(false);
+          navigate("/");
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+        setCredentialError(true);
+      });
   };
 
+  /**
+   * Check if Session is active, redirecting to main page. 
+   */
+  const isUserLoggedin = async () => {
+    var session = await axios.get("http://localhost:8000/api/auth/authUser", {
+      withCredentials: true
+    });
+    
+    if (session.data.data.auth) {
+      navigate("/")
+    }
+  };
+  
+  /**
+   * React Hook to check state of Session, redirect if session is authenticated.
+   */
   useEffect(() => {
-    checkUser(users);
-  }, [data.username, data.password]);
-
-  console.log(data);
+    isUserLoggedin();
+  }, []);
 
   return (
     <div className="Login-component" style={loginPageStyle}>
@@ -156,11 +186,12 @@ const Login = () => {
               <Typography>Don&apos;t have an anccount?</Typography>
             </Grid>
 
-            <Grid item xs={3} pt={1}>
+            <Grid item xs={4} pt={1}>
               <Button style={{ color: theme.secondary.dark }} as={Link} to={"/signup"}>
                 Sign Up
               </Button>
             </Grid>
+            {credentialError && <ErrorMessage />}
           </Grid>
         </Box>
       </ThemeProvider>

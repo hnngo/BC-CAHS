@@ -1,9 +1,20 @@
 {
-  "dependencies": {
-    "@material-ui/core": "^4.12.4",
-    "@material-ui/icons": "^4.11.3",
-    "@mui/icons-material": "^5.10.9",
-    "bcrypt": "^5.1.0",
-    "express-flash": "^0.0.2"
-  }
+  "name": "comp4800",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "rm-old-modules": "rm -Rf ./server/node_modules && rm -Rf ./client/node_modules",
+    "dev": "docker-compose down && npm run rm-old-modules && docker-compose build && docker-compose up"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hnngo/comp4800.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/hnngo/comp4800/issues"
+  },
+  "homepage": "https://github.com/hnngo/comp4800#readme"
 }
