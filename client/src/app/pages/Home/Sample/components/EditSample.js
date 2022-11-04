@@ -9,22 +9,42 @@ import { useTheme } from "@mui/material/styles";
 import { SAMPLE_STATUS } from "../../constants";
 
 // Utils
+import axios from "axios";
 import { validate, VALIDATE_TYPES } from "../../../../utils/validator";
 
-const EditSample = ({ isOpen, onClose, data }) => {
+const EditSample = ({ isOpen, onClose, submissionNum }) => {
   const theme = useTheme();
-
-  // NOTE: Get the real status here
-  const [inputs, setInputs] = React.useState({});
+  const [formData, setFormData] = React.useState({});
   const [errors, setErrors] = React.useState({});
 
+  const fetchFormStatus = async () => {
+    try {
+      // NOTE: Using fake submission number for now
+      const res = await axios.post("http://localhost:8000/api/form/status", {
+        submission_num: "123ABC123"
+      });
+      if (!res || !res.data || !res.data.data) {
+        // Show error dialog
+      } else {
+        setFormData({ ...res.data.data });
+      }
+    } catch (error) {
+      // Show error dialog
+    }
+  };
+
+  // Fetch form status
+  React.useEffect(() => {
+    submissionNum && fetchFormStatus();
+  }, [submissionNum]);
+
   // Return nothing if no data provided
-  if (!data) {
+  if (!submissionNum) {
     return;
   }
 
   const onChangeInput = (field, value) => {
-    setInputs({ ...inputs, [field]: value });
+    setFormData({ ...formData, [field]: value });
   };
 
   const onChangeDoulbeInput = (field, target) => {
@@ -35,37 +55,42 @@ const EditSample = ({ isOpen, onClose, data }) => {
       setErrors({ ...errors, [field]: null });
     }
 
-    if (!inputs[field]) {
-      inputs[field] = [];
-    }
-
     if (target.name.endsWith("_lower")) {
-      inputs[field][0] = target.value;
+      formData[field + "_lower"] = target.value;
     } else {
-      inputs[field][1] = target.value;
+      formData[field + "_upper"] = target.value;
     }
-    onChangeInput(field, inputs[field]);
+    onChangeInput(field, formData[field]);
   };
 
   const updateDecimalNumbers = (field, decimalPoints = 0) => {
     if (errors[field]) {
       return;
     }
-    if (inputs[field]) {
-      let lower = "";
-      let upper = "";
-      if (inputs[field][0]) {
-        lower = (+inputs[field][0]).toFixed(decimalPoints);
-      }
-      if (inputs[field][1]) {
-        upper = (+inputs[field][1]).toFixed(decimalPoints);
-      }
-      onChangeInput(field, [lower.toString(), upper.toString()]);
+
+    let lower = "";
+    let upper = "";
+    if (formData[field + "_lower"]) {
+      lower = (+formData[field + "_lower"]).toFixed(decimalPoints);
     }
+    if (formData[field + "_upper"]) {
+      upper = (+formData[field + "_upper"]).toFixed(decimalPoints);
+    }
+    setFormData({ ...formData, [field + "_lower"]: lower, [field + "_upper"]: upper });
   };
 
-  const onSubmit = () => {
-    console.log(inputs);
+  const onSubmit = async () => {
+    try {
+      // NOTE: Using fake submission number for now
+      const res = await axios.post("http://localhost:8000/api/form/status/update", formData);
+      if (!res || !res.data || !res.data.data) {
+        // Show error dialog
+      } else {
+        // Show success dialog
+      }
+    } catch (error) {
+      // Show error dialog
+    }
   };
 
   return (
@@ -91,91 +116,109 @@ const EditSample = ({ isOpen, onClose, data }) => {
             fontWeight={"bold"}
             marginBottom={"30px"}
             color={theme.primary.dark}>
-            Submission Form #{data.submission_num}
+            Submission Form #{submissionNum}
           </Typography>
           <FormControl>
             <Grid item xs={6}>
               <SampleInput
                 label={"Status"}
-                name="sampleStatus"
+                name="status"
                 type="select"
                 options={SAMPLE_STATUS}
-                value={inputs.sampleStatus || "outstanding"}
-                onChange={(e) => onChangeInput("sampleStatus", e.target.value)}
+                value={formData.status || "outstanding"}
+                onChange={(e) => onChangeInput("status", e.target.value)}
               />
             </Grid>
             <Grid container display="row">
               <Grid item xs={6} zIndex={1}>
                 <SampleInput
                   label={"Cut Date"}
-                  name="cutDate"
+                  name="cut_date"
                   type="date"
-                  value={inputs.cutDate || ""}
-                  onChange={(e) => onChangeInput("cutDate", e.$d)}
+                  value={formData.cut_date || ""}
+                  onChange={(e) => onChangeInput("cut_date", e.$d)}
                 />
               </Grid>
               <Grid item xs={6} zIndex={1}>
                 <SampleInput
                   label={"Scale Verification"}
-                  name="scaleVerification"
+                  name="scale_verification"
                   type="doubleInput"
-                  disableText={!inputs.cutDate}
-                  value={inputs.scaleVerification || []}
-                  onChange={(e) => onChangeDoulbeInput("scaleVerification", e.target)}
-                  onBlur={() => updateDecimalNumbers("scaleVerification", 3)}
-                  error={!!errors.scaleVerification}
-                  helperText={errors.scaleVerification || ""}
+                  disableText={!formData.cut_date}
+                  value={[
+                    formData.scale_verification_lower || "",
+                    formData.scale_verification_upper || ""
+                  ]}
+                  onChange={(e) => onChangeDoulbeInput("scale_verification", e.target)}
+                  onBlur={() => updateDecimalNumbers("scale_verification", 3)}
+                  error={!!errors.scale_verification}
+                  helperText={errors.scale_verification || ""}
                 />
               </Grid>
             </Grid>
             <Grid item xs={6}>
               <SampleInput
                 label={"Extraction Date"}
-                name="extractionDate"
+                name="extraction_date"
                 type="date"
-                value={inputs.extractionDate || ""}
-                onChange={(value) => onChangeInput("extractionDate", value)}
+                value={formData.extraction_date || ""}
+                onChange={(value) => onChangeInput("extraction_date", value)}
               />
             </Grid>
             <Grid item xs={6}>
               <SampleInput
                 label={"ReCut Date"}
-                name="reCutDate"
+                name="recut_date"
                 type="date"
-                value={inputs.reCutDate || ""}
-                onChange={(value) => onChangeInput("reCutDate", value)}
-              />
-            </Grid>
-            <Grid item xs={6}>
-              <SampleInput
-                label={"ReExtraction Date"}
-                name="reExtractionDate"
-                type="date"
-                value={inputs.reExtractionDate || ""}
-                onChange={(value) => onChangeInput("reExtractionDate", value)}
+                value={formData.recut_date || ""}
+                onChange={(value) => onChangeInput("recut_date", value)}
               />
             </Grid>
             <Grid container display="row">
               <Grid item xs={6}>
                 <SampleInput
-                  label={"QPCR Complete Date"}
-                  name="qpcrCompleteDate"
+                  label={"ReExtraction Date"}
+                  name="reextracted_date"
                   type="date"
-                  value={inputs.qpcrCompleteDate || ""}
-                  onChange={(value) => onChangeInput("qpcrCompleteDate", value)}
+                  value={formData.reextracted_date || ""}
+                  onChange={(value) => onChangeInput("reextracted_date", value)}
+                />
+              </Grid>
+              <Grid item xs={6}>
+                <SampleInput
+                  label={"ReExtraction Reason"}
+                  name="reason_for_reextraction"
+                  type="text"
+                  value={formData.reason_for_reextraction || ""}
+                  onChange={(e) => onChangeInput("reason_for_reextraction", e.target.value)}
+                  disableText={!formData.reextracted_date}
+                />
+              </Grid>
+            </Grid>
+            <Grid container display="row">
+              <Grid item xs={6}>
+                <SampleInput
+                  label={"QPCR Complete Date"}
+                  name="qcpr_complete_date"
+                  type="date"
+                  value={formData.qcpr_complete_date || ""}
+                  onChange={(value) => onChangeInput("qcpr_complete_date", value)}
                 />
               </Grid>
               <Grid item xs={6} zIndex={1}>
                 <SampleInput
                   label={"Positive Control Ct"}
-                  name="positiveControlCT"
+                  name="positive_control_ct"
                   type="doubleInput"
-                  disableText={!inputs.qpcrCompleteDate}
-                  value={inputs.positiveControlCT || []}
-                  onChange={(e) => onChangeDoulbeInput("positiveControlCT", e.target)}
-                  onBlur={() => updateDecimalNumbers("positiveControlCT", 1)}
-                  error={!!errors.positiveControlCT}
-                  helperText={errors.positiveControlCT || ""}
+                  disableText={!formData.qcpr_complete_date}
+                  value={[
+                    formData.positive_control_ct_lower || "",
+                    formData.positive_control_ct_upper || ""
+                  ]}
+                  onChange={(e) => onChangeDoulbeInput("positive_control_ct", e.target)}
+                  onBlur={() => updateDecimalNumbers("positive_control_ct", 1)}
+                  error={!!errors.positive_control_ct}
+                  helperText={errors.positive_control_ct || ""}
                 />
               </Grid>
             </Grid>
@@ -184,11 +227,14 @@ const EditSample = ({ isOpen, onClose, data }) => {
               <Grid item xs={6} zIndex={1}>
                 <SampleInput
                   label={"Negative Control Ct"}
-                  name="negativeControlCT"
+                  name="negative_control_ct"
                   type="doubleInput"
-                  disableText={!inputs.qpcrCompleteDate}
-                  value={inputs.negativeControlCT || []}
-                  onChange={(e) => onChangeDoulbeInput("negativeControlCT", e.target)}
+                  disableText={!formData.qcpr_complete_date}
+                  value={[
+                    formData.negative_control_ct_lower || "",
+                    formData.negative_control_ct_upper || ""
+                  ]}
+                  onChange={(e) => onChangeDoulbeInput("negative_control_ct", e.target)}
                 />
               </Grid>
             </Grid>

@@ -1,48 +1,19 @@
-const { ERROR_CODE } = require("../utils/errors");
-const { application } = require("express");
 const express = require("express");
 const router = express.Router();
-const pool = require("../database");
 
-pool.on("error", (err, client) => {
-  console.error("Unexpected error on idle client", err);
-  process.exit(-1);
-});
+// Utils
+const { pool, poolAsync } = require("../database");
 
-let testData = {
-  submissionNum: "123ABC123",
-  companyName: "Test Company",
-  submitter: "Nick",
-  receiver: "NL",
-  receiveDate: "2022-10-27",
-  submitTime: `${new Date()
-    .toISOString()
-    .replace(/T.*/, "")} ${new Date().toLocaleTimeString("en-US", {
-    hour12: false,
-  })}`,
-  clientPO: "123123",
-  clientCaseNum: "123123123",
-  contactPhoneNum: "778-999-9999",
-  samplingDate: "2022-10-27",
-  samplingLocation: "Somewhere",
-  custodian: "NL",
-  PI: "NL",
-  BCCAHSProject: "COMP4800..",
-  initialStorage: "In my bed",
-  sampleNum: 50,
-  sampleSpecies: "Atlantic",
-  sampleType: "Something something",
-  sampleOrigin: "freshWater",
-  sampleCondition: "frozen",
-  sampleDetails: null,
-  requestedAnalysis: "atpase",
-  rtqpcrTarget: ["ihnv", "ipnv"],
-  otherDescription: "asdf",
-  comment: "hello",
-};
+// Constants
+const { ERROR_CODE, getErrorMessage } = require("../utils/errors");
+
+// Mock data
+const { sample_data, sample_status } = require("../mock/sample");
 
 router.post("/submit", async (req, res) => {
-  let data = req.body.data;
+  // let data = req.body.data;
+  let data = sample_data;
+
   try {
     // main query
     let query = `
@@ -117,6 +88,121 @@ router.post("/submit", async (req, res) => {
       data: {},
     });
   }
+});
+
+/**
+ * Get status
+ */
+router.post("/status", async (req, res) => {
+  const { submission_num } = req.body;
+
+  try {
+    const data = await poolAsync(`
+      SELECT ssi.*, sd.status 
+      FROM public.sample_status_information ssi
+      LEFT JOIN public.submission_details sd ON ssi.submission_num = sd.submission_num
+      WHERE ssi.submission_num = '${submission_num}'
+    `);
+    if (data && data.rowCount == 1) {
+      res.status(200).json({
+        error: 0,
+        msg: "",
+        data: data.rows[0],
+      });
+    } else {
+      res.status(200).json({
+        error: ERROR_CODE.FORM_NOT_FOUND,
+        msg: getErrorMessage(ERROR_CODE.FORM_NOT_FOUND),
+        data: data.rows[0],
+      });
+    }
+  } catch (err) {
+    res.status(500).json({
+      error: ERROR_CODE.DATABASE_ERROR,
+      msg: getErrorMessage(ERROR_CODE.DATABASE_ERROR),
+      data: {},
+    });
+  }
+});
+
+/**
+ * Update status
+ */
+router.post("/status/update", async (req, res) => {
+  const data = req.body;
+
+  if (!data.submission_num) {
+    return res.status(200).json({
+      error: ERROR_CODE.MISSING_INFO,
+      msg: getErrorMessage(ERROR_CODE.MISSING_INFO) + "(submission_num)",
+      data: {},
+    });
+  }
+
+  try {
+    // Check if status existed
+    const queryCheck = await pool.query(
+      `SELECT count(*) FROM public.sample_status_information WHERE submission_num = '${data.submission_num}'`
+    );
+
+    if (queryCheck.rowCount == 0) {
+      // Insert if not found
+      pool.query(`INSERT INTO public.sample_status_information(
+        cut_date, cut_date_initials, scale_verification_lower, scale_verification_upper, extraction_date, extraction_date_initials, recut_date, recut_date_initials, reextracted_date, reextracted_date_initials, reason_for_reextraction, qcpr_complete_date, positive_control_ct_lower, positive_control_ct_upper, negative_control_ct_lower, negative_control_ct_upper, submission_num)
+        VALUES (
+         '${data.cut_date}',
+         '${data.cut_date_initials}',
+         ${data.scale_verification_lower},
+         ${data.scale_verification_upper},
+         '${data.extraction_date}',
+         '${data.extraction_date_initials}',
+         '${data.recut_date}',
+         '${data.recut_date_initials}',
+         '${data.reextracted_date}',
+         '${data.reextracted_date_initials}',
+         '${data.reason_for_reextraction}',
+         '${data.qcpr_complete_date}',
+         ${data.positive_control_ct_lower},
+         ${data.positive_control_ct_upper},
+         ${data.negative_control_ct_lower},
+         ${data.negative_control_ct_upper},
+         '${data.submission_num}');`);
+    } else {
+      // Update if found
+      pool.query(`
+        UPDATE public.sample_status_information
+        SET
+          cut_date = '${data.cut_date}',
+          cut_date_initials = '${data.cut_date_initials}', 
+          scale_verification_lower = ${data.scale_verification_lower},
+          scale_verification_upper = ${data.scale_verification_upper},
+          extraction_date = '${data.extraction_date}',
+          extraction_date_initials = '${data.extraction_date_initials}',
+          recut_date = '${data.recut_date}',
+          recut_date_initials = '${data.recut_date_initials}',
+          reextracted_date = '${data.reextracted_date}',
+          reextracted_date_initials = '${data.reextracted_date_initials}',
+          reason_for_reextraction = '${data.reason_for_reextraction}',
+          qcpr_complete_date = '${data.qcpr_complete_date}',
+          positive_control_ct_lower = ${data.positive_control_ct_lower},
+          positive_control_ct_upper = ${data.positive_control_ct_upper},
+          negative_control_ct_lower = ${data.negative_control_ct_lower},
+          negative_control_ct_upper = ${data.negative_control_ct_upper},
+          submission_num = '${data.submission_num}';`);
+    }
+  } catch (err) {
+    return res.status(200).json({
+      error: ERROR_CODE.SERVER_ERROR,
+      msg: getErrorMessage(ERROR_CODE.SERVER_ERROR),
+      data: {},
+    });
+  }
+
+  res.status(200).json({
+    error: 0,
+    msg: "Updated successfully",
+    data: {},
+  });
 });
 
 module.exports = router;

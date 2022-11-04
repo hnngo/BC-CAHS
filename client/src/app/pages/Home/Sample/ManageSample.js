@@ -157,7 +157,7 @@ const ManageSample = () => {
       <EditSample
         isOpen={openFormDetail}
         onClose={handleClose}
-        data={selectedFormData && selectedFormData.row}
+        submissionNum={selectedFormData && selectedFormData.row && selectedFormData.row.submission_num}
       />
     </Grid>
   );
