@@ -15,10 +15,10 @@ const SideBar = () => {
       <SideBarRow title="Manage Sample" indent={1} to="/sample/manage" />
 
       <SideBarRow title="Status" indent={0} bold to="/status" />
-      <SideBarRow title="qPCR" indent={1} to="/sample" />
-      <SideBarRow title="Virology" indent={1} to="/sample" />
-      <SideBarRow title="ELISA" indent={1} to="/sample" />
-      <SideBarRow title="ATPase" indent={1} to="/sample" />
+      <SideBarRow title="qPCR" indent={1} to="/status/qPCR" />
+      <SideBarRow title="Virology" indent={1} to="/status/Virology" />
+      <SideBarRow title="ELISA" indent={1} to="/status/ELISA" />
+      <SideBarRow title="ATPase" indent={1} to="/status/ATPase" />
 
       <SideBarRow title="Data/Report Templates" indent={0} bold to="/templates" />
       <SideBarRow title="qPCR" indent={1} to="/templates" />

@@ -4,8 +4,6 @@ import SampleInput from "../components/SampleInput";
 import { SAMPLE_CONDITION, SAMPLE_TYPE, ANALYSIS_REQUESTS, RT_QPCR_TARGETS } from "../constants";
 import axios from "axios";
 
-const testUrl = "http://localhost:8000/api/form/submit";
-
 const Sample = () => {
   const [submissionData, setSubmissionData] = React.useState({
     submissionNum: null,
