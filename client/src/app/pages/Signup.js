@@ -58,12 +58,11 @@ const Signup = () => {
 
   const [isValid, setValid] = useState(false);
 
-  // const [response, setResponse] = useState(false);
+  const [response, setResponse] = useState(false);
 
   const changeHandler = (e) => {
     setData({ ...data, [e.target.name]: e.target.value });
   };
-
 
 
   const handleSubmit = (e) => {
@@ -73,16 +72,20 @@ const Signup = () => {
     if ((validateSignup(data))) {
       console.log("inside submission logic");
       axios.post('http://localhost:8000/api/auth/signup', data)
-      .then((reponse) => {
-        console.log(reponse.data);
-        if (reponse.data.error == 109) {
-          // setResponse(true)
-          console.log("yessir")
+      .then((response) => {
+        console.log(response.data);
+        if (response.data.error == 109) {
+          setResponse(true);
+          console.log("response set to true");
+          setValid(true);
+        } else {
+          console.log("set to false"); 
+          setValid(true);
         }
-        setValid(true);
       })
+      setValid(false);
+      setResponse(false);
     }
-
   };
 
   useEffect(() => {
@@ -99,7 +102,7 @@ const Signup = () => {
           justifyContent="center">
           <Typography
             variant="h1"
-            paddingTop={5}
+            paddingTop={5} 
             color={theme.secondary.lighter}
             // textShadow={`2px 2px ${theme.primary.dark}`}
             fontWeight="bold">
@@ -214,7 +217,7 @@ const Signup = () => {
             </Grid>
           </Grid>
         </Box>
-        {isValid && <SuccessAlert />}
+        {isValid && <SuccessAlert isDuplicate={response}/>}
       </ThemeProvider>
     </div>
   );
