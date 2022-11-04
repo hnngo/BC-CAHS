@@ -150,7 +150,7 @@ const EditSample = ({ isOpen, onClose, submissionNum }) => {
                     name="cut_date"
                     type="date"
                     value={formData.cut_date || ""}
-                    onChange={(e) => onChangeInput("cut_date", e.$d)}
+                    onChange={(value) => onChangeInput("cut_date", value)}
                   />
                 </Grid>
                 <Grid item xs={6} zIndex={1}>
