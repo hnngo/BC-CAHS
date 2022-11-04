@@ -1,36 +1,13 @@
-const { application } = require("express");
 const express = require("express");
 const router = express.Router();
-const pool = require("../database");
-const cookieParser = require("cookie-parser");
+const { pool } = require("../database");
 const session = require("express-session");
-const bodyParser = require("body-parser");
 const bcrypt = require("bcrypt");
 const { ERROR_CODE } = require("../utils/errorCodes");
 const validateSignup = require("../utils/validateSignup");
 
-var client = null;
-
-/**
- * Connect with Pool.
- */
-(async () => {
-  client = await pool.connect();
-})();
-
-/**
- * The pool will emit an error on behalf of any idle clients
- * it contains if a backend error or network partition happens
- */
-pool.on("error", (err, client) => {
-  console.error("Unexpected error on idle client", err);
-  process.exit(-1);
-});
-
 // Time that a cookie lasts (8 hours in milliseconds)
 const cookieTTL = 100 * 60 * 60 * 8;
-
-router.use(bodyParser.json());
 
 //session middleware
 router.use(
@@ -38,7 +15,7 @@ router.use(
     secret: "thisIsMySecreteCode",
     saveUninitialized: true,
     cookie: { maxAge: cookieTTL },
-    resave: true,
+    resave: false,
   })
 );
 
@@ -72,7 +49,7 @@ router.post("/login", async (req, res) => {
   try {
    // possibly ensure that session is not already in existence.
 
-    const data = await client.query(usernameCheck);
+    const data = await pool.query(usernameCheck);
     const user = data.rows;
 
     //confirms existence of user in DB.
@@ -87,6 +64,7 @@ router.post("/login", async (req, res) => {
             errMsg: "Server error",
           });
         } else if (result === true) {
+          req.session.user = user[0];
           req.session.auth = true;
           res.status(200).json({
             msg: "User signed in!",

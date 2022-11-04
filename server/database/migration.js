@@ -56,6 +56,12 @@ const migrate = async (pool) => {
     EXCEPTION
       WHEN duplicate_object THEN null;
     END $$;
+
+    DO $$ BEGIN
+    CREATE TYPE status_type AS ENUM ('outstanding', 'processing', 'ready');
+    EXCEPTION
+      WHEN duplicate_object THEN null;
+    END $$;
     
     CREATE TABLE IF NOT EXISTS public.submission_details (
     submission_num VARCHAR(30) PRIMARY KEY NOT NULL UNIQUE,
@@ -74,6 +80,7 @@ const migrate = async (pool) => {
     bc_cahs_project VARCHAR(30) NOT NULL,
     initial_storage VARCHAR(20) NOT NULL,
     analysis_requested analysis_requested_type NOT NULL,
+    status status_type NOT NULL DEFAULT 'outstanding',
     comment VARCHAR(255)
   )`
   );
@@ -162,15 +169,21 @@ const migrate = async (pool) => {
     CREATE TABLE IF NOT EXISTS public.sample_status_information (
       sample_status_id SERIAL PRIMARY KEY NOT NULL UNIQUE,
       cut_date TIMESTAMP,
-      cut_date_initials VARCHAR(3),
+      cut_date_initials VARCHAR(30),
+      scale_verification_lower NUMERIC(10, 3),
+      scale_verification_upper NUMERIC(10, 3),
       extraction_date TIMESTAMP,
-      extraction_date_initials VARCHAR(3),
+      extraction_date_initials VARCHAR(30),
       recut_date TIMESTAMP,
-      recut_date_initials VARCHAR(3),
+      recut_date_initials VARCHAR(30),
       reextracted_date TIMESTAMP,
-      reextracted_date_initials VARCHAR(3),
+      reextracted_date_initials VARCHAR(30),
       reason_for_reextraction VARCHAR(255),
-      qcpr_completed TIMESTAMP,
+      qcpr_complete_date TIMESTAMP,
+      positive_control_ct_lower NUMERIC(10, 1),
+      positive_control_ct_upper NUMERIC(10, 1),
+      negative_control_ct_lower NUMERIC(10, 1),
+      negative_control_ct_upper NUMERIC(10, 1),
       submission_num VARCHAR(30) NOT NULL,
       UNIQUE(submission_num),
       FOREIGN KEY (submission_num) REFERENCES public.submission_details(submission_num)
