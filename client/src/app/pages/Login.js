@@ -5,7 +5,7 @@ import ErrorMessage from "./Home/components/ErrorMessage";
 import bgImage from "../../assets/images/background_auth.png";
 import { useTheme } from "@mui/material/styles";
 import { useEffect, useState } from "react";
-import { Link, Redirect, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { createTheme } from "@mui/material/styles";
 import { ThemeProvider } from "@mui/material";
 import axios from "axios";
