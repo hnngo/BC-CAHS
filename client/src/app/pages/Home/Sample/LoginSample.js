@@ -75,6 +75,7 @@ const Sample = () => {
           name="receiveDate"
           type="date"
           value={submissionData.receiveDate || ""}
+          required={true}
           onChange={(e) => {
             onChangeValue("receiveDate", `${e.$y}-${e.$M + 1}-${e.$D}`);
           }}
@@ -83,6 +84,7 @@ const Sample = () => {
           label={"Time Submitted"}
           name="submitTime"
           type="time"
+          required={true}
           value={submissionData.submitTime || ""}
           onChange={(e) => onChangeValue("submitTime", e)}
           // onChange={(e) => onChangeValue("submitTime", e)}
@@ -92,12 +94,14 @@ const Sample = () => {
           label={"BC CAHS Receiver"}
           name="receiver"
           type="text"
+          required={true}
           onChange={(e) => onChangeValue(e.target.name, e.target.value)}
         />
         <SampleInput
           label={"BC CAHS Submission #"}
           name="submissionNum"
           type="text"
+          required={true}
           onChange={(e) => onChangeValue(e.target.name, e.target.value)}
         />
         <br />
@@ -106,30 +110,35 @@ const Sample = () => {
           label={"Company"}
           name="companyName"
           type="text"
+          required={true}
           onChange={(e) => onChangeValue(e.target.name, e.target.value)}
         />
         <SampleInput
           label={"Submitter"}
           name="submitter"
           type="text"
+          required={true}
           onChange={(e) => onChangeValue(e.target.name, e.target.value)}
         />
         <SampleInput
           label={"Contact Phone #"}
           name="contactPhoneNum"
           type="text"
+          required={true}
           onChange={(e) => onChangeValue(e.target.name, e.target.value)}
         />
         <SampleInput
           label={"PO #"}
           name="clientPO"
           type="text"
+          required={true}
           onChange={(e) => onChangeValue(e.target.name, e.target.value)}
         />
         <SampleInput
           label={"Client Case #"}
           name="clientCaseNum"
           type="text"
+          required={true}
           onChange={(e) => onChangeValue(e.target.name, e.target.value)}
         />
         <SampleInput
@@ -137,6 +146,7 @@ const Sample = () => {
           name="samplingDate"
           type="date"
           value={submissionData.samplingDate || ""}
+          required={true}
           onChange={(e) => {
             onChangeValue("samplingDate", `${e.$y}-${e.$M + 1}-${e.$D}`);
           }}
@@ -145,6 +155,7 @@ const Sample = () => {
           label={"Sampling Location"}
           name="samplingLocation"
           type="text"
+          required={true}
           onChange={(e) => onChangeValue(e.target.name, e.target.value)}
         />
         <br />
@@ -153,24 +164,28 @@ const Sample = () => {
           label={"BC CAHS Custodian"}
           name="custodian"
           type="text"
+          required={true}
           onChange={(e) => onChangeValue(e.target.name, e.target.value)}
         />
         <SampleInput
           label={"BC CAHS P.I."}
           name="PI"
           type="text"
+          required={true}
           onChange={(e) => onChangeValue(e.target.name, e.target.value)}
         />
         <SampleInput
           label={"BC CAHS Project"}
           name="BCCAHSProject"
           type="text"
+          required={true}
           onChange={(e) => onChangeValue(e.target.name, e.target.value)}
         />
         <SampleInput
           label={"Initial Storage"}
           name="initialStorage"
           type="text"
+          required={true}
           onChange={(e) => onChangeValue(e.target.name, e.target.value)}
         />
       </Grid>
@@ -183,18 +198,21 @@ const Sample = () => {
           label={"# of Samples"}
           name="sampleNum"
           type="text"
+          required={true}
           onChange={(e) => onChangeValue(e.target.name, e.target.value)}
         />
         <SampleInput
           label={"Sample Species"}
           name="sampleSpecies"
           type="text"
+          required={true}
           onChange={(e) => onChangeValue(e.target.name, e.target.value)}
         />
         <SampleInput
           label={"Sample Type"}
           name="sampleType"
           type="text"
+          required={true}
           onChange={(e) => onChangeValue(e.target.name, e.target.value)}
         />
         <SampleInput
@@ -203,6 +221,7 @@ const Sample = () => {
           value={submissionData.sampleOrigin || ""}
           type="select"
           options={SAMPLE_TYPE}
+          required={true}
           onChange={(e) => onChangeValue("sampleOrigin", e.target.value)}
         />
         <SampleInput
@@ -211,12 +230,14 @@ const Sample = () => {
           type="select"
           options={SAMPLE_CONDITION}
           value={submissionData.sampleCondition || ""}
+          required={true}
           onChange={(e) => onChangeValue("sampleCondition", e.target.value)}
         />
         <SampleInput
           label={"Sample Details"}
           name="sampleDetails"
           type="text"
+          required={true}
           onChange={(e) => onChangeValue(e.target.name, e.target.value)}
         />
         <br />
@@ -232,6 +253,7 @@ const Sample = () => {
           value={submissionData.requestedAnalysis || ""}
           type="multi-select"
           options={ANALYSIS_REQUESTS}
+          required={true}
           onSelectionUpdate={(e) => onChangeValue("requestedAnalysis", e.target.value)}
         />
         <SampleInput
@@ -240,12 +262,14 @@ const Sample = () => {
           value={submissionData.rtqpcrTarget || ""}
           type="multi-select"
           options={RT_QPCR_TARGETS}
+          required={true}
           onSelectionUpdate={(e) => onChangeValue("rtqpcrTarget", e.target.value)}
         />
         <SampleInput
           name="rtqpcrTargets_other"
           type="text"
           disableText
+          required={true}
           placeholder={"If other, please specify"}
         />
         <br />
@@ -255,6 +279,7 @@ const Sample = () => {
           name="comment"
           placeholder="Optional Comments"
           type="text-area"
+          required={true}
           onChange={(e) => onChangeValue("comment", e.target.value)}
         />
         <br />
