@@ -94,7 +94,10 @@ const Login = () => {
     });
 
     console.log(session);
-    return session;
+    
+    if (session.data.data.auth) {
+      navigate("/")
+    }
 
     // if (!session || !session.data.data.auth)
     // {

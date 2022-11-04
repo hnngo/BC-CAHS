@@ -53,7 +53,6 @@ router.get("/", (req, res) => {
  * Check if session is currently valid.
  */
 router.get("/authUser", async (req, res) => {
-  console.log(req.session);
   res.json({ error: 0, data: req.session });
 });
 
@@ -86,7 +85,6 @@ router.post("/login", async (req, res) => {
             errMsg: "Server error",
           });
         } else if (result === true) {
-          req.session.user = user[0];
           req.session.auth = true;
           res.status(200).json({
             msg: "User signed in!",
