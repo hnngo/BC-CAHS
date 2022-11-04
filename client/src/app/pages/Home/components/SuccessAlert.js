@@ -7,7 +7,7 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 
-export default function AlertDialog() {
+export default function AlertDialog(props) {
   const [open, setOpen] = React.useState(true);
 
   const handleClose = () => {
@@ -16,7 +16,7 @@ export default function AlertDialog() {
 
   const navigate = useNavigate();
 
-  const navigateUser = () => {
+  const redirectToLogin = () => {
     navigate("/login")
   }
 
@@ -29,15 +29,15 @@ export default function AlertDialog() {
         aria-describedby="alert-dialog-description"
       >
         <DialogTitle id="alert-dialog-title">
-          {"You have successfully signed up!"}
+          some text
         </DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            You may now login using your login credentials.
+            some text
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={navigateUser} autoFocus>
+          <Button onClick={redirectToLogin} autoFocus>
             Ok
           </Button>
         </DialogActions>

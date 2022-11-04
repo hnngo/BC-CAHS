@@ -6,7 +6,7 @@ const cookieParser = require("cookie-parser");
 const session = require("express-session");
 const bodyParser = require("body-parser");
 const bcrypt = require("bcrypt");
-const ERROR_CODE = require("../utils/errorCodes");
+const { ERROR_CODE } = require("../utils/errorCodes");
 const validateSignup = require("../utils/validateSignup");
 
 var client = null;
@@ -113,7 +113,6 @@ router.post("/signup", async (req, res) => {
   try {
     // validate user input again
     let hashedPw = await bcrypt.hash(password, 10);
-    console.log(hashedPw);
     await validateSignup(req.body)
     .then((msg) => {
       if (msg.length == 0) { // if there are no error messages returned
@@ -141,15 +140,6 @@ router.post("/signup", async (req, res) => {
                   RETURNING username, password, first_name, last_name`, [username, hashedPw, first_name, last_name], (err, result) => {
                   if (err) {
                     console.log(err);
-                    res.send(
-                      {
-                        error: ERROR_CODE.AUTH_ACCOUNT_EXISTS,
-                        msg: "User with that username already exists",
-                        data: {
-                          username: username
-                        }
-                      }
-                    );
                   } else {
                     // send json as response if user signup was successful
                     res.send(

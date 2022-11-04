@@ -11,6 +11,8 @@ import validateSignup from "../utils/validateSignup";
 import axios from "axios"; 
 import SuccessAlert from "./Home/components/SuccessAlert";
 import {isEmpty} from "lodash";
+import { LocalConvenienceStoreOutlined } from "@mui/icons-material";
+import { response } from "express";
 
 export const customTheme = createTheme({
   typography: {
@@ -59,6 +61,8 @@ const Signup = () => {
 
   const [isValid, setValid] = useState(false);
 
+  // const [response, setResponse] = useState(false);
+
   const changeHandler = (e) => {
     setData({ ...data, [e.target.name]: e.target.value });
   };
@@ -68,15 +72,17 @@ const Signup = () => {
     setErrors(validateSignup(data));
 
     if (isEmpty(validateSignup(data))) {
-      loginCall();
-      setValid(true);
+      console.log("inside submission logic");
+      axios.post('http://localhost:8000/api/auth/signup', data)
+      .then((reponse) => {
+        console.log(reponse.data);
+        if (reponse.data.error == 109) {
+          // setResponse(true)
+        }
+        setValid(true);
+      })
     }
-    console.log(data);
   };
-
-  async function loginCall() {
-    await axios.post('http://localhost:8000/api/auth/signup', data);
-  }
 
   useEffect(() => {
   }, [data.first_name, data.last_name, data.username, data.password, data.confirmPassword]);
@@ -207,7 +213,7 @@ const Signup = () => {
             </Grid>
           </Grid>
         </Box>
-        {isValid && <SuccessAlert/>}
+        {isValid && <SuccessAlert />}
       </ThemeProvider>
     </div>
   );
