@@ -10,9 +10,6 @@ import { ThemeProvider } from "@mui/material";
 import validateSignup from "../utils/validateSignup";
 import axios from "axios"; 
 import SuccessAlert from "./Home/components/SuccessAlert";
-import {isEmpty} from "lodash";
-import { LocalConvenienceStoreOutlined } from "@mui/icons-material";
-import { response } from "express";
 
 export const customTheme = createTheme({
   typography: {
@@ -67,21 +64,25 @@ const Signup = () => {
     setData({ ...data, [e.target.name]: e.target.value });
   };
 
+
+
   const handleSubmit = (e) => {
     e.preventDefault();
     setErrors(validateSignup(data));
 
-    if (isEmpty(validateSignup(data))) {
+    if ((validateSignup(data))) {
       console.log("inside submission logic");
       axios.post('http://localhost:8000/api/auth/signup', data)
       .then((reponse) => {
         console.log(reponse.data);
         if (reponse.data.error == 109) {
           // setResponse(true)
+          console.log("yessir")
         }
         setValid(true);
       })
     }
+
   };
 
   useEffect(() => {
