@@ -1,29 +1,8 @@
-const { application } = require("express");
 const express = require("express");
 const router = express.Router();
 const { pool } = require("../database");
-const cookieParser = require("cookie-parser");
 const session = require("express-session");
-const bodyParser = require("body-parser");
 const bcrypt = require("bcrypt");
-
-var client = null;
-
-/**
- * Connect with Pool.
- */
-(async () => {
-  client = await pool.connect();
-})();
-
-/**
- * The pool will emit an error on behalf of any idle clients
- * it contains if a backend error or network partition happens
- */
-pool.on("error", (err, client) => {
-  console.error("Unexpected error on idle client", err);
-  process.exit(-1);
-});
 
 // Time that a cookie lasts (8 hours in milliseconds)
 const cookieTTL = 100 * 60 * 60 * 8;
@@ -48,13 +27,17 @@ router.get("/", (req, res) => {
 });
 
 /**
+ * Check if session is currently valid.
+ */
+router.get("/authUser", async (req, res) => {
+  res.json({ error: 0, data: req.session });
+});
+
+/**
  * Login in
  */
 router.post("/login", async (req, res) => {
-  // Max area
-
   // Think about the need of a unique username
-  console.log(req.session);
   const { username, password } = req.body;
 
   const usernameCheck = `SELECT *
@@ -64,7 +47,7 @@ router.post("/login", async (req, res) => {
   try {
     // possibly ensure that session is not already in existence.
 
-    const data = await client.query(usernameCheck);
+    const data = await pool.query(usernameCheck);
     const user = data.rows;
 
     //confirms existence of user in DB.
@@ -80,6 +63,7 @@ router.post("/login", async (req, res) => {
           });
         } else if (result === true) {
           req.session.user = user[0];
+          req.session.auth = true;
           res.status(200).json({
             msg: "User signed in!",
           });
@@ -101,7 +85,6 @@ router.post("/login", async (req, res) => {
 /**
  * Sign up
  */
-router.use(bodyParser.json());
 router.post("/signup", async (req, res) => {
   let { username, password, passwordConfirm } = req.body;
   let validation = true;
