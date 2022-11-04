@@ -6,10 +6,10 @@ import StatusChart from "./components/StatusChart";
 import DetailStatus from "./components/DetailStatus";
 import { getMockFormData } from "../../../../mocks/mock-sample";
 
-const Status = () => {
+const ELISA = () => {
   const [data, setData] = React.useState([]);
   const [formData, setFormData] = React.useState([]);
-  const [selectedAnalysis, setSelectedAnalysis] = React.useState("ATPase");
+  const [selectedAnalysis, setSelectedAnalysis] = React.useState("ELISA Cortisol");
 
   React.useEffect(() => {
     let rawData = getMockFormData(1000);
@@ -47,4 +47,4 @@ const Status = () => {
   );
 };
 
-export default Status;
+export default ELISA;

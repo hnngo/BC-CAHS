@@ -6,15 +6,17 @@ import StatusChart from "./components/StatusChart";
 import DetailStatus from "./components/DetailStatus";
 import { getMockFormData } from "../../../../mocks/mock-sample";
 
-const Status = () => {
+const qPCR = () => {
   const [data, setData] = React.useState([]);
   const [formData, setFormData] = React.useState([]);
-  const [selectedAnalysis, setSelectedAnalysis] = React.useState("ATPase");
+  const [selectedAnalysis, setSelectedAnalysis] = React.useState("PCR");
+
 
   React.useEffect(() => {
     let rawData = getMockFormData(1000);
     let dataObject = {};
     rawData.forEach((d) => {
+
       if (!dataObject[d.analysis_requested]) {
         dataObject[d.analysis_requested] = {
           name: d.analysis_requested,
@@ -37,7 +39,8 @@ const Status = () => {
       <Grid item xs={7.7}>
         <StatusChart data={data} onClick={(label) => setSelectedAnalysis(label)} />
       </Grid>
-      <Grid item xs={4.3}>
+      <Grid item xs={4.3}
+      >
         <DetailStatus
           selectedAnalysis={selectedAnalysis}
           data={formData.filter((form) => form.analysis_requested === selectedAnalysis)}
@@ -47,4 +50,4 @@ const Status = () => {
   );
 };
 
-export default Status;
+export default qPCR;
