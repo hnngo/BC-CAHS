@@ -99,7 +99,8 @@ const SampleInput = ({
           />
         ) : type == "select" ? (
           <Select
-            defaultValue={""}
+            defaultValue={value}
+            value={value}
             fullWidth
             sx={{ backgroundColor: theme.primary.light }}
             onChange={onChange}>
@@ -170,7 +171,7 @@ const SampleInput = ({
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <DesktopDatePicker
               className={"DatePicker-Div"}
-              inputFormat="MM/DD/YYYY"
+              inputFormat="DD/MM/YYYY"
               value={value}
               closeOnSelect
               onChange={onChange}
@@ -191,28 +192,30 @@ const SampleInput = ({
           <Grid container>
             <Grid xs={6} item>
               <TextField
-                name={name}
+                name={name + "_lower"}
                 label={props.lowerText || "Lower"}
-                value={value[0] || null}
+                value={value[0] || ""}
                 onChange={onChange}
                 fullWidth
                 size="small"
                 placeholder={placeholder}
                 disabled={disableText}
                 sx={{ backgroundColor: theme.primary.light }}
+                {...props}
               />
             </Grid>
             <Grid xs={6} item>
               <TextField
-                name={name}
+                name={name + "_upper"}
                 label={props.upperText || "Upper"}
-                value={value[1] || null}
+                value={value[1] || ""}
                 onChange={onChange}
                 fullWidth
                 size="small"
                 placeholder={placeholder}
                 disabled={disableText}
                 sx={{ backgroundColor: theme.primary.light }}
+                {...props}
               />
             </Grid>
           </Grid>

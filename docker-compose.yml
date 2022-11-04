@@ -6,7 +6,7 @@ services:
       context: ./client/
       dockerfile: Dockerfile
     environment:
-      - WATCHPACK_POLLING=true
+      WATCHPACK_POLLING: true
     volumes:
       - "./client:/app"
       - "/app/node_modules"
