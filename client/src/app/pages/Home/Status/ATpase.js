@@ -6,7 +6,7 @@ import StatusChart from "./components/StatusChart";
 import DetailStatus from "./components/DetailStatus";
 import { getMockFormData } from "../../../../mocks/mock-sample";
 
-const Status = () => {
+const ATPase = () => {
   const [data, setData] = React.useState([]);
   const [formData, setFormData] = React.useState([]);
   const [selectedAnalysis, setSelectedAnalysis] = React.useState("ATPase");
@@ -47,4 +47,4 @@ const Status = () => {
   );
 };
 
-export default Status;
+export default ATPase;
