@@ -6,15 +6,16 @@ import StatusChart from "./components/StatusChart";
 import DetailStatus from "./components/DetailStatus";
 import { getMockFormData } from "../../../../mocks/mock-sample";
 
-const Status = () => {
+const Virology = () => {
   const [data, setData] = React.useState([]);
   const [formData, setFormData] = React.useState([]);
-  const [selectedAnalysis, setSelectedAnalysis] = React.useState("ATPase");
+  const [selectedAnalysis, setSelectedAnalysis] = React.useState("Virology");
 
   React.useEffect(() => {
     let rawData = getMockFormData(1000);
     let dataObject = {};
     rawData.forEach((d) => {
+
       if (!dataObject[d.analysis_requested]) {
         dataObject[d.analysis_requested] = {
           name: d.analysis_requested,
@@ -47,4 +48,4 @@ const Status = () => {
   );
 };
 
-export default Status;
+export default Virology;
