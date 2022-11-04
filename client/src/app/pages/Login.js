@@ -33,7 +33,6 @@ const Login = () => {
   const theme = useTheme();
   const navigate = useNavigate();
 
-  // const history = useHistory();
   const loginPageStyle = {
     backgroundImage: `url(${bgImage})`,
     backgroundSize: "cover",
@@ -56,25 +55,35 @@ const Login = () => {
     setData({ ...data, [e.target.name]: e.target.value });
   };
 
+  /**
+   * Handle submit action for login action.
+   * 
+   * @param {*} e an event
+   */
   const handleSubmit = (e) => {
     e.preventDefault();
     checkUser();
-    console.log(checkUser());
   };
 
+  /**
+   * Log user into Database through axios call. 
+   * 
+   * @returns a response either validating or rejecting user authentication.
+   */
   const loginCall = async () => {
     const response = await axios.post("http://localhost:8000/api/auth/login", data, {
       withCredentials: true
     });
-    console.log(response);
     return response;
   };
-
+  
+  /**
+   * Check if login action is valid. Redirect if login action is valid,
+   * else set Credential Error to True, rendering an error message.
+   */
   const checkUser = () => {
     loginCall()
       .then((res) => {
-        console.log(res);
-
         if (res.request.status === 200) {
           setCredentialError(false);
           navigate("/");
@@ -82,31 +91,26 @@ const Login = () => {
       })
       .catch((err) => {
         console.log(err);
-        console.log("in the error");
         setCredentialError(true);
-        console.log("This is cred" + credentialError);
       });
   };
 
+  /**
+   * Check if Session is active, redirecting to main page. 
+   */
   const isUserLoggedin = async () => {
     var session = await axios.get("http://localhost:8000/api/auth/authUser", {
       withCredentials: true
     });
-
-    console.log(session);
     
     if (session.data.data.auth) {
       navigate("/")
     }
-
-    // if (!session || !session.data.data.auth)
-    // {
-
-    // } else {
-    //   // redirect
-    // }
   };
-
+  
+  /**
+   * React Hook to check state of Session, redirect if session is authenticated.
+   */
   useEffect(() => {
     isUserLoggedin();
   }, []);
