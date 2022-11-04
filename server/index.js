@@ -10,7 +10,12 @@ require("./database");
 const port = process.env.PORT || 8000;
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(cors());
+app.use(
+  cors({
+    origin: true,
+    credentials: true,
+  })
+);
 
 app.use("/api/auth", authenticationRouter);
 app.use("/api/form", submissionRouter);
