@@ -1,4 +1,4 @@
-const ERROR_CODE = require("../utils/errorCodes");
+const { ERROR_CODE } = require("../utils/errorCodes");
 
 module.exports = function (signupData) {
     let msg = [];
