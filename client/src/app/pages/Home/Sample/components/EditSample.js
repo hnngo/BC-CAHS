@@ -5,6 +5,7 @@ import SampleInput from "../../components/SampleInput";
 import { Modal, Box, Typography, FormControl, Grid } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import EditSampleDialog from "./EditSampleDialog";
+import CloseIcon from "@mui/icons-material/Close";
 
 // Constants
 import { SAMPLE_STATUS } from "../../constants";
@@ -31,12 +32,12 @@ const EditSample = ({ isOpen, onClose, submissionNum }) => {
         submission_num: "123ABC123"
       });
       if (!res || !res.data || !res.data.data) {
-        // Show error dialog
+        // New form status
       } else {
         setFormData({ ...res.data.data });
       }
     } catch (error) {
-      // Show error dialog
+      // Show error
     }
   };
 
@@ -87,26 +88,38 @@ const EditSample = ({ isOpen, onClose, submissionNum }) => {
   };
 
   const onSubmit = async () => {
+    setApiProgress({ ...apiProgress, progress: API_PROGRESS.REQ });
     try {
       // NOTE: Using fake submission number for now
       const res = await axios.post("http://localhost:8000/api/form/status/update", formData);
       if (!res.data || !res.data.data || res.data.error) {
-        setApiProgress({ ...apiProgress, error: res.data.error, msg: res.data.msg });
+        setApiProgress({ error: res.data.error, msg: res.data.msg, progress: API_PROGRESS.FAILED });
       } else {
-        setApiProgress({ ...apiProgress, msg: "Update form status successfully" });
+        setApiProgress({
+          error: 0,
+          msg: "Update form status successfully",
+          progress: API_PROGRESS.SUCCESS
+        });
       }
     } catch (error) {
-      // Show error dialog
+      setApiProgress({
+        ...apiProgress,
+        progress: API_PROGRESS.FAILED,
+        msg: "Server error, please try again!"
+      });
     }
   };
 
   return (
     <>
       <EditSampleDialog
-        open={!!apiProgress.error || !!apiProgress.msg}
+        open={
+          apiProgress.progress == API_PROGRESS.FAILED ||
+          apiProgress.progress == API_PROGRESS.SUCCESS
+        }
         message={apiProgress.msg}
         title="Form Status"
-        onClose={() => setApiProgress({ ...apiProgress, error: 0, msg: "" })}
+        onClose={() => setApiProgress({ error: 0, msg: "", progress: API_PROGRESS.INIT })}
       />
       <Modal open={isOpen} onClose={onClose} sx={{ zIndex: 80 }}>
         <Box
@@ -123,15 +136,22 @@ const EditSample = ({ isOpen, onClose, submissionNum }) => {
             p: 4
           }}>
           <Grid container>
-            <Typography
-              id="modal-modal-title"
-              variant="h5"
-              component="h2"
-              fontWeight={"bold"}
-              marginBottom={"30px"}
-              color={theme.primary.dark}>
-              Submission Form #{submissionNum}
-            </Typography>
+            <Grid container>
+              <Grid item flex={1}>
+                <Typography
+                  id="modal-modal-title"
+                  variant="h5"
+                  component="h2"
+                  fontWeight={"bold"}
+                  marginBottom={"30px"}
+                  color={theme.primary.dark}>
+                  Submission Form #{submissionNum}
+                </Typography>
+              </Grid>
+              <Grid item>
+                <CloseIcon sx={{ cursor: "pointer" }} onClick={onClose} />
+              </Grid>
+            </Grid>
             <FormControl>
               <Grid item xs={6}>
                 <SampleInput
@@ -261,6 +281,7 @@ const EditSample = ({ isOpen, onClose, submissionNum }) => {
                     type="submit"
                     submitText="Save"
                     onClick={onSubmit}
+                    loading={apiProgress.progress === API_PROGRESS.REQ}
                   />
                 </Grid>
               </Grid>

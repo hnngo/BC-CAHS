@@ -22,7 +22,7 @@ const EditSampleDialog = ({ open, title, message, onClose = () => {} }) => {
             {title}
           </DialogTitle>
         )}
-        <DialogContent sx>
+        <DialogContent>
           <DialogContentText id="alert-dialog-description" color={theme.primary.dark}>
             {message}
           </DialogContentText>
