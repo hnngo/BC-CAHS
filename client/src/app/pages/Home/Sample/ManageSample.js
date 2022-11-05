@@ -1,7 +1,13 @@
 import React from "react";
 
 // Components
-import { DataGrid } from "@mui/x-data-grid";
+import {
+  DataGrid,
+  GridToolbarContainer,
+  GridToolbarColumnsButton,
+  GridToolbarFilterButton,
+  GridToolbarExport
+} from "@mui/x-data-grid";
 import EditSample from "./components/EditSample";
 import { Chip, Grid, Stack } from "@mui/material";
 import { styled, useTheme } from "@mui/material/styles";
@@ -14,6 +20,16 @@ import EditIcon from "@mui/icons-material/Edit";
 // Utils
 import { API_PROGRESS } from "../../../utils/constants";
 import axios from "axios";
+
+function CustomToolbar() {
+  return (
+    <GridToolbarContainer>
+      <GridToolbarColumnsButton />
+      <GridToolbarFilterButton />
+      <GridToolbarExport />
+    </GridToolbarContainer>
+  );
+}
 
 const ManageSample = () => {
   const theme = useTheme();
@@ -125,7 +141,18 @@ const ManageSample = () => {
       { field: "submitter", headerName: "Submitter" },
       { field: "contact_phone_num", headerName: "Contact Phone #", width: 130 },
       { field: "client_case_num", headerName: "Client Case #", width: 110 },
-      { field: "sampling_date", headerName: "Sampling Date", width: 120 },
+      {
+        field: "sampling_date",
+        headerName: "Sampling Date",
+        width: 120,
+        valueFormatter: (params) => {
+          let date = new Date(params.value);
+          return date.toLocaleDateString();
+        },
+        valueGetter: (params) => {
+          return new Date(params.value);
+        }
+      },
       { field: "sampling_location", headerName: "Sampling Location", width: 140 },
       { field: "bc_cahs_custodian_initials", headerName: "BC CAHS Custodian", width: 160 },
       { field: "bc_cahs_pi", headerName: "BC CAHS P.I.", width: 120 },
@@ -186,13 +213,21 @@ const ManageSample = () => {
           }),
           ColumnFilteredIcon: styled(FilterAltIcon)({
             fill: theme.primary.white
-          })
+          }),
+          Toolbar: CustomToolbar
         }}
         sx={{
           "& .sample-form-table-header": {
             backgroundColor: theme.primary.dark,
             color: theme.primary.white,
             fontWeight: "800"
+          },
+          "& .MuiDataGrid-toolbarContainer": {
+            backgroundColor: theme.primary.dark,
+            fontWeight: "800",
+            "& button": {
+              color: theme.primary.white
+            }
           },
           "& .sample-form-table-row": {
             backgroundColor: theme.primary.standard
