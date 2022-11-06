@@ -13,7 +13,8 @@ import {
   FormControlLabel,
   OutlinedInput,
   Box,
-  Chip
+  Chip,
+  CircularProgress
 } from "@mui/material";
 import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
 import { TimePicker } from "@mui/x-date-pickers/TimePicker";
@@ -127,8 +128,10 @@ const SampleInput = ({
             fullWidth
             required={required}
             sx={{ backgroundColor: theme.primary.dark }}
-            onClick={onClick}>
+            onClick={onClick}
+            disabled={props.loading}>
             {submitText}
+            {props.loading && <CircularProgress sx={{ marginLeft: "10px" }} size={"14px"} />}
           </Button>
         ) : type == "checkbox" ? (
           <FormGroup

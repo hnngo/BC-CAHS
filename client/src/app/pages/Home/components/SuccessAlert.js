@@ -11,13 +11,17 @@ export default function AlertDialog(props) {
   const [open, setOpen] = React.useState(true);
 
   const handleClose = () => {
-    setOpen(false);
+    setOpen(true);
   };  
 
   const navigate = useNavigate();
 
   const redirectToLogin = () => {
     navigate("/login")
+  }
+
+  const remainAtCurrent = () => {
+    setOpen(false);
   }
 
   return (
@@ -29,15 +33,15 @@ export default function AlertDialog(props) {
         aria-describedby="alert-dialog-description"
       >
         <DialogTitle id="alert-dialog-title">
-          some text
+          {props.isDuplicate? "Username is already in use": "You have signed up successfully!"}
         </DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            some text
+            {props.isDuplicate? "Please provide another username": "You may not log in using your credentials"}
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={redirectToLogin} autoFocus>
+          <Button onClick={props.isDuplicate? remainAtCurrent : redirectToLogin } autoFocus>
             Ok
           </Button>
         </DialogActions>

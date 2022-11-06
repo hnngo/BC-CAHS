@@ -10,9 +10,47 @@ const { ERROR_CODE, getErrorMessage } = require("../utils/errors");
 // Mock data
 const { sample_data, sample_status } = require("../mock/sample");
 
+/**
+ * Get forms
+ */
+router.get("/", async (req, res) => {
+  const { limit = 20, offset = 0 } = req.query;
+  const data = await poolAsync(`
+    SELECT sd.*, sad.*,
+      string_agg(rqt.rt_qpcr_target, ',') rt_qpcr_type
+    FROM public.submission_details sd
+    LEFT JOIN public.sample_details sad ON sd.submission_num = sad.submission_num
+    LEFT JOIN public.submission_rt_qpcr srq ON srq.submission_num = sad.submission_num
+    LEFT JOIN public.rt_qpcr_targets rqt ON rqt.rt_qpcr_id = srq.rt_qpcr_id
+    GROUP BY sd.submission_num, sad.sample_id
+    ORDER BY sd.receive_date
+    OFFSET ${offset}
+    LIMIT ${limit}
+  `);
+
+  const countAll = await poolAsync(`
+    SELECT count(*)
+    FROM public.submission_details sd
+  `);
+  const totalNumberOfRows = countAll.rows[0].count;
+
+  return res.status(200).json({
+    error: 0,
+    msg: "",
+    data: {
+      forms: data.rows,
+      total: totalNumberOfRows,
+    },
+  });
+});
+
+/**
+ * Submit a form
+ */
 router.post("/submit", async (req, res) => {
   // let data = req.body.data;
   let data = sample_data;
+  data.submissionNum = "ABCD" + +Math.round(Math.random() * 10000).toString();
 
   try {
     // main query
@@ -141,7 +179,7 @@ router.post("/status/update", async (req, res) => {
 
   try {
     // Check if status existed
-    const queryCheck = await pool.query(
+    const queryCheck = await poolAsync(
       `SELECT count(*) FROM public.sample_status_information WHERE submission_num = '${data.submission_num}'`
     );
 
@@ -187,8 +225,8 @@ router.post("/status/update", async (req, res) => {
           positive_control_ct_lower = ${data.positive_control_ct_lower},
           positive_control_ct_upper = ${data.positive_control_ct_upper},
           negative_control_ct_lower = ${data.negative_control_ct_lower},
-          negative_control_ct_upper = ${data.negative_control_ct_upper},
-          submission_num = '${data.submission_num}';`);
+          negative_control_ct_upper = ${data.negative_control_ct_upper}
+        WHERE submission_num = '${data.submission_num}';`);
     }
   } catch (err) {
     return res.status(200).json({
