@@ -37,6 +37,8 @@ const SampleInput = ({
   label,
   name,
   value,
+  errorMessage,
+  error,
   onChange = () => {},
   onClick = () => {},
   required,
@@ -87,9 +89,12 @@ const SampleInput = ({
           {label}
         </Typography>
       </Grid>
+
       <Grid item xs={type ? 7 : 0} paddingX={2}>
         {type == "text" ? (
           <TextField
+            error={error}
+            helperText={errorMessage}
             name={name}
             value={value}
             onChange={onChange}

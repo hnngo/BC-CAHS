@@ -46,23 +46,4 @@ const getErrorMessage = (code) => {
   }
 };
 
-const submissionFormCharacterLimits = {
-  submissionNum: 30,
-  companyName: 25,
-  submitter: 25,
-  receiver: 50,
-  clientPO: 15,
-  clientCaseNum: 30,
-  contactPhoneNum: 15,
-  samplingLocation: 50,
-  custodian: 5,
-  PI: 5,
-  BCCAHSProject: 30,
-  initialStorage: 20,
-  sampleNum: 32767,
-  sampleSpecies: 25,
-  sampleType: 100,
-  sampleDetails: 255,
-};
-
 module.exports = { ERROR_CODE, getErrorMessage };
