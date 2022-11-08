@@ -37,8 +37,11 @@ const SampleInput = ({
   label,
   name,
   value,
+  errorMessage,
+  error,
   onChange = () => {},
   onClick = () => {},
+  required,
   onSelectionUpdate,
   type,
   labelStyle = {},
@@ -86,12 +89,16 @@ const SampleInput = ({
           {label}
         </Typography>
       </Grid>
+
       <Grid item xs={type ? 7 : 0} paddingX={2}>
         {type == "text" ? (
           <TextField
+            error={error}
+            helperText={errorMessage}
             name={name}
             value={value}
             onChange={onChange}
+            required={required}
             fullWidth
             size="small"
             placeholder={placeholder}
@@ -103,6 +110,7 @@ const SampleInput = ({
             defaultValue={value}
             value={value}
             fullWidth
+            required={required}
             sx={{ backgroundColor: theme.primary.light }}
             onChange={onChange}>
             {Object.entries(options).map((option) => (
@@ -115,6 +123,7 @@ const SampleInput = ({
           <TextareaAutosize
             minRows={5}
             placeholder={placeholder}
+            required={required}
             onChange={onChange}
             style={{ backgroundColor: theme.primary.light, width: "100%" }}
           />
@@ -122,6 +131,7 @@ const SampleInput = ({
           <Button
             variant="contained"
             fullWidth
+            required={required}
             sx={{ backgroundColor: theme.primary.dark }}
             onClick={onClick}
             disabled={props.loading}>
@@ -147,6 +157,7 @@ const SampleInput = ({
             <Select
               defaultValue=""
               multiple
+              required={required}
               value={selectedOptions}
               onChange={handleChangeSelect}
               input={<OutlinedInput id="select-multiple-chip" />}
@@ -176,6 +187,7 @@ const SampleInput = ({
               className={"DatePicker-Div"}
               inputFormat="DD/MM/YYYY"
               value={value}
+              required={required}
               closeOnSelect
               onChange={onChange}
               renderInput={(params) => <TextField {...params} />}
@@ -186,6 +198,7 @@ const SampleInput = ({
             <TimePicker
               className={"DatePicker-Div"}
               label={placeholder}
+              required={required}
               value={value}
               onChange={onChange}
               renderInput={(params) => <TextField {...params} fullWidth />}
@@ -199,6 +212,7 @@ const SampleInput = ({
                 label={props.lowerText || "Lower"}
                 value={value[0] || ""}
                 onChange={onChange}
+                required={required}
                 fullWidth
                 size="small"
                 placeholder={placeholder}
@@ -213,6 +227,7 @@ const SampleInput = ({
                 label={props.upperText || "Upper"}
                 value={value[1] || ""}
                 onChange={onChange}
+                required={required}
                 fullWidth
                 size="small"
                 placeholder={placeholder}

@@ -48,9 +48,9 @@ router.get("/", async (req, res) => {
  * Submit a form
  */
 router.post("/submit", async (req, res) => {
-  // let data = req.body.data;
-  let data = sample_data;
-  data.submissionNum = "ABCD" + +Math.round(Math.random() * 10000).toString();
+  let data = req.body.data;
+  // let data = sample_data;
+  // data.submissionNum = "ABCD" + +Math.round(Math.random() * 10000).toString();
 
   try {
     // main query
@@ -119,7 +119,7 @@ router.post("/submit", async (req, res) => {
       data: data,
     });
   } catch (err) {
-    // console.log(err);
+    console.log(err);
     res.status(ERROR_CODE.DATABASE_ERROR).json({
       error: ERROR_CODE.DATABASE_ERROR,
       msg: err,
