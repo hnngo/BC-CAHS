@@ -183,50 +183,74 @@ router.post("/status/update", async (req, res) => {
       `SELECT count(*) FROM public.sample_status_information WHERE submission_num = '${data.submission_num}'`
     );
 
-    if (queryCheck.rowCount == 0) {
+    if (queryCheck.rows[0].count == 0) {
       // Insert if not found
-      pool.query(`INSERT INTO public.sample_status_information(
+      await pool.query(
+        `INSERT INTO public.sample_status_information(
         cut_date, cut_date_initials, scale_verification_lower, scale_verification_upper, extraction_date, extraction_date_initials, recut_date, recut_date_initials, reextracted_date, reextracted_date_initials, reason_for_reextraction, qcpr_complete_date, positive_control_ct_lower, positive_control_ct_upper, negative_control_ct_lower, negative_control_ct_upper, submission_num)
-        VALUES (
-         '${data.cut_date}',
-         '${data.cut_date_initials}',
-         ${data.scale_verification_lower},
-         ${data.scale_verification_upper},
-         '${data.extraction_date}',
-         '${data.extraction_date_initials}',
-         '${data.recut_date}',
-         '${data.recut_date_initials}',
-         '${data.reextracted_date}',
-         '${data.reextracted_date_initials}',
-         '${data.reason_for_reextraction}',
-         '${data.qcpr_complete_date}',
-         ${data.positive_control_ct_lower},
-         ${data.positive_control_ct_upper},
-         ${data.negative_control_ct_lower},
-         ${data.negative_control_ct_upper},
-         '${data.submission_num}');`);
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17)`,
+        [
+          data.cut_date,
+          data.cut_date_initials,
+          data.scale_verification_lower,
+          data.scale_verification_upper,
+          data.extraction_date,
+          data.extraction_date_initials,
+          data.recut_date,
+          data.recut_date_initials,
+          data.reextracted_date,
+          data.reextracted_date_initials,
+          data.reason_for_reextraction,
+          data.qcpr_complete_date,
+          data.positive_control_ct_lower,
+          data.positive_control_ct_upper,
+          data.negative_control_ct_lower,
+          data.negative_control_ct_upper,
+          data.submission_num,
+        ]
+      );
     } else {
       // Update if found
-      pool.query(`
-        UPDATE public.sample_status_information
+      await pool.query(
+        `UPDATE public.sample_status_information
         SET
-          cut_date = '${data.cut_date}',
-          cut_date_initials = '${data.cut_date_initials}', 
-          scale_verification_lower = ${data.scale_verification_lower},
-          scale_verification_upper = ${data.scale_verification_upper},
-          extraction_date = '${data.extraction_date}',
-          extraction_date_initials = '${data.extraction_date_initials}',
-          recut_date = '${data.recut_date}',
-          recut_date_initials = '${data.recut_date_initials}',
-          reextracted_date = '${data.reextracted_date}',
-          reextracted_date_initials = '${data.reextracted_date_initials}',
-          reason_for_reextraction = '${data.reason_for_reextraction}',
-          qcpr_complete_date = '${data.qcpr_complete_date}',
-          positive_control_ct_lower = ${data.positive_control_ct_lower},
-          positive_control_ct_upper = ${data.positive_control_ct_upper},
-          negative_control_ct_lower = ${data.negative_control_ct_lower},
-          negative_control_ct_upper = ${data.negative_control_ct_upper}
-        WHERE submission_num = '${data.submission_num}';`);
+          cut_date = $1,
+          cut_date_initials = $2, 
+          scale_verification_lower = $3,
+          scale_verification_upper = $4,
+          extraction_date = $5,
+          extraction_date_initials = $6,
+          recut_date = $7,
+          recut_date_initials = $8,
+          reextracted_date = $9,
+          reextracted_date_initials = $10,
+          reason_for_reextraction = $11,
+          qcpr_complete_date = $12,
+          positive_control_ct_lower = $13,
+          positive_control_ct_upper = $14,
+          negative_control_ct_lower = $15,
+          negative_control_ct_upper = $16
+        WHERE submission_num = $17;`,
+        [
+          data.cut_date,
+          data.cut_date_initials,
+          data.scale_verification_lower,
+          data.scale_verification_upper,
+          data.extraction_date,
+          data.extraction_date_initials,
+          data.recut_date,
+          data.recut_date_initials,
+          data.reextracted_date,
+          data.reextracted_date_initials,
+          data.reason_for_reextraction,
+          data.qcpr_complete_date,
+          data.positive_control_ct_lower,
+          data.positive_control_ct_upper,
+          data.negative_control_ct_lower,
+          data.negative_control_ct_upper,
+          data.submission_num,
+        ]
+      );
     }
   } catch (err) {
     return res.status(200).json({

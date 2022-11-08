@@ -15,7 +15,7 @@ import { API_PROGRESS } from "../../../../utils/constants";
 import axios from "axios";
 import { validate, VALIDATE_TYPES } from "../../../../utils/validator";
 
-const EditSample = ({ isOpen, onClose, submissionNum }) => {
+const EditSample = ({ onClose, submissionNum }) => {
   const theme = useTheme();
   const [formData, setFormData] = React.useState({});
   const [errors, setErrors] = React.useState({});
@@ -25,11 +25,11 @@ const EditSample = ({ isOpen, onClose, submissionNum }) => {
     msg: ""
   });
 
-  const fetchFormStatus = async () => {
+  const fetchFormStatus = async (submissionNum) => {
     try {
       // NOTE: Using fake submission number for now
       const res = await axios.post("http://localhost:8000/api/form/status", {
-        submission_num: "123ABC123"
+        submission_num: submissionNum
       });
       if (!res || !res.data || !res.data.data) {
         // New form status
@@ -43,7 +43,8 @@ const EditSample = ({ isOpen, onClose, submissionNum }) => {
 
   // Fetch form status
   React.useEffect(() => {
-    submissionNum && fetchFormStatus();
+    setFormData({ ...formData, submission_num: submissionNum });
+    submissionNum && fetchFormStatus(submissionNum);
   }, [submissionNum]);
 
   // Return nothing if no data provided
@@ -121,7 +122,7 @@ const EditSample = ({ isOpen, onClose, submissionNum }) => {
         title="Form Status"
         onClose={() => setApiProgress({ error: 0, msg: "", progress: API_PROGRESS.INIT })}
       />
-      <Modal open={isOpen} onClose={onClose} sx={{ zIndex: 80 }}>
+      <Modal open={true} onClose={onClose} sx={{ zIndex: 80 }}>
         <Box
           sx={{
             position: "absolute",

@@ -249,13 +249,14 @@ const ManageSample = () => {
           setPagination({ ...pagination, offset: e * pagination.limit });
         }}
       />
-      <EditSample
-        isOpen={openFormDetail}
-        onClose={handleClose}
-        submissionNum={
-          selectedFormData && selectedFormData.row && selectedFormData.row.submission_num
-        }
-      />
+      {openFormDetail && (
+        <EditSample
+          onClose={handleClose}
+          submissionNum={
+            selectedFormData && selectedFormData.row && selectedFormData.row.submission_num
+          }
+        />
+      )}
     </Grid>
   );
 };
