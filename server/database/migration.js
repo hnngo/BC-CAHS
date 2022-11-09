@@ -147,6 +147,7 @@ const migrate = async (pool) => {
   //   END $$;
   //   `
   // );
+
   await pool.query(
     `
     CREATE TABLE IF NOT EXISTS public.rt_qpcr_targets (
@@ -206,8 +207,8 @@ const migrate = async (pool) => {
       qcpr_complete_date TIMESTAMP,
       positive_control_ct_lower NUMERIC(10, 1),
       positive_control_ct_upper NUMERIC(10, 1),
-      negative_control_ct_lower NUMERIC(10, 1),
-      negative_control_ct_upper NUMERIC(10, 1),
+      negative_control_ct_lower VARCHAR(30),
+      negative_control_ct_upper VARCHAR(30),
       submission_num VARCHAR(30) NOT NULL,
       UNIQUE(submission_num),
       FOREIGN KEY (submission_num) REFERENCES public.submission_details(submission_num)

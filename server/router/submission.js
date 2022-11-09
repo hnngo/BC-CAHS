@@ -16,13 +16,14 @@ const { sample_data, sample_status } = require("../mock/sample");
 router.get("/", async (req, res) => {
   const { limit = 20, offset = 0 } = req.query;
   const data = await poolAsync(`
-    SELECT sd.*, sad.*,
+    SELECT sd.*, sad.*, ssi.*,
       string_agg(rqt.rt_qpcr_target, ',') rt_qpcr_type
     FROM public.submission_details sd
     LEFT JOIN public.sample_details sad ON sd.submission_num = sad.submission_num
     LEFT JOIN public.submission_rt_qpcr srq ON srq.submission_num = sad.submission_num
     LEFT JOIN public.rt_qpcr_targets rqt ON rqt.rt_qpcr_id = srq.rt_qpcr_id
-    GROUP BY sd.submission_num, sad.sample_id
+    LEFT JOIN public.sample_status_information ssi ON ssi.submission_num = sad.submission_num
+    GROUP BY sd.submission_num, sad.sample_id, ssi.sample_status_id
     ORDER BY sd.receive_date
     OFFSET ${offset}
     LIMIT ${limit}
@@ -48,9 +49,9 @@ router.get("/", async (req, res) => {
  * Submit a form
  */
 router.post("/submit", async (req, res) => {
-  let data = req.body.data;
-  // let data = sample_data;
-  // data.submissionNum = "ABCD" + +Math.round(Math.random() * 10000).toString();
+  // let data = req.body.data;
+  let data = sample_data;
+  data.submissionNum = "ABCD" + +Math.round(Math.random() * 10000).toString();
 
   try {
     // main query
@@ -89,6 +90,8 @@ router.post("/submit", async (req, res) => {
         '${data.sampleOrigin}',
         '${data.submissionNum}');
     
+      INSERT INTO public.sample_status_information (submission_num)
+        VALUES('${data.submissionNum}');
     `;
 
     // get all rtqpcr id and targets
