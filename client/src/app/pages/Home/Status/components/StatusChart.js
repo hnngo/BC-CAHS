@@ -12,8 +12,11 @@ import {
   ResponsiveContainer
 } from "recharts";
 
+// import { useTheme } from "@mui/material/styles";
+
 const StatusChart = ({ data, onClick = () => {} }) => {
   if (!data) return null;
+  // const theme = useTheme();
 
   return (
     <ResponsiveContainer width="100%" height="100%">
