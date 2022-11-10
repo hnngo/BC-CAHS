@@ -49,9 +49,7 @@ router.get("/", async (req, res) => {
  * Submit a form
  */
 router.post("/submit", async (req, res) => {
-  // let data = req.body.data;
-  let data = sample_data;
-  data.submissionNum = "ABCD" + +Math.round(Math.random() * 10000).toString();
+  let data = req.body.data;
 
   try {
     // main query

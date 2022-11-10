@@ -88,6 +88,19 @@ const ManageSample = () => {
     setColumns(col);
   }, []);
 
+  const onUpdateSelectedForm = (newFormDate) => {
+    const selectedNum = selectedFormData.row.submission_num;
+    setData(
+      data.map((d) => {
+        if (d.submission_num == selectedNum) {
+          return { ...d, ...newFormDate };
+        } else {
+          return d;
+        }
+      })
+    );
+  };
+
   return (
     <Grid height={"100%"}>
       <DataGrid
@@ -146,6 +159,7 @@ const ManageSample = () => {
           submissionNum={
             selectedFormData && selectedFormData.row && selectedFormData.row.submission_num
           }
+          onUpdateSelectedForm={onUpdateSelectedForm}
         />
       )}
     </Grid>

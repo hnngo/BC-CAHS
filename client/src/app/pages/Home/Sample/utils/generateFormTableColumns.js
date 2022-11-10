@@ -1,6 +1,6 @@
 import React from "react";
 
-import { Tooltip, Chip, Grid, Stack } from "@mui/material";
+import { Chip, Stack } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 
 const generateDateSchema = ({ field, headerName, width }) => ({
@@ -116,191 +116,43 @@ const generateColSchema = ({ theme, setSelectedFormData, handleOpen }) => [
       );
     }
   },
-  {
-    field: "cut_date",
-    headerName: "Cut Date",
-    width: 150,
-    renderCell: (params) => {
-      if (!params.value) return params.value;
-
-      return (
-        <Grid container display="column" height={"100%"} marginY={1}>
-          <Grid item>{new Date(params.value).toLocaleDateString()}</Grid>
-          <Grid item>
-            <Stack direction="row" flexWrap={"wrap"}>
-              <Tooltip title="Scale Verification">
-                <Chip
-                  label={
-                    (params.row.scale_verification_lower || "N/A") +
-                    " - " +
-                    (params.row.scale_verification_upper || "N/A")
-                  }
-                  sx={{
-                    backgroundColor: theme.primary.dark,
-                    color: "#fff"
-                  }}
-                  variant="filled"
-                />
-              </Tooltip>
-            </Stack>
-          </Grid>
-          <Grid item>Signed off by: {params.row.cut_date_initials || "N/A"}</Grid>
-        </Grid>
-      );
-    },
-    valueFormatter: (params) => {
-      if (!params.value) return params.value;
-
-      let date = new Date(params.value);
-      return date.toLocaleDateString();
-    },
-    valueGetter: (params) => {
-      if (!params.value) return params.value;
-
-      return new Date(params.value);
-    }
-  },
-  {
-    field: "extraction_date",
-    headerName: "Extraction Date",
-    width: 150,
-    renderCell: (params) => {
-      if (!params.value) return params.value;
-
-      return (
-        <Grid container display="column" height={"100%"} marginY={1}>
-          <Grid item>{new Date(params.value).toLocaleDateString()}</Grid>
-          <Grid item>Signed off by: {params.row.extraction_date_initials || "N/A"}</Grid>
-        </Grid>
-      );
-    },
-    valueFormatter: (params) => {
-      if (!params.value) return params.value;
-
-      let date = new Date(params.value);
-      return date.toLocaleDateString();
-    },
-    valueGetter: (params) => {
-      if (!params.value) return params.value;
-
-      return new Date(params.value);
-    }
-  },
-  {
-    field: "recut_date",
-    headerName: "ReCut Date",
-    width: 150,
-    renderCell: (params) => {
-      if (!params.value) return params.value;
-
-      return (
-        <Grid container display="column" height={"100%"} marginY={1}>
-          <Grid item>{new Date(params.value).toLocaleDateString()}</Grid>
-          <Grid item>Signed off by: {params.row.recut_date_initials || "N/A"}</Grid>
-        </Grid>
-      );
-    },
-    valueFormatter: (params) => {
-      if (!params.value) return params.value;
-
-      let date = new Date(params.value);
-      return date.toLocaleDateString();
-    },
-    valueGetter: (params) => {
-      if (!params.value) return params.value;
-
-      return new Date(params.value);
-    }
-  },
-  {
-    field: "reextracted_date",
-    headerName: "ReExtraction Date",
-    width: 150,
-    renderCell: (params) => {
-      if (!params.value) return params.value;
-
-      return (
-        <Grid container display="column" height={"100%"} marginY={1}>
-          <Grid item>{new Date(params.value).toLocaleDateString()}</Grid>
-          <Grid item>Signed off by: {params.row.reextracted_date_initials || "N/A"}</Grid>
-          <Grid item>Reason: {params.row.reason_for_reextraction || "N/A"}</Grid>
-        </Grid>
-      );
-    },
-    valueFormatter: (params) => {
-      if (!params.value) return params.value;
-
-      let date = new Date(params.value);
-      return date.toLocaleDateString();
-    },
-    valueGetter: (params) => {
-      if (!params.value) return params.value;
-
-      return new Date(params.value);
-    }
-  },
-  {
-    field: "qcpr_complete_date",
-    headerName: "QCPR Complete Date",
-    width: 150,
-    renderCell: (params) => {
-      if (!params.value) return params.value;
-
-      return (
-        <Grid container display="column" height={"100%"} marginY={1}>
-          <Grid item>{new Date(params.value).toLocaleDateString()}</Grid>
-          <Grid item>
-            <Stack direction="row" flexWrap={"wrap"}>
-              <Tooltip title="Positive Control Ct">
-                <Chip
-                  label={
-                    (params.row.positive_control_ct_lower || "N/A") +
-                    " - " +
-                    (params.row.positive_control_ct_upper || "N/A")
-                  }
-                  sx={{
-                    backgroundColor: theme.primary.dark,
-                    color: "#fff"
-                  }}
-                  variant="filled"
-                />
-              </Tooltip>
-            </Stack>
-          </Grid>
-          <Grid item>
-            <Stack direction="row" flexWrap={"wrap"}>
-              <Tooltip title="Negative Control Ct">
-                <Chip
-                  label={
-                    (params.row.negative_control_ct_lower || "N/A") +
-                    " - " +
-                    (params.row.negative_control_ct_upper || "N/A")
-                  }
-                  sx={{
-                    backgroundColor: theme.primary.dark,
-                    color: "#fff"
-                  }}
-                  variant="filled"
-                />
-              </Tooltip>
-            </Stack>
-          </Grid>
-          <Grid item>Signed off by: {params.row.reextracted_date_initials || "N/A"}</Grid>
-        </Grid>
-      );
-    },
-    valueFormatter: (params) => {
-      if (!params.value) return params.value;
-
-      let date = new Date(params.value);
-      return date.toLocaleDateString();
-    },
-    valueGetter: (params) => {
-      if (!params.value) return params.value;
-
-      return new Date(params.value);
-    }
-  }
+  generateDateSchema({ field: "cut_date", headerName: "Cut Date", width: 100 }),
+  generateCapitalizedSchema({
+    field: "cut_date_initials",
+    headerName: "Cut Date signed off by",
+    width: 150
+  }),
+  { field: "scale_verification_lower", headerName: "Scale Verification Lower", width: 150 },
+  { field: "scale_verification_upper", headerName: "Scale Verification Upper", width: 150 },
+  generateDateSchema({ field: "extraction_date", headerName: "Extraction Date", width: 130 }),
+  generateCapitalizedSchema({
+    field: "extraction_date_initials",
+    headerName: "Extraction Date signed off by",
+    width: 150
+  }),
+  generateDateSchema({ field: "recut_date", headerName: "ReCut Date", width: 130 }),
+  generateCapitalizedSchema({
+    field: "recut_date_initials",
+    headerName: "ReCut Date signed off by",
+    width: 150
+  }),
+  generateDateSchema({ field: "reextracted_date", headerName: "ReExtraction Date", width: 130 }),
+  generateCapitalizedSchema({
+    field: "reextracted_date_initials",
+    headerName: "ReExtraction Date signed off by",
+    width: 150
+  }),
+  { field: "reason_for_reextraction", headerName: "ReExtraction Reason", width: 150 },
+  generateDateSchema({ field: "qcpr_complete_date", headerName: "QCPR Complete Date", width: 130 }),
+  generateCapitalizedSchema({
+    field: "qcpr_complete_date_initials",
+    headerName: "QCPR Complete Date signed off by",
+    width: 150
+  }),
+  { field: "positive_control_ct_lower", headerName: "Positive Control Ct Lower", width: 150 },
+  { field: "positive_control_ct_upper", headerName: "Positive Control Ct Upper", width: 150 },
+  { field: "negative_control_ct_lower", headerName: "Negativ Control Ct Lower", width: 150 },
+  { field: "negative_control_ct_upper", headerName: "Negativ Control Ct Upper", width: 150 }
 ];
 
 export default generateColSchema;

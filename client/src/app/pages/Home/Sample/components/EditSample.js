@@ -15,9 +15,10 @@ import { API_PROGRESS } from "../../../../utils/constants";
 import axios from "axios";
 import { validate, VALIDATE_TYPES } from "../../../../utils/validator";
 
-const EditSample = ({ onClose, submissionNum }) => {
+const EditSample = ({ onClose, submissionNum, onUpdateSelectedForm }) => {
   const theme = useTheme();
   const [formData, setFormData] = React.useState({});
+  const [formOriginalData, setFormOriginalData] = React.useState({});
   const [errors, setErrors] = React.useState({});
   const [apiProgress, setApiProgress] = React.useState({
     progress: API_PROGRESS.INIT,
@@ -27,7 +28,6 @@ const EditSample = ({ onClose, submissionNum }) => {
 
   const fetchFormStatus = async (submissionNum) => {
     try {
-      // NOTE: Using fake submission number for now
       const res = await axios.post("http://localhost:8000/api/form/status", {
         submission_num: submissionNum
       });
@@ -35,6 +35,7 @@ const EditSample = ({ onClose, submissionNum }) => {
         // New form status
       } else {
         setFormData({ ...res.data.data });
+        setFormOriginalData({ ...res.data.data });
       }
     } catch (error) {
       // Show error
@@ -53,7 +54,24 @@ const EditSample = ({ onClose, submissionNum }) => {
   }
 
   const onChangeInput = (field, value) => {
-    setFormData({ ...formData, [field]: value });
+    const newFormDate = { ...formData };
+    if (
+      [
+        "cut_date",
+        "extraction_date",
+        "recut_date",
+        "reextracted_date",
+        "qcpr_complete_date"
+      ].includes(field)
+    ) {
+      // NOTE: Using test character
+      // Update the last signed off by
+      if (formOriginalData[field] && formOriginalData[field] != new Date(value).toISOString()) {
+        newFormDate[field + "_initials"] = "Test";
+      }
+    }
+
+    setFormData({ ...newFormDate, [field]: value });
   };
 
   const onChangeDoulbeInput = (field, target) => {
@@ -91,7 +109,6 @@ const EditSample = ({ onClose, submissionNum }) => {
   const onSubmit = async () => {
     setApiProgress({ ...apiProgress, progress: API_PROGRESS.REQ });
     try {
-      // NOTE: Using fake submission number for now
       const res = await axios.post("http://localhost:8000/api/form/status/update", formData);
       if (!res.data || !res.data.data || res.data.error) {
         setApiProgress({ error: res.data.error, msg: res.data.msg, progress: API_PROGRESS.FAILED });
@@ -101,6 +118,8 @@ const EditSample = ({ onClose, submissionNum }) => {
           msg: "Update form status successfully",
           progress: API_PROGRESS.SUCCESS
         });
+
+        onUpdateSelectedForm(formData);
       }
     } catch (error) {
       setApiProgress({
