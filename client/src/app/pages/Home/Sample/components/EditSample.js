@@ -15,6 +15,9 @@ import { API_PROGRESS } from "../../../../utils/constants";
 import axios from "axios";
 import { validate, VALIDATE_TYPES } from "../../../../utils/validator";
 
+// Context
+import { UserInfoContext } from "../../../../context/UserContext";
+
 const EditSample = ({ onClose, submissionNum, onUpdateSelectedForm }) => {
   const theme = useTheme();
   const [formData, setFormData] = React.useState({});
@@ -25,6 +28,8 @@ const EditSample = ({ onClose, submissionNum, onUpdateSelectedForm }) => {
     error: 0,
     msg: ""
   });
+
+  const userContext = React.useContext(UserInfoContext);
 
   const fetchFormStatus = async (submissionNum) => {
     try {
@@ -64,10 +69,10 @@ const EditSample = ({ onClose, submissionNum, onUpdateSelectedForm }) => {
         "qcpr_complete_date"
       ].includes(field)
     ) {
-      // NOTE: Using test character
       // Update the last signed off by
       if (formOriginalData[field] && formOriginalData[field] != new Date(value).toISOString()) {
-        newFormDate[field + "_initials"] = "Test";
+        newFormDate[field + "_initials"] =
+          userContext.userInfo.firstName + " " + userContext.userInfo.lastName;
       }
     }
 

@@ -5,7 +5,7 @@ import ErrorMessage from "./Home/components/ErrorMessage";
 import bgImage from "../../assets/images/background_auth.png";
 import { useTheme } from "@mui/material/styles";
 import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { createTheme } from "@mui/material/styles";
 import { ThemeProvider } from "@mui/material";
 import axios from "axios";
@@ -57,7 +57,7 @@ const Login = () => {
 
   /**
    * Handle submit action for login action.
-   * 
+   *
    * @param {*} e an event
    */
   const handleSubmit = (e) => {
@@ -66,8 +66,8 @@ const Login = () => {
   };
 
   /**
-   * Log user into Database through axios call. 
-   * 
+   * Log user into Database through axios call.
+   *
    * @returns a response either validating or rejecting user authentication.
    */
   const loginCall = async () => {
@@ -76,7 +76,7 @@ const Login = () => {
     });
     return response;
   };
-  
+
   /**
    * Check if login action is valid. Redirect if login action is valid,
    * else set Credential Error to True, rendering an error message.
@@ -96,18 +96,18 @@ const Login = () => {
   };
 
   /**
-   * Check if Session is active, redirecting to main page. 
+   * Check if Session is active, redirecting to main page.
    */
   const isUserLoggedin = async () => {
     var session = await axios.get("http://localhost:8000/api/auth/authUser", {
       withCredentials: true
     });
-    
+
     if (session.data.data.auth) {
-      navigate("/")
+      navigate("/");
     }
   };
-  
+
   /**
    * React Hook to check state of Session, redirect if session is authenticated.
    */
@@ -182,12 +182,16 @@ const Login = () => {
           </Button>
           <Grid container>
             <Grid item xs={1}></Grid>
-            <Grid item xs={7} pt={1}>
+            <Grid item xs={7} display="flex" alignItems={"center"}>
               <Typography>Don&apos;t have an anccount?</Typography>
             </Grid>
 
-            <Grid item xs={4} pt={1}>
-              <Button style={{ color: theme.secondary.dark }} as={Link} to={"/signup"}>
+            <Grid item xs={4}>
+              <Button
+                style={{ color: theme.secondary.dark }}
+                onClick={() => {
+                  navigate("/signup");
+                }}>
                 Sign Up
               </Button>
             </Grid>

@@ -47,7 +47,7 @@ router.post("/login", async (req, res) => {
                WHERE username = '${username}'`;
 
   try {
-   // possibly ensure that session is not already in existence.
+    // possibly ensure that session is not already in existence.
 
     const data = await pool.query(usernameCheck);
     const user = data.rows;
@@ -65,6 +65,7 @@ router.post("/login", async (req, res) => {
           });
         } else if (result === true) {
           req.session.user = user[0];
+          delete req.session.user.password;
           req.session.auth = true;
           res.status(200).json({
             msg: "User signed in!",
@@ -93,66 +94,66 @@ router.post("/signup", async (req, res) => {
     // validate user input again
     let hashedPw = await bcrypt.hash(password, 10);
     await validateSignup(req.body)
-    .then((msg) => {
-      if (msg.length == 0) { // if there are no error messages returned
+      .then((msg) => {
+        if (msg.length == 0) {
+          // if there are no error messages returned
           // see if user with provided username already exists in database
           pool.query(
             `SELECT * FROM public.user
-            WHERE username = $1`, [username], (err, result) => {
-            if (err) {
-              console.log(err);
-            } else {
-              if (result.rows.length > 0) { // if username is a duplicate
-                res.send(
-                  {
+            WHERE username = $1`,
+            [username],
+            (err, result) => {
+              if (err) {
+                console.log(err);
+              } else {
+                if (result.rows.length > 0) {
+                  // if username is a duplicate
+                  res.send({
                     error: ERROR_CODE.AUTH_ACCOUNT_EXISTS,
                     msg: "Account with that username already exists",
                     data: {
-                      username: username
-                    }
-                  }
-                );
-              } else { // else, add user to database
-                pool.query(
-                  `INSERT INTO public.user (username, password, first_name, last_name)
+                      username: username,
+                    },
+                  });
+                } else {
+                  // else, add user to database
+                  pool.query(
+                    `INSERT INTO public.user (username, password, first_name, last_name)
                   VALUES ($1, $2, $3, $4)
-                  RETURNING username, password, first_name, last_name`, [username, hashedPw, first_name, last_name], (err, result) => {
-                  if (err) {
-                    console.log(err);
-                  } else {
-                    // send json as response if user signup was successful
-                    res.send(
-                      {
-                        error: ERROR_CODE.NO_ERROR,
-                        msg: "You have signed up successfully",
-                        data: {
-                          username: username,
-                          first_name: first_name,
-                          last_name: last_name
-                        }
+                  RETURNING username, password, first_name, last_name`,
+                    [username, hashedPw, first_name, last_name],
+                    (err, result) => {
+                      if (err) {
+                        console.log(err);
+                      } else {
+                        // send json as response if user signup was successful
+                        res.send({
+                          error: ERROR_CODE.NO_ERROR,
+                          msg: "You have signed up successfully",
+                          data: {
+                            username: username,
+                            first_name: first_name,
+                            last_name: last_name,
+                          },
+                        });
                       }
-                      );
-                  }
+                    }
+                  );
                 }
-                );
-        
               }
             }
-          }
           );
-          
-      } else { // if there is some sort of error
-        res.send(msg);
-      }
-
-    }).catch((err) => {
-      console.log(err);
-    })
-  }
-  catch (err){
+        } else {
+          // if there is some sort of error
+          res.send(msg);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  } catch (err) {
     console.log(err);
   }
-  
 });
 
 /**
