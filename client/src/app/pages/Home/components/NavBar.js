@@ -1,12 +1,32 @@
 import React from "react";
-import { Box, Grid, Typography } from "@mui/material";
-import { useTheme } from "@mui/material/styles";
+import { useNavigate } from "react-router-dom";
 
 // Components
+import { Box, Grid, Typography, Popover } from "@mui/material";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+
+// Context
+import { UserInfoContext } from "../../../context/UserContext";
+
+// API
+import { apiLogout } from "../../../api/user";
+
+// Style
+import { useTheme } from "@mui/material/styles";
 
 const NavBar = () => {
   const theme = useTheme();
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const userContext = React.useContext(UserInfoContext);
+  const navigate = useNavigate();
+
+  const handlePopoverOpen = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handlePopoverClose = () => {
+    setAnchorEl(null);
+  };
 
   return (
     <Box
@@ -29,21 +49,50 @@ const NavBar = () => {
           </Typography>
         </Grid>
         <Grid marginRight={3}>
-          <Box display="flex">
-            <Typography variant="p" component="p" fontSize={20} marginRight={1}>
-              Hello
-            </Typography>
-            <Typography
-              variant="p"
-              component="p"
-              fontSize={20}
-              fontWeight={"800"}
-              color={theme.primary.dark}
-              marginRight={1}>
-              Shelby
-            </Typography>
-            <AccountCircleIcon sx={{ fontSize: "30px", color: theme.primary.dark }} />
-          </Box>
+          {userContext && userContext.userInfo.isFetched && userContext.userInfo.username && (
+            <Box display="flex">
+              <Typography variant="p" component="p" fontSize={20} marginRight={1}>
+                Hello
+              </Typography>
+              <Typography
+                variant="p"
+                component="p"
+                fontSize={20}
+                fontWeight={"800"}
+                color={theme.primary.dark}
+                marginRight={1}
+                sx={{ textTransform: "capitalize" }}>
+                {userContext.userInfo.firstName}
+              </Typography>
+              <AccountCircleIcon
+                sx={{ fontSize: "30px", color: theme.primary.dark }}
+                onClick={handlePopoverOpen}
+              />
+              {anchorEl && (
+                <Popover
+                  id="avatar-popover"
+                  anchorEl={anchorEl}
+                  onClose={handlePopoverClose}
+                  anchorOrigin={{
+                    vertical: "bottom",
+                    horizontal: "right"
+                  }}
+                  open={Boolean(anchorEl)}>
+                  <Typography
+                    sx={{ p: 1, width: "150px", cursor: "pointer" }}
+                    bgcolor={theme.primary.light}
+                    fontWeight={700}
+                    color={theme.primary.dark}
+                    onClick={async () => {
+                      await apiLogout();
+                      navigate("/login");
+                    }}>
+                    Log out
+                  </Typography>
+                </Popover>
+              )}
+            </Box>
+          )}
         </Grid>
       </Grid>
     </Box>

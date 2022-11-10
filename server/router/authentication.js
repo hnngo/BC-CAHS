@@ -61,18 +61,22 @@ router.post("/login", async (req, res) => {
       bcrypt.compare(password, user[0].password, (err, result) => {
         if (err) {
           res.status(500).json({
-            errMsg: "Server error",
+            error: ERROR_CODE.SERVER_ERROR,
+            msg: "Server error",
           });
         } else if (result === true) {
           req.session.user = user[0];
           delete req.session.user.password;
           req.session.auth = true;
           res.status(200).json({
+            error: 0,
             msg: "User signed in!",
+            data: user[0],
           });
         } else if (result != true) {
           res.status(400).json({
-            errMsg: "Wrong password! Please try again.",
+            error: ERROR_CODE.AUTH_WRONG_PASSWORD,
+            msg: "Wrong password! Please try again.",
           });
         }
       });
@@ -80,7 +84,8 @@ router.post("/login", async (req, res) => {
   } catch (error) {
     console.log(error);
     res.status(500).json({
-      errMsg: "Internal Server Error",
+      error: ERROR_CODE.SERVER_ERROR,
+      msg: "Internal Server Error",
     });
   }
 });
@@ -160,8 +165,8 @@ router.post("/signup", async (req, res) => {
  * Log out
  */
 router.post("/logout", (req, res) => {
-  req.logout();
-  res.render("/authentication", { msg: "You have been logged out." });
+  req.session.destroy();
+  res.send({ error: 0 });
 });
 
 module.exports = router;

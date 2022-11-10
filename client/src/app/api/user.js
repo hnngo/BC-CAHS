@@ -7,3 +7,7 @@ export const apiGetMyUserInfo = () => {
 export const apiLogout = () => {
   return post("http://localhost:8000/api/auth/logout");
 };
+
+export const apiLogin = (data) => {
+  return post("http://localhost:8000/api/auth/login", data);
+};

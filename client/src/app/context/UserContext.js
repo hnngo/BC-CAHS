@@ -24,7 +24,7 @@ export function UserInfoProvider({ children }) {
   const getUserInfo = React.useCallback(async () => {
     const { error, data } = await apiGetMyUserInfo();
 
-    if (!error && data) {
+    if (!error && data && data.user && data.auth) {
       setUserInfo({
         ...userInfo,
         username: data.user.username || userInfo.username,

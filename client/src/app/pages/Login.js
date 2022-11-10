@@ -1,14 +1,24 @@
 import React from "react";
-import { Box, TextField, Typography, Button, Grid } from "@mui/material";
-import "./Login.css";
-import ErrorMessage from "./Home/components/ErrorMessage";
-import bgImage from "../../assets/images/background_auth.png";
-import { useTheme } from "@mui/material/styles";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { createTheme } from "@mui/material/styles";
-import { ThemeProvider } from "@mui/material";
+
+// Components
+import { Box, TextField, Typography, Button, Grid, ThemeProvider } from "@mui/material";
+import ErrorMessage from "./Home/components/ErrorMessage";
+
+// API
+import { apiLogin } from "../api/user";
+
+// Context
+import { UserInfoContext } from "../context/UserContext";
+
+// Utils
 import axios from "axios";
+
+// Style
+import { useTheme, createTheme } from "@mui/material/styles";
+import bgImage from "../../assets/images/background_auth.png";
+import "./Login.css";
 
 export const customTheme = createTheme({
   typography: {
@@ -32,6 +42,7 @@ export const customTheme = createTheme({
 const Login = () => {
   const theme = useTheme();
   const navigate = useNavigate();
+  const userContext = React.useContext(UserInfoContext);
 
   const loginPageStyle = {
     backgroundImage: `url(${bgImage})`,
@@ -70,29 +81,33 @@ const Login = () => {
    *
    * @returns a response either validating or rejecting user authentication.
    */
-  const loginCall = async () => {
-    const response = await axios.post("http://localhost:8000/api/auth/login", data, {
-      withCredentials: true
-    });
-    return response;
-  };
+  // const loginCall = async () => {
+  //   const response = await axios.post("http://localhost:8000/api/auth/login", data, {
+  //     withCredentials: true
+  //   });
+  //   return response;
+  // };
 
   /**
    * Check if login action is valid. Redirect if login action is valid,
    * else set Credential Error to True, rendering an error message.
    */
-  const checkUser = () => {
-    loginCall()
-      .then((res) => {
-        if (res.request.status === 200) {
-          setCredentialError(false);
-          navigate("/");
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-        setCredentialError(true);
+  const checkUser = async () => {
+    const { error, data: resData, msg } = await apiLogin(data);
+
+    if (!error && resData) {
+      setCredentialError(false);
+      userContext.setUserInfo({
+        username: resData.username,
+        userId: resData.userId,
+        firstName: resData.first_name,
+        lastName: resData.last_name,
+        isFetched: true
       });
+      navigate("/");
+    } else {
+      setCredentialError(msg);
+    }
   };
 
   /**
@@ -195,7 +210,7 @@ const Login = () => {
                 Sign Up
               </Button>
             </Grid>
-            {credentialError && <ErrorMessage />}
+            {credentialError && <ErrorMessage msg={credentialError} />}
           </Grid>
         </Box>
       </ThemeProvider>
