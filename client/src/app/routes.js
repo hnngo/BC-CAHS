@@ -9,15 +9,7 @@ import Status from "./pages/Home/Status";
 import ReportTemplates from "./pages/Home/ReportTemplates";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
-
-import QPCR  from "./pages/Home/Status/QPCR";
-import Virology from "./pages/Home/Status/Virology";
-import ELISA from './pages/Home/Status/ELISA';
-import ATPase from './pages/Home/Status/ATpase';
-
-
 import Test from "./pages/Test";
-
 
 
 const router = createBrowserRouter([
@@ -46,11 +38,6 @@ const router = createBrowserRouter([
         element: <ManageSample />
       },
       { path: "/status", element: <Status /> },
-      { path: "/status/QPCR", element: <QPCR /> },
-      { path: "/status/ELISA", element: <ELISA /> },
-      { path: "/status/Virology", element: <Virology /> },
-      { path: "/status/ATPase", element: <ATPase /> },
-      { path: "/templates", element: <ReportTemplates /> }
     ]
   }
 ]);
