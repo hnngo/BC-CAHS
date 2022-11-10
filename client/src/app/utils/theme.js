@@ -59,6 +59,9 @@ export const defaultTheme = createTheme({
     dark: "#0B8AC0",
     darker: ""
   },
+  // chart:{
+  //   first: 
+  // },
 
   typography: {
     fontFamily: [

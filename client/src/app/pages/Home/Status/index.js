@@ -34,10 +34,10 @@ const Status = () => {
 
   return (
     <Grid width="100%" height="100%" container>
-      <Grid item xs={7.7}>
+      <Grid item xs={7}>
         <StatusChart data={data} onClick={(label) => setSelectedAnalysis(label)} />
       </Grid>
-      <Grid item xs={4.3}>
+      <Grid item xs={5}>
         <DetailStatus
           selectedAnalysis={selectedAnalysis}
           data={formData.filter((form) => form.analysis_requested === selectedAnalysis)}

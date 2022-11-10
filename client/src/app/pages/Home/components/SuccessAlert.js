@@ -37,7 +37,7 @@ export default function AlertDialog(props) {
         </DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            {props.isDuplicate? "Please provide another username": "You may not log in using your credentials"}
+            {props.isDuplicate? "Please provide another username": "You may now log in using your credentials"}
           </DialogContentText>
         </DialogContent>
         <DialogActions>
