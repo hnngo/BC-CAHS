@@ -15,9 +15,13 @@ import { API_PROGRESS } from "../../../../utils/constants";
 import axios from "axios";
 import { validate, VALIDATE_TYPES } from "../../../../utils/validator";
 
-const EditSample = ({ isOpen, onClose, submissionNum }) => {
+// Context
+import { UserInfoContext } from "../../../../context/UserContext";
+
+const EditSample = ({ onClose, submissionNum, onUpdateSelectedForm }) => {
   const theme = useTheme();
   const [formData, setFormData] = React.useState({});
+  const [formOriginalData, setFormOriginalData] = React.useState({});
   const [errors, setErrors] = React.useState({});
   const [apiProgress, setApiProgress] = React.useState({
     progress: API_PROGRESS.INIT,
@@ -25,16 +29,18 @@ const EditSample = ({ isOpen, onClose, submissionNum }) => {
     msg: ""
   });
 
-  const fetchFormStatus = async () => {
+  const userContext = React.useContext(UserInfoContext);
+
+  const fetchFormStatus = async (submissionNum) => {
     try {
-      // NOTE: Using fake submission number for now
       const res = await axios.post("http://localhost:8000/api/form/status", {
-        submission_num: "123ABC123"
+        submission_num: submissionNum
       });
       if (!res || !res.data || !res.data.data) {
         // New form status
       } else {
         setFormData({ ...res.data.data });
+        setFormOriginalData({ ...res.data.data });
       }
     } catch (error) {
       // Show error
@@ -43,7 +49,8 @@ const EditSample = ({ isOpen, onClose, submissionNum }) => {
 
   // Fetch form status
   React.useEffect(() => {
-    submissionNum && fetchFormStatus();
+    setFormData({ ...formData, submission_num: submissionNum });
+    submissionNum && fetchFormStatus(submissionNum);
   }, [submissionNum]);
 
   // Return nothing if no data provided
@@ -52,7 +59,24 @@ const EditSample = ({ isOpen, onClose, submissionNum }) => {
   }
 
   const onChangeInput = (field, value) => {
-    setFormData({ ...formData, [field]: value });
+    const newFormDate = { ...formData };
+    if (
+      [
+        "cut_date",
+        "extraction_date",
+        "recut_date",
+        "reextracted_date",
+        "qcpr_complete_date"
+      ].includes(field)
+    ) {
+      // Update the last signed off by
+      if (formOriginalData[field] && formOriginalData[field] != new Date(value).toISOString()) {
+        newFormDate[field + "_initials"] =
+          userContext.userInfo.firstName + " " + userContext.userInfo.lastName;
+      }
+    }
+
+    setFormData({ ...newFormDate, [field]: value });
   };
 
   const onChangeDoulbeInput = (field, target) => {
@@ -90,7 +114,6 @@ const EditSample = ({ isOpen, onClose, submissionNum }) => {
   const onSubmit = async () => {
     setApiProgress({ ...apiProgress, progress: API_PROGRESS.REQ });
     try {
-      // NOTE: Using fake submission number for now
       const res = await axios.post("http://localhost:8000/api/form/status/update", formData);
       if (!res.data || !res.data.data || res.data.error) {
         setApiProgress({ error: res.data.error, msg: res.data.msg, progress: API_PROGRESS.FAILED });
@@ -100,6 +123,8 @@ const EditSample = ({ isOpen, onClose, submissionNum }) => {
           msg: "Update form status successfully",
           progress: API_PROGRESS.SUCCESS
         });
+
+        onUpdateSelectedForm(formData);
       }
     } catch (error) {
       setApiProgress({
@@ -121,7 +146,7 @@ const EditSample = ({ isOpen, onClose, submissionNum }) => {
         title="Form Status"
         onClose={() => setApiProgress({ error: 0, msg: "", progress: API_PROGRESS.INIT })}
       />
-      <Modal open={isOpen} onClose={onClose} sx={{ zIndex: 80 }}>
+      <Modal open={true} onClose={onClose} sx={{ zIndex: 80 }}>
         <Box
           sx={{
             position: "absolute",

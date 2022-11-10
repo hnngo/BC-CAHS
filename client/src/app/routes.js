@@ -10,15 +10,12 @@ import ReportTemplates from "./pages/Home/ReportTemplates";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 
-import QPCR  from "./pages/Home/Status/QPCR";
+import QPCR from "./pages/Home/Status/QPCR";
 import Virology from "./pages/Home/Status/Virology";
-import ELISA from './pages/Home/Status/ELISA';
-import ATPase from './pages/Home/Status/ATpase';
-
+import ELISA from "./pages/Home/Status/ELISA";
+import ATPase from "./pages/Home/Status/ATpase";
 
 import Test from "./pages/Test";
-
-
 
 const router = createBrowserRouter([
   {
@@ -38,12 +35,12 @@ const router = createBrowserRouter([
     element: <Home />,
     children: [
       {
-        path: "/sample/login",
-        element: <LoginSample />
+        path: "/",
+        element: <ManageSample />
       },
       {
-        path: "/sample/manage",
-        element: <ManageSample />
+        path: "/sample/login",
+        element: <LoginSample />
       },
       { path: "/status", element: <Status /> },
       { path: "/status/QPCR", element: <QPCR /> },
@@ -52,6 +49,10 @@ const router = createBrowserRouter([
       { path: "/status/ATPase", element: <ATPase /> },
       { path: "/templates", element: <ReportTemplates /> }
     ]
+  },
+  {
+    path: "*",
+    element: <h1>404 Invalid Route</h1>
   }
 ]);
 

@@ -1,14 +1,14 @@
 import React from "react";
-import { Box, TextField, Typography, Button, Grid, useStepContext } from "@mui/material";
+import { Box, TextField, Typography, Button, Grid } from "@mui/material";
 import "./Login.css";
 import bgImage from "../../assets/images/background_auth.png";
 import { useTheme } from "@mui/material/styles";
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { createTheme } from "@mui/material/styles";
 import { ThemeProvider } from "@mui/material";
 import validateSignup from "../utils/validateSignup";
-import axios from "axios"; 
+import axios from "axios";
 import SuccessAlert from "./Home/components/SuccessAlert";
 
 export const customTheme = createTheme({
@@ -30,8 +30,9 @@ export const customTheme = createTheme({
   }
 });
 
-const Signup = () => {  
+const Signup = () => {
   const theme = useTheme();
+  const navigate = useNavigate();
 
   const loginPageStyle = {
     backgroundImage: `url(${bgImage})`,
@@ -64,32 +65,35 @@ const Signup = () => {
     setData({ ...data, [e.target.name]: e.target.value });
   };
 
-
   const handleSubmit = (e) => {
     e.preventDefault();
     setErrors(validateSignup(data));
 
-    if ((validateSignup(data))) {
+    if (validateSignup(data)) {
       console.log("inside submission logic");
-      axios.post('http://localhost:8000/api/auth/signup', data)
-      .then((response) => {
+      axios.post("http://localhost:8000/api/auth/signup", data).then((response) => {
         console.log(response.data);
         if (response.data.error == 109) {
           setResponse(true);
           console.log("response set to true");
           setValid(true);
         } else {
-          console.log("set to false"); 
+          console.log("set to false");
           setValid(true);
         }
-      })
+      });
       setValid(false);
       setResponse(false);
     }
   };
 
-  useEffect(() => {
-  }, [data.first_name, data.last_name, data.username, data.password, data.confirmPassword]);
+  useEffect(() => {}, [
+    data.first_name,
+    data.last_name,
+    data.username,
+    data.password,
+    data.confirmPassword
+  ]);
 
   return (
     <div className="Login-component" style={loginPageStyle}>
@@ -102,7 +106,7 @@ const Signup = () => {
           justifyContent="center">
           <Typography
             variant="h1"
-            paddingTop={5} 
+            paddingTop={5}
             color={theme.secondary.lighter}
             // textShadow={`2px 2px ${theme.primary.dark}`}
             fontWeight="bold">
@@ -125,15 +129,13 @@ const Signup = () => {
           marginTop={5}
           padding={3}
           backgroundColor="rgba(125, 216, 255, 0.8)">
-
           <TextField
             margin="normal"
             type={"text"}
             name="first_name"
             variant="outlined"
             placeholder="First name"
-            style={{ width: 300, height: 40
-             }}
+            style={{ width: 300, height: 40 }}
             InputProps={{ inputProps: { style: { color: theme.primary.dark } } }}
             value={data.first_name}
             onChange={changeHandler}
@@ -146,8 +148,7 @@ const Signup = () => {
             name="last_name"
             variant="outlined"
             placeholder="Last name"
-            style={{ width: 300, height: 40
-             }}
+            style={{ width: 300, height: 40 }}
             InputProps={{ inputProps: { style: { color: theme.primary.dark } } }}
             value={data.last_name}
             onChange={changeHandler}
@@ -160,8 +161,7 @@ const Signup = () => {
             name="username"
             variant="outlined"
             placeholder="Username"
-            style={{ width: 300, height: 40
-             }}
+            style={{ width: 300, height: 40 }}
             InputProps={{ inputProps: { style: { color: theme.primary.dark } } }}
             value={data.username}
             onChange={changeHandler}
@@ -174,8 +174,7 @@ const Signup = () => {
             type={"password"}
             variant="outlined"
             placeholder="Password"
-            style={{ width: 300, height: 40
-             }}
+            style={{ width: 300, height: 40 }}
             value={data.password}
             onChange={changeHandler}
           />
@@ -187,8 +186,7 @@ const Signup = () => {
             type={"password"}
             variant="outlined"
             placeholder="Confirm Password"
-            style={{ width: 300, height: 40
-             }}
+            style={{ width: 300, height: 40 }}
             value={data.confirmPassword}
             onChange={changeHandler}
           />
@@ -197,8 +195,7 @@ const Signup = () => {
           <Button
             sx={{ marginTop: 3 }}
             variant="contained"
-            style={{ width: 300, height: 40
-              , background: theme.secondary.dark }}
+            style={{ width: 300, height: 40, background: theme.secondary.dark }}
             type="submit"
             onClick={handleSubmit}>
             Signup
@@ -211,13 +208,17 @@ const Signup = () => {
             </Grid>
 
             <Grid item xs={3} pt={1}>
-              <Button style={{ color: theme.secondary.dark }} as={Link} to={"/login"}>
+              <Button
+                style={{ color: theme.secondary.dark }}
+                onClick={() => {
+                  navigate("/login");
+                }}>
                 Login
               </Button>
             </Grid>
           </Grid>
         </Box>
-        {isValid && <SuccessAlert isDuplicate={response}/>}
+        {isValid && <SuccessAlert isDuplicate={response} />}
       </ThemeProvider>
     </div>
   );
