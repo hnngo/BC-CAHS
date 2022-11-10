@@ -1,124 +1,110 @@
 import React from "react";
 
 // Components
-import { DataGrid } from "@mui/x-data-grid";
+import {
+  DataGrid,
+  GridToolbarContainer,
+  GridToolbarColumnsButton,
+  GridToolbarFilterButton,
+  GridToolbarExport
+} from "@mui/x-data-grid";
 import EditSample from "./components/EditSample";
-import { Chip, Grid, Stack } from "@mui/material";
+import { Grid } from "@mui/material";
 import { styled, useTheme } from "@mui/material/styles";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
 import FilterAltIcon from "@mui/icons-material/FilterAlt";
-import EditIcon from "@mui/icons-material/Edit";
 
 // Utils
-import { getMockFormData } from "../../../../mocks/mock-sample";
+import axios from "axios";
+import generateFormTableColumns from "./utils/generateFormTableColumns";
+import { API_PROGRESS } from "../../../utils/constants";
+
+function CustomToolbar() {
+  return (
+    <GridToolbarContainer>
+      <GridToolbarColumnsButton />
+      <GridToolbarFilterButton />
+      <GridToolbarExport />
+    </GridToolbarContainer>
+  );
+}
 
 const ManageSample = () => {
   const theme = useTheme();
-  const [data, setData] = React.useState(null);
+  const [data, setData] = React.useState([]);
+  const [pagination, setPagination] = React.useState({
+    limit: 20,
+    offset: 0,
+    total: 20
+  });
   const [columns, setColumns] = React.useState([]);
   const [openFormDetail, setOpenFormDetail] = React.useState(false);
   const [selectedFormData, setSelectedFormData] = React.useState(null);
+  const [apiProgress, setApiProgress] = React.useState({
+    progress: API_PROGRESS.INIT
+  });
 
   const handleOpen = () => setOpenFormDetail(true);
   const handleClose = () => setOpenFormDetail(false);
 
+  const fetchForm = async () => {
+    // If the offset is less than data length (go previous page) then just ignore
+    if (data.length > pagination.offset) {
+      return;
+    }
+
+    setApiProgress({ apiProgress: API_PROGRESS.REQ });
+    const res = await axios.get(
+      `http://localhost:8000/api/form?offset=${pagination.offset}&limit=${pagination.limit}`,
+      {
+        withCredentials: true
+      }
+    );
+
+    setApiProgress({ apiProgress: API_PROGRESS.SUCCESS });
+    if (res.data && res.data.data && res.data.data.forms) {
+      const newData = [...data];
+      newData.splice(pagination.offset, 0, ...res.data.data.forms);
+      setData(newData);
+      setPagination({ ...pagination, total: +res.data.data.total });
+    }
+  };
+
   React.useEffect(() => {
-    // NOTE: Using mock data for now
-    setData(getMockFormData(100));
+    fetchForm();
   }, []);
 
   React.useEffect(() => {
-    const col = [
-      {
-        field: "action",
-        headerName: "Action",
-        width: 120,
-        renderCell: (params) => {
-          return (
-            <Stack direction="row" flexWrap={"wrap"}>
-              <Chip
-                icon={<EditIcon sx={{ fill: theme.primary.white, fontSize: "16px" }} />}
-                label={"Edit"}
-                sx={{
-                  backgroundColor: theme.primary.dark,
-                  color: "#fff",
-                  padding: 1,
-                  cursor: "pointer"
-                }}
-                variant="filled"
-                onClick={() => {
-                  setSelectedFormData(params);
-                  handleOpen();
-                }}
-              />
-            </Stack>
-          );
-        }
-      },
-      { field: "submission_num", headerName: "Submission #", width: 120 },
-      {
-        field: "receipt_date",
-        headerName: "Date Received",
-        width: 140,
-        valueFormatter: (params) => {
-          return new Date(params.value).toLocaleDateString();
-        },
-        valueGetter: (params) => {
-          return new Date(params.value);
-        }
-      },
-      { field: "sampling_time_submission", headerName: "Time Received", width: 120 },
-      { field: "bc_cahs_receiver_first_name", headerName: "Receiver First Name", width: 150 },
-      { field: "bc_cahs_receiver_last_name", headerName: "Receiver Last Name", width: 150 },
-      { field: "company_name", headerName: "Company", width: 100 },
-      { field: "submitter", headerName: "Submitter" },
-      { field: "contact_phone_num", headerName: "Contact Phone #", width: 130 },
-      { field: "client_case_num", headerName: "Client Case #", width: 110 },
-      { field: "sampling_date", headerName: "Sampling Date", width: 120 },
-      { field: "sampling_location", headerName: "Sampling Location", width: 140 },
-      { field: "bc_cahs_custodian_initials", headerName: "BC CAHS Custodian", width: 160 },
-      { field: "bc_cahs_p_i", headerName: "BC CAHS P.I.", width: 120 },
-      { field: "bc_cahs_project", headerName: "BC CAHS Projcet", width: 150 },
-      { field: "num_of_samples", headerName: "# of Sample", width: 120 },
-      { field: "species", headerName: "Sample Species", width: 150 },
-      { field: "sample_type", headerName: "Sample Type", width: 120 },
-      { field: "sample_origin", headerName: "Sample Origin", width: 130 },
-      { field: "sample_condition", headerName: "Sample Condition", width: 150 },
-      { field: "other_details", headerName: "Sample Details", width: 140 },
+    fetchForm();
+  }, [pagination.offset]);
 
-      { field: "analysis_requested", headerName: "Analysis Requested", width: 140 },
-      {
-        field: "rt_qpcr_type",
-        headerName: "RT-qPCR Targets",
-        width: 200,
-        renderCell: (params) => {
-          return (
-            <Stack direction="row" flexWrap={"wrap"}>
-              {(params.value || []).map((v) => (
-                <Chip
-                  key={v}
-                  label={v}
-                  sx={{ backgroundColor: theme.primary.dark, color: "#fff", margin: 0.5 }}
-                  variant="filled"
-                />
-              ))}
-            </Stack>
-          );
-        }
-      }
-    ];
+  React.useEffect(() => {
+    const col = generateFormTableColumns({ theme, handleOpen, setSelectedFormData });
     col.forEach((c) => {
       c.headerClassName = "sample-form-table-header";
     });
     setColumns(col);
   }, []);
 
+  const onUpdateSelectedForm = (newFormDate) => {
+    const selectedNum = selectedFormData.row.submission_num;
+    setData(
+      data.map((d) => {
+        if (d.submission_num == selectedNum) {
+          return { ...d, ...newFormDate };
+        } else {
+          return d;
+        }
+      })
+    );
+  };
+
   return (
     <Grid height={"100%"}>
       <DataGrid
-        loading={!data}
+        loading={!data || apiProgress.progress === API_PROGRESS.REQ}
         components={{
           ColumnMenuIcon: styled(MoreVertIcon)({
             fill: theme.primary.white
@@ -131,13 +117,21 @@ const ManageSample = () => {
           }),
           ColumnFilteredIcon: styled(FilterAltIcon)({
             fill: theme.primary.white
-          })
+          }),
+          Toolbar: CustomToolbar
         }}
         sx={{
           "& .sample-form-table-header": {
             backgroundColor: theme.primary.dark,
             color: theme.primary.white,
             fontWeight: "800"
+          },
+          "& .MuiDataGrid-toolbarContainer": {
+            backgroundColor: theme.primary.dark,
+            fontWeight: "800",
+            "& button": {
+              color: theme.primary.white
+            }
           },
           "& .sample-form-table-row": {
             backgroundColor: theme.primary.standard
@@ -153,12 +147,21 @@ const ManageSample = () => {
         rowsPerPageOptions={[20]}
         getRowHeight={() => "auto"}
         getRowClassName={() => "sample-form-table-row"}
+        getRowId={(e) => e.submission_num}
+        rowCount={pagination.total}
+        onPageChange={(e) => {
+          setPagination({ ...pagination, offset: e * pagination.limit });
+        }}
       />
-      <EditSample
-        isOpen={openFormDetail}
-        onClose={handleClose}
-        data={selectedFormData && selectedFormData.row}
-      />
+      {openFormDetail && (
+        <EditSample
+          onClose={handleClose}
+          submissionNum={
+            selectedFormData && selectedFormData.row && selectedFormData.row.submission_num
+          }
+          onUpdateSelectedForm={onUpdateSelectedForm}
+        />
+      )}
     </Grid>
   );
 };

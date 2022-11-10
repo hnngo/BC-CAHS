@@ -1,41 +1,23 @@
-const { application } = require("express");
 const express = require("express");
 const router = express.Router();
-const pool = require("../database");
-const cookieParser = require("cookie-parser");
+const { pool } = require("../database");
 const session = require("express-session");
-const bodyParser = require("body-parser");
 const bcrypt = require("bcrypt");
-
-
-var client = null;
-
-/**
- * Connect with Pool.
- */
-(async () => {
-  client = await pool.connect();
-})();
-
-/**
-* The pool will emit an error on behalf of any idle clients
-* it contains if a backend error or network partition happens
-*/
-pool.on('error', (err, client) => {
-  console.error('Unexpected error on idle client', err);
-  process.exit(-1);
-})
+const { ERROR_CODE } = require("../utils/errorCodes");
+const validateSignup = require("../utils/validateSignup");
 
 // Time that a cookie lasts (8 hours in milliseconds)
-const cookieTTL = 100 * 60 * 60 * 8
+const cookieTTL = 100 * 60 * 60 * 8;
 
 //session middleware
-router.use(session({
-  secret: "thisIsMySecreteCode",
-  saveUninitialized: true,
-  cookie: {maxAge: cookieTTL},
-  resave:  false
-}));
+router.use(
+  session({
+    secret: "thisIsMySecreteCode",
+    saveUninitialized: true,
+    cookie: { maxAge: cookieTTL },
+    resave: false,
+  })
+);
 
 /**
  * Get users
@@ -47,13 +29,17 @@ router.get("/", (req, res) => {
 });
 
 /**
+ * Check if session is currently valid.
+ */
+router.get("/authUser", async (req, res) => {
+  res.json({ error: 0, data: req.session });
+});
+
+/**
  * Login in
  */
 router.post("/login", async (req, res) => {
-  // Max area
-
   // Think about the need of a unique username
-  console.log(req.session);
   const { username, password } = req.body;
 
   const usernameCheck = `SELECT *
@@ -61,45 +47,45 @@ router.post("/login", async (req, res) => {
                WHERE username = '${username}'`;
 
   try {
+    // possibly ensure that session is not already in existence.
 
-   // possibly ensure that session is not already in existence.
-
-    const data = await client.query(usernameCheck);
+    const data = await pool.query(usernameCheck);
     const user = data.rows;
 
     //confirms existence of user in DB.
     if (user.length == 0) {
-
       res.status(400).json({
-        error: "No user registered with that name. Sign up first."
+        error: "No user registered with that name. Sign up first.",
       });
-
     } else {
-        bcrypt.compare(password, user[0].password, (err, result) => {
-
-          if (err) {
-            res.status(500).json({
-              errMsg: "Server error",
-            });
-
-          } else if (result === true) {
-              req.session.user = user[0];
-              res.status(200).json({
-                msg: "User signed in!",
-              });
-
-          } else if (result != true) {
-              res.status(400).json({
-                errMsg: "Wrong password! Please try again."
-              });
-          }
-        })
-      }
+      bcrypt.compare(password, user[0].password, (err, result) => {
+        if (err) {
+          res.status(500).json({
+            error: ERROR_CODE.SERVER_ERROR,
+            msg: "Server error",
+          });
+        } else if (result === true) {
+          req.session.user = user[0];
+          delete req.session.user.password;
+          req.session.auth = true;
+          res.status(200).json({
+            error: 0,
+            msg: "User signed in!",
+            data: user[0],
+          });
+        } else if (result != true) {
+          res.status(400).json({
+            error: ERROR_CODE.AUTH_WRONG_PASSWORD,
+            msg: "Wrong password! Please try again.",
+          });
+        }
+      });
+    }
   } catch (error) {
-
     console.log(error);
     res.status(500).json({
-      errMsg: "Internal Server Error"
+      error: ERROR_CODE.SERVER_ERROR,
+      msg: "Internal Server Error",
     });
   }
 });
@@ -107,67 +93,80 @@ router.post("/login", async (req, res) => {
 /**
  * Sign up
  */
-router.use(bodyParser.json())
 router.post("/signup", async (req, res) => {
-  let { username, password, passwordConfirm } = req.body;
-  let validation = true;
-
-  if (!username || !password) {
-    validation = false;
-    res.send({ errMsg: "Username must be provided." });
-  }
-
-  if (password.length < 8) {
-    validation = false;
-    res.send({ errMsg: "Password must be at least 8 characters long." });
-  }
-
-  // if (password != passwordConfirm) {
-  //   validation = false;
-  //   res.send({ errMsg: "Password does not match." });
-  // }
-
-  if (validation) {
+  let { username, password, confirmPassword, first_name, last_name } = req.body;
+  try {
+    // validate user input again
     let hashedPw = await bcrypt.hash(password, 10);
-    console.log(hashedPw);
-    // res.send({ msg: "this is a signup success message" });
-
-    pool.query(
-      `SELECT * FROM public.user
-      WHERE username = $1`, [username], (err, result) => {
-      if (err) {
-        console.log(err);
-      } else {
-        console.log(result.rows);
-        if (result.rows.length > 0) {
-          res.send({ errMsg: "Username is already registered. Please provide another." });
-        } else {
+    await validateSignup(req.body)
+      .then((msg) => {
+        if (msg.length == 0) {
+          // if there are no error messages returned
+          // see if user with provided username already exists in database
           pool.query(
-            `INSERT INTO public.user (username, password)
-            VALUES ($1, $2)
-            RETURNING id, password`, [username, hashedPw], (err, result) => {
-            if (err) {
-              res.send({ errMsg: "error" });
-            } else {
-              res.send({ msg: "Signup complete. Please log in using your login credentials." })
+            `SELECT * FROM public.user
+            WHERE username = $1`,
+            [username],
+            (err, result) => {
+              if (err) {
+                console.log(err);
+              } else {
+                if (result.rows.length > 0) {
+                  // if username is a duplicate
+                  res.send({
+                    error: ERROR_CODE.AUTH_ACCOUNT_EXISTS,
+                    msg: "Account with that username already exists",
+                    data: {
+                      username: username,
+                    },
+                  });
+                } else {
+                  // else, add user to database
+                  pool.query(
+                    `INSERT INTO public.user (username, password, first_name, last_name)
+                  VALUES ($1, $2, $3, $4)
+                  RETURNING username, password, first_name, last_name`,
+                    [username, hashedPw, first_name, last_name],
+                    (err, result) => {
+                      if (err) {
+                        console.log(err);
+                      } else {
+                        // send json as response if user signup was successful
+                        res.send({
+                          error: ERROR_CODE.NO_ERROR,
+                          msg: "You have signed up successfully",
+                          data: {
+                            username: username,
+                            first_name: first_name,
+                            last_name: last_name,
+                          },
+                        });
+                      }
+                    }
+                  );
+                }
+              }
             }
-          }
-          )
+          );
+        } else {
+          // if there is some sort of error
+          res.send(msg);
         }
-      }
-    }
-    );
-
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  } catch (err) {
+    console.log(err);
   }
-
 });
 
 /**
  * Log out
  */
 router.post("/logout", (req, res) => {
-  req.logout();
-  res.render("/authentication", { msg: "You have been logged out." });
+  req.session.destroy();
+  res.send({ error: 0 });
 });
 
 module.exports = router;

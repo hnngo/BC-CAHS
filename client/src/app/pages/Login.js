@@ -1,12 +1,24 @@
 import React from "react";
-import { Box, TextField, Typography, Button, Grid } from "@mui/material";
-import "./Login.css";
-import bgImage from "../../assets/images/background_auth.png";
-import { useTheme } from "@mui/material/styles";
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import { createTheme } from "@mui/material/styles";
-import { ThemeProvider } from "@mui/material";
+import { useNavigate } from "react-router-dom";
+
+// Components
+import { Box, TextField, Typography, Button, Grid, ThemeProvider } from "@mui/material";
+import ErrorMessage from "./Home/components/ErrorMessage";
+
+// API
+import { apiLogin } from "../api/user";
+
+// Context
+import { UserInfoContext } from "../context/UserContext";
+
+// Utils
+import axios from "axios";
+
+// Style
+import { useTheme, createTheme } from "@mui/material/styles";
+import bgImage from "../../assets/images/background_auth.png";
+import "./Login.css";
 
 export const customTheme = createTheme({
   typography: {
@@ -27,20 +39,11 @@ export const customTheme = createTheme({
   }
 });
 
-const users = [
-  {
-    username: "admin1",
-    password: "12345678"
-  },
-  {
-    username: "admin2",
-    password: "012345678"
-  }
-];
-
 const Login = () => {
   const theme = useTheme();
-  // const history = useHistory();
+  const navigate = useNavigate();
+  const userContext = React.useContext(UserInfoContext);
+
   const loginPageStyle = {
     backgroundImage: `url(${bgImage})`,
     backgroundSize: "cover",
@@ -52,6 +55,8 @@ const Login = () => {
     left: 0
   };
 
+  const [credentialError, setCredentialError] = useState(false);
+
   const [data, setData] = useState({
     username: "",
     password: ""
@@ -61,29 +66,69 @@ const Login = () => {
     setData({ ...data, [e.target.name]: e.target.value });
   };
 
+  /**
+   * Handle submit action for login action.
+   *
+   * @param {*} e an event
+   */
   const handleSubmit = (e) => {
     e.preventDefault();
     checkUser();
-    console.log(checkUser());
   };
 
-  const checkUser = () => {
-    const usercheck = users.find(
-      (user) => user.username === data.username && user.password === data.password
-    );
-    if (usercheck) {
-      console.log("Login successful");
+  /**
+   * Log user into Database through axios call.
+   *
+   * @returns a response either validating or rejecting user authentication.
+   */
+  // const loginCall = async () => {
+  //   const response = await axios.post("http://localhost:8000/api/auth/login", data, {
+  //     withCredentials: true
+  //   });
+  //   return response;
+  // };
+
+  /**
+   * Check if login action is valid. Redirect if login action is valid,
+   * else set Credential Error to True, rendering an error message.
+   */
+  const checkUser = async () => {
+    const { error, data: resData, msg } = await apiLogin(data);
+
+    if (!error && resData) {
+      setCredentialError(false);
+      userContext.setUserInfo({
+        username: resData.username,
+        userId: resData.userId,
+        firstName: resData.first_name,
+        lastName: resData.last_name,
+        isFetched: true
+      });
+      navigate("/");
     } else {
-      console.log("Wrong password or username");
+      setCredentialError(msg);
     }
-    console.log(usercheck);
   };
 
-  useEffect(() => {
-    checkUser(users);
-  }, [data.username, data.password]);
+  /**
+   * Check if Session is active, redirecting to main page.
+   */
+  const isUserLoggedin = async () => {
+    var session = await axios.get("http://localhost:8000/api/auth/authUser", {
+      withCredentials: true
+    });
 
-  console.log(data);
+    if (session.data.data.auth) {
+      navigate("/");
+    }
+  };
+
+  /**
+   * React Hook to check state of Session, redirect if session is authenticated.
+   */
+  useEffect(() => {
+    isUserLoggedin();
+  }, []);
 
   return (
     <div className="Login-component" style={loginPageStyle}>
@@ -152,15 +197,20 @@ const Login = () => {
           </Button>
           <Grid container>
             <Grid item xs={1}></Grid>
-            <Grid item xs={7} pt={1}>
+            <Grid item xs={7} display="flex" alignItems={"center"}>
               <Typography>Don&apos;t have an anccount?</Typography>
             </Grid>
 
-            <Grid item xs={3} pt={1}>
-              <Button style={{ color: theme.secondary.dark }} as={Link} to={"/signup"}>
+            <Grid item xs={4}>
+              <Button
+                style={{ color: theme.secondary.dark }}
+                onClick={() => {
+                  navigate("/signup");
+                }}>
                 Sign Up
               </Button>
             </Grid>
+            {credentialError && <ErrorMessage msg={credentialError} />}
           </Grid>
         </Box>
       </ThemeProvider>

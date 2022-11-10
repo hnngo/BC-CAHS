@@ -13,9 +13,11 @@ import {
   FormControlLabel,
   OutlinedInput,
   Box,
-  Chip
+  Chip,
+  CircularProgress
 } from "@mui/material";
 import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
+import { TimePicker } from "@mui/x-date-pickers/TimePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { useTheme } from "@mui/material/styles";
@@ -35,7 +37,12 @@ const SampleInput = ({
   label,
   name,
   value,
+  errorMessage,
+  error,
   onChange = () => {},
+  onClick = () => {},
+  required,
+  onSelectionUpdate,
   type,
   labelStyle = {},
   options = {},
@@ -56,6 +63,7 @@ const SampleInput = ({
       // On autofill we get a stringified value.
       typeof value === "string" ? value.split(",") : value
     );
+    onSelectionUpdate(event);
   };
 
   return (
@@ -81,12 +89,16 @@ const SampleInput = ({
           {label}
         </Typography>
       </Grid>
+
       <Grid item xs={type ? 7 : 0} paddingX={2}>
         {type == "text" ? (
           <TextField
+            error={error}
+            helperText={errorMessage}
             name={name}
             value={value}
             onChange={onChange}
+            required={required}
             fullWidth
             size="small"
             placeholder={placeholder}
@@ -96,7 +108,9 @@ const SampleInput = ({
         ) : type == "select" ? (
           <Select
             defaultValue={value}
+            value={value}
             fullWidth
+            required={required}
             sx={{ backgroundColor: theme.primary.light }}
             onChange={onChange}>
             {Object.entries(options).map((option) => (
@@ -108,11 +122,21 @@ const SampleInput = ({
         ) : type == "text-area" ? (
           <TextareaAutosize
             minRows={5}
+            placeholder={placeholder}
+            required={required}
+            onChange={onChange}
             style={{ backgroundColor: theme.primary.light, width: "100%" }}
           />
         ) : type == "submit" ? (
-          <Button variant="contained" fullWidth sx={{ backgroundColor: theme.primary.dark }}>
+          <Button
+            variant="contained"
+            fullWidth
+            required={required}
+            sx={{ backgroundColor: theme.primary.dark }}
+            onClick={onClick}
+            disabled={props.loading}>
             {submitText}
+            {props.loading && <CircularProgress sx={{ marginLeft: "10px" }} size={"14px"} />}
           </Button>
         ) : type == "checkbox" ? (
           <FormGroup
@@ -133,6 +157,7 @@ const SampleInput = ({
             <Select
               defaultValue=""
               multiple
+              required={required}
               value={selectedOptions}
               onChange={handleChangeSelect}
               input={<OutlinedInput id="select-multiple-chip" />}
@@ -160,39 +185,55 @@ const SampleInput = ({
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <DesktopDatePicker
               className={"DatePicker-Div"}
-              inputFormat="MM/DD/YYYY"
+              inputFormat="DD/MM/YYYY"
               value={value}
+              required={required}
               closeOnSelect
               onChange={onChange}
               renderInput={(params) => <TextField {...params} />}
+            />
+          </LocalizationProvider>
+        ) : type == "time" ? (
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <TimePicker
+              className={"DatePicker-Div"}
+              label={placeholder}
+              required={required}
+              value={value}
+              onChange={onChange}
+              renderInput={(params) => <TextField {...params} fullWidth />}
             />
           </LocalizationProvider>
         ) : type == "doubleInput" ? (
           <Grid container>
             <Grid xs={6} item>
               <TextField
-                name={name}
+                name={name + "_lower"}
                 label={props.lowerText || "Lower"}
-                value={value[0] || null}
+                value={value[0] || ""}
                 onChange={onChange}
+                required={required}
                 fullWidth
                 size="small"
                 placeholder={placeholder}
                 disabled={disableText}
                 sx={{ backgroundColor: theme.primary.light }}
+                {...props}
               />
             </Grid>
             <Grid xs={6} item>
               <TextField
-                name={name}
+                name={name + "_upper"}
                 label={props.upperText || "Upper"}
-                value={value[1] || null}
+                value={value[1] || ""}
                 onChange={onChange}
+                required={required}
                 fullWidth
                 size="small"
                 placeholder={placeholder}
                 disabled={disableText}
                 sx={{ backgroundColor: theme.primary.light }}
+                {...props}
               />
             </Grid>
           </Grid>

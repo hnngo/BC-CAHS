@@ -4,9 +4,12 @@ import "./Login.css";
 import bgImage from "../../assets/images/background_auth.png";
 import { useTheme } from "@mui/material/styles";
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { createTheme } from "@mui/material/styles";
 import { ThemeProvider } from "@mui/material";
+import validateSignup from "../utils/validateSignup";
+import axios from "axios";
+import SuccessAlert from "./Home/components/SuccessAlert";
 
 export const customTheme = createTheme({
   typography: {
@@ -27,19 +30,9 @@ export const customTheme = createTheme({
   }
 });
 
-const users = [
-  {
-    username: "admin1",
-    password: "12345678"
-  },
-  {
-    username: "admin2",
-    password: "012345678"
-  }
-];
-
 const Signup = () => {
   const theme = useTheme();
+  const navigate = useNavigate();
 
   const loginPageStyle = {
     backgroundImage: `url(${bgImage})`,
@@ -49,13 +42,24 @@ const Signup = () => {
     height: "100vh",
     width: "100%",
     top: 0,
-    left: 0
+    left: 0,
+    overflow: "scroll",
+    paddingBottom: "5%"
   };
 
   const [data, setData] = useState({
     username: "",
-    password: ""
+    password: "",
+    confirmPassword: "",
+    first_name: "",
+    last_name: ""
   });
+
+  const [errors, setErrors] = useState({});
+
+  const [isValid, setValid] = useState(false);
+
+  const [response, setResponse] = useState(false);
 
   const changeHandler = (e) => {
     setData({ ...data, [e.target.name]: e.target.value });
@@ -63,27 +67,33 @@ const Signup = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    checkUser();
-    console.log(checkUser());
-  };
+    setErrors(validateSignup(data));
 
-  const checkUser = () => {
-    const usercheck = users.find(
-      (user) => user.username === data.username && user.password === data.password
-    );
-    if (usercheck) {
-      console.log("Login successful");
-    } else {
-      console.log("Wrong password or username");
+    if (validateSignup(data)) {
+      console.log("inside submission logic");
+      axios.post("http://localhost:8000/api/auth/signup", data).then((response) => {
+        console.log(response.data);
+        if (response.data.error == 109) {
+          setResponse(true);
+          console.log("response set to true");
+          setValid(true);
+        } else {
+          console.log("set to false");
+          setValid(true);
+        }
+      });
+      setValid(false);
+      setResponse(false);
     }
-    console.log(usercheck);
   };
 
-  useEffect(() => {
-    checkUser(users);
-  }, [data.username, data.password]);
-
-  console.log(data);
+  useEffect(() => {}, [
+    data.first_name,
+    data.last_name,
+    data.username,
+    data.password,
+    data.confirmPassword
+  ]);
 
   return (
     <div className="Login-component" style={loginPageStyle}>
@@ -122,14 +132,41 @@ const Signup = () => {
           <TextField
             margin="normal"
             type={"text"}
+            name="first_name"
+            variant="outlined"
+            placeholder="First name"
+            style={{ width: 300, height: 40 }}
+            InputProps={{ inputProps: { style: { color: theme.primary.dark } } }}
+            value={data.first_name}
+            onChange={changeHandler}
+          />
+          {errors.first_name && <p className="error">{errors.first_name}</p>}
+
+          <TextField
+            margin="normal"
+            type={"text"}
+            name="last_name"
+            variant="outlined"
+            placeholder="Last name"
+            style={{ width: 300, height: 40 }}
+            InputProps={{ inputProps: { style: { color: theme.primary.dark } } }}
+            value={data.last_name}
+            onChange={changeHandler}
+          />
+          {errors.last_name && <p className="error">{errors.last_name}</p>}
+
+          <TextField
+            margin="normal"
+            type={"text"}
             name="username"
             variant="outlined"
             placeholder="Username"
-            style={{ width: 300, height: 50 }}
+            style={{ width: 300, height: 40 }}
             InputProps={{ inputProps: { style: { color: theme.primary.dark } } }}
             value={data.username}
             onChange={changeHandler}
           />
+          {errors.username && <p className="error">{errors.username}</p>}
 
           <TextField
             margin="normal"
@@ -137,42 +174,51 @@ const Signup = () => {
             type={"password"}
             variant="outlined"
             placeholder="Password"
-            style={{ width: 300, height: 50 }}
+            style={{ width: 300, height: 40 }}
             value={data.password}
             onChange={changeHandler}
           />
+          {errors.password && <p className="error">{errors.password}</p>}
 
           <TextField
             margin="normal"
-            name="Confirm Password"
+            name="confirmPassword"
             type={"password"}
             variant="outlined"
             placeholder="Confirm Password"
-            style={{ width: 300, height: 50 }}
-            value={data.password}
+            style={{ width: 300, height: 40 }}
+            value={data.confirmPassword}
             onChange={changeHandler}
           />
+          {errors.confirmPassword && <p className="error">{errors.confirmPassword}</p>}
+
           <Button
             sx={{ marginTop: 3 }}
             variant="contained"
-            style={{ width: 300, height: 50, background: theme.secondary.dark }}
+            style={{ width: 300, height: 40, background: theme.secondary.dark }}
             type="submit"
             onClick={handleSubmit}>
-            Login
+            Signup
           </Button>
+
           <Grid container>
             <Grid item xs={1}></Grid>
             <Grid item xs={7} pt={1}>
-              <Typography>Already had an account?</Typography>
+              <Typography>Already have an account?</Typography>
             </Grid>
 
             <Grid item xs={3} pt={1}>
-              <Button style={{ color: theme.secondary.dark }} as={Link} to={"/login"}>
+              <Button
+                style={{ color: theme.secondary.dark }}
+                onClick={() => {
+                  navigate("/login");
+                }}>
                 Login
               </Button>
             </Grid>
           </Grid>
         </Box>
+        {isValid && <SuccessAlert isDuplicate={response} />}
       </ThemeProvider>
     </div>
   );

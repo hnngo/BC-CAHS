@@ -10,9 +10,8 @@ const SideBar = () => {
 
   return (
     <Box bgcolor={theme.primary.standard} height="100%" width="100%" padding={0} margin={0}>
-      <SideBarRow title="Sample" indent={0} bold to="/sample/manage" />
+      <SideBarRow title="Sample" indent={0} bold to="/" />
       <SideBarRow title="Login Sample" indent={1} to="/sample/login" />
-      <SideBarRow title="Manage Sample" indent={1} to="/sample/manage" />
 
       <SideBarRow title="Status" indent={0} bold to="/status" />
 

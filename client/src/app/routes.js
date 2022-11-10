@@ -9,9 +9,20 @@ import Status from "./pages/Home/Status";
 import ReportTemplates from "./pages/Home/ReportTemplates";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
+<<<<<<< HEAD
 import Test from "./pages/Test";
 
 
+=======
+
+import QPCR from "./pages/Home/Status/QPCR";
+import Virology from "./pages/Home/Status/Virology";
+import ELISA from "./pages/Home/Status/ELISA";
+import ATPase from "./pages/Home/Status/ATpase";
+
+import Test from "./pages/Test";
+
+>>>>>>> origin/main
 const router = createBrowserRouter([
   {
     path: "/login",
@@ -30,15 +41,19 @@ const router = createBrowserRouter([
     element: <Home />,
     children: [
       {
+        path: "/",
+        element: <ManageSample />
+      },
+      {
         path: "/sample/login",
         element: <LoginSample />
       },
-      {
-        path: "/sample/manage",
-        element: <ManageSample />
-      },
       { path: "/status", element: <Status /> },
     ]
+  },
+  {
+    path: "*",
+    element: <h1>404 Invalid Route</h1>
   }
 ]);
 

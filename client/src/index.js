@@ -1,17 +1,25 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import { RouterProvider } from "react-router-dom";
-import { ThemeProvider, CssBaseline } from "@mui/material";
 
+// Router
+import { RouterProvider } from "react-router-dom";
 import router from "./app/routes";
+
+// Material UI
+import { ThemeProvider, CssBaseline } from "@mui/material";
 import { defaultTheme } from "./app/utils/theme";
+
+// Contexts
+import { UserInfoProvider } from "./app/context/UserContext";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
     <ThemeProvider theme={defaultTheme}>
       <CssBaseline>
-        <RouterProvider router={router} />
+        <UserInfoProvider>
+          <RouterProvider router={router} />
+        </UserInfoProvider>
       </CssBaseline>
     </ThemeProvider>
   </React.StrictMode>
