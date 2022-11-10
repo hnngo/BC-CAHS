@@ -50,6 +50,8 @@ router.get("/", async (req, res) => {
  */
 router.post("/submit", async (req, res) => {
   let data = req.body.data;
+  // let data = sample_data;
+  // data.submissionNum = "ABCD" + Math.round(Math.random() * 10000);
 
   try {
     // main query

@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 // Components
 import {
@@ -45,6 +46,7 @@ const ManageSample = () => {
   const [apiProgress, setApiProgress] = React.useState({
     progress: API_PROGRESS.INIT
   });
+  const navigate = useNavigate();
 
   const handleOpen = () => setOpenFormDetail(true);
   const handleClose = () => setOpenFormDetail(false);
@@ -81,7 +83,14 @@ const ManageSample = () => {
   }, [pagination.offset]);
 
   React.useEffect(() => {
-    const col = generateFormTableColumns({ theme, handleOpen, setSelectedFormData });
+    const col = generateFormTableColumns({
+      theme,
+      handleOpen,
+      setSelectedFormData,
+      onClickEdit: () => {
+        navigate("/sample/login");
+      }
+    });
     col.forEach((c) => {
       c.headerClassName = "sample-form-table-header";
     });
@@ -143,7 +152,7 @@ const ManageSample = () => {
         rows={data || []}
         columns={columns}
         pageSize={20}
-        isRowSelectable={() => false}
+        isRowSelectable={() => true}
         rowsPerPageOptions={[20]}
         getRowHeight={() => "auto"}
         getRowClassName={() => "sample-form-table-row"}
