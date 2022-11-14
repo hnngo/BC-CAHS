@@ -48,6 +48,8 @@ export const defaultTheme = createTheme({
     dark: "#103B4E",
     darker: "",
 
+    contrast: "#5758BB",
+
     white: "#FFF"
   },
   secondary: {

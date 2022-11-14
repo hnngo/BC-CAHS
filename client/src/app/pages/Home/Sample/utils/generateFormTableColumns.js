@@ -35,11 +35,11 @@ const generateCapitalizedSchema = ({ field, headerName, width }) => ({
   }
 });
 
-const generateColSchema = ({ theme, setSelectedFormData, handleOpen }) => [
+const generateColSchema = ({ theme, setSelectedFormData, handleOpen, onClickEdit }) => [
   {
     field: "action",
     headerName: "Action",
-    width: 120,
+    width: 220,
     renderCell: (params) => {
       return (
         <Stack direction="row" flexWrap={"wrap"}>
@@ -51,6 +51,21 @@ const generateColSchema = ({ theme, setSelectedFormData, handleOpen }) => [
               color: "#fff",
               padding: 1,
               cursor: "pointer"
+            }}
+            variant="filled"
+            onClick={() => {
+              onClickEdit(params.row);
+            }}
+          />
+          <Chip
+            icon={<EditIcon sx={{ fill: theme.primary.white, fontSize: "16px" }} />}
+            label={"Status"}
+            sx={{
+              backgroundColor: theme.primary.contrast,
+              color: "#fff",
+              padding: 1,
+              cursor: "pointer",
+              marginLeft: "10px"
             }}
             variant="filled"
             onClick={() => {

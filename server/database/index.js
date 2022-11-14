@@ -18,8 +18,5 @@ const poolAsync = (...args) => {
       .catch(reject);
   });
 };
-// pool.query('SELECT * FROM users', (err, res) => {
-//   console.log(res);
-// })
 
 module.exports = { pool, poolAsync };

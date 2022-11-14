@@ -1,58 +1,43 @@
 import React, { useState } from "react";
-import { Grid, Modal, Box, Typography } from "@mui/material";
+
+// Hooks
+import { useSearchParams } from "react-router-dom";
+
+// API
+import {
+  apiGetFormBySubmissionNumber,
+  apiUpdateFormBySubmissionNumber,
+  apiSubmitForm
+} from "../../../api/form";
+
+// Components
+import { Grid, Modal, Box } from "@mui/material";
 import SampleInput from "../components/SampleInput";
+
+// Constants and Utils
 import { SAMPLE_CONDITION, SAMPLE_TYPE, ANALYSIS_REQUESTS, RT_QPCR_TARGETS } from "../constants";
-import axios from "axios";
 import {
   validateDate,
   validateTime,
   validateText,
   validateTextNum
 } from "../../../utils/validator";
+import { generateDefaultSampleState, convertSampleField } from "./utils/sampleFieldConversion";
 import { API_PROGRESS } from "../../../utils/constants";
 
+// Theme
 import { useTheme } from "@mui/material/styles";
 
 const Sample = () => {
   const theme = useTheme();
+  const [searchParams] = useSearchParams();
   const [open, setOpen] = useState(false);
   const [apiProgress, setApiProgress] = React.useState({
     progress: API_PROGRESS.INIT,
     error: 0,
     msg: " "
   });
-  const [submissionData, setSubmissionData] = React.useState({
-    submissionNum: null,
-    companyName: null,
-    submitter: null,
-    receiver: null,
-    receiveDate: new Date().toISOString().substring(0, 10),
-    submitTime: `${new Date().toISOString().replace(/T.*/, "")} ${new Date().toLocaleTimeString(
-      "en-US",
-      {
-        hour12: false
-      }
-    )}`,
-    clientPO: null,
-    clientCaseNum: null,
-    contactPhoneNum: null,
-    samplingDate: new Date().toISOString().substring(0, 10),
-    samplingLocation: null,
-    custodian: null,
-    PI: null,
-    BCCAHSProject: null,
-    initialStorage: null,
-    sampleNum: null,
-    sampleSpecies: null,
-    sampleType: null,
-    sampleOrigin: null,
-    sampleCondition: null,
-    sampleDetails: null,
-    requestedAnalysis: null,
-    rtqpcrTarget: null,
-    otherDescription: null,
-    comment: null
-  });
+  const [submissionData, setSubmissionData] = React.useState(generateDefaultSampleState());
 
   const [submissionErrors, setSubmissionErrors] = useState({
     submissionNum: "Please fill in field.",
@@ -75,6 +60,31 @@ const Sample = () => {
     requestedAnalysis: "Please fill in field.",
     rtqpcrTarget: "Please fill in field."
   });
+
+  const fetchFormBySubmissionNum = async (submissionNum) => {
+    try {
+      const { error, data } = await apiGetFormBySubmissionNumber(submissionNum);
+
+      if (!error && data && data.length == 1) {
+        setSubmissionData(convertSampleField(data[0]));
+      }
+    } catch (error) {
+      console.log(error);
+      //
+    }
+  };
+
+  // Fetch existed form for Editing purposes
+  React.useEffect(() => {
+    const editMode = searchParams.get("edit");
+    const selectedSubmissionNum = searchParams.get("submission_num");
+
+    if (editMode == "true" && selectedSubmissionNum) {
+      fetchFormBySubmissionNum(selectedSubmissionNum);
+    } else {
+      setSubmissionData(generateDefaultSampleState());
+    }
+  }, [searchParams]);
 
   const handleClose = () => {
     setOpen(false);
@@ -102,7 +112,6 @@ const Sample = () => {
       setSubmissionErrors({ ...submissionErrors, [name]: error });
     } else {
       setSubmissionData({ ...submissionData, [name]: value });
-      delete submissionErrors[name];
     }
   };
 
@@ -127,32 +136,34 @@ const Sample = () => {
 
   const onChangeSelectValue = (name, value) => {
     setSubmissionData({ ...submissionData, [name]: value });
-    delete submissionErrors[name];
   };
 
   const onChangeMultiSelectValue = (name, value) => {
     setSubmissionData({ ...submissionData, [name]: value });
-    delete submissionErrors[name];
   };
 
   const submitData = async (data) => {
+    // Update the errors
+    Object.keys(submissionErrors).forEach((k) => {
+      if (data[k] !== null) {
+        delete submissionErrors[k];
+      }
+    });
+
     if (Object.keys(submissionErrors).length == 0) {
-      const res = await axios.post(
-        "http://localhost:8000/api/form/submit",
-        { data: data },
-        {
-          headers: {
-            "Content-Type": "application/json",
-            "Access-Control-Allow-Origin": "*"
-          }
-        }
-      );
-      if (!res.data || !res.data.data || res.data.error) {
-        setApiProgress({ error: res.data.error, msg: res.data.msg, progress: API_PROGRESS.FAILED });
+      let res;
+      if (searchParams.get("edit") == "true") {
+        res = await apiUpdateFormBySubmissionNumber(data);
+      } else {
+        res = await apiSubmitForm(data);
+      }
+
+      if (res.error || !res.data) {
+        setApiProgress({ error: res.error, msg: res.msg, progress: API_PROGRESS.FAILED });
       } else {
         setApiProgress({
           error: 0,
-          msg: "Submit form status successfully",
+          msg: res.msg || "Submit form status successfully",
           progress: API_PROGRESS.SUCCESS
         });
         setSubmissionErrors({});
@@ -178,7 +189,6 @@ const Sample = () => {
             onChangeDateValue("receiveDate", e);
           }}
         />
-
         <SampleInput
           label={"Time Submitted"}
           name="submitTime"
@@ -191,12 +201,15 @@ const Sample = () => {
           label={"BC CAHS Receiver"}
           name="receiver"
           type="text"
+          value={submissionData.receiver || ""}
           onChange={(e) => onChangeTextValue(e.target.name, e.target.value)}
         />
         <SampleInput
           label={"BC CAHS Submission #"}
           name="submissionNum"
           type="text"
+          disableText={searchParams.get("edit") == "true"}
+          value={submissionData.submissionNum || ""}
           onChange={(e) => onChangeTextValue(e.target.name, e.target.value)}
         />
         <br />
@@ -205,30 +218,35 @@ const Sample = () => {
           label={"Company"}
           name="companyName"
           type="text"
+          value={submissionData.companyName || ""}
           onChange={(e) => onChangeTextValue(e.target.name, e.target.value)}
         />
         <SampleInput
           label={"Submitter"}
           name="submitter"
           type="text"
+          value={submissionData.submitter || ""}
           onChange={(e) => onChangeTextValue(e.target.name, e.target.value)}
         />
         <SampleInput
           label={"Contact Phone #"}
           name="contactPhoneNum"
           type="text"
+          value={submissionData.contactPhoneNum || ""}
           onChange={(e) => onChangeTextValue(e.target.name, e.target.value)}
         />
         <SampleInput
           label={"PO #"}
           name="clientPO"
           type="text"
+          value={submissionData.clientPO || ""}
           onChange={(e) => onChangeTextValue(e.target.name, e.target.value)}
         />
         <SampleInput
           label={"Client Case #"}
           name="clientCaseNum"
           type="text"
+          value={submissionData.clientCaseNum || ""}
           onChange={(e) => onChangeTextValue(e.target.name, e.target.value)}
         />
         <SampleInput
@@ -244,6 +262,7 @@ const Sample = () => {
           label={"Sampling Location"}
           name="samplingLocation"
           type="text"
+          value={submissionData.samplingLocation || ""}
           onChange={(e) => onChangeTextValue(e.target.name, e.target.value)}
         />
         <br />
@@ -252,24 +271,28 @@ const Sample = () => {
           label={"BC CAHS Custodian"}
           name="custodian"
           type="text"
+          value={submissionData.custodian || ""}
           onChange={(e) => onChangeTextValue(e.target.name, e.target.value)}
         />
         <SampleInput
           label={"BC CAHS P.I."}
           name="PI"
           type="text"
+          value={submissionData.PI || ""}
           onChange={(e) => onChangeTextValue(e.target.name, e.target.value)}
         />
         <SampleInput
           label={"BC CAHS Project"}
           name="BCCAHSProject"
           type="text"
+          value={submissionData.BCCAHSProject || ""}
           onChange={(e) => onChangeTextValue(e.target.name, e.target.value)}
         />
         <SampleInput
           label={"Initial Storage"}
           name="initialStorage"
           type="text"
+          value={submissionData.initialStorage || ""}
           onChange={(e) => onChangeTextValue(e.target.name, e.target.value)}
         />
       </Grid>
@@ -282,18 +305,21 @@ const Sample = () => {
           label={"# of Samples"}
           name="sampleNum"
           type="text"
+          value={submissionData.sampleNum || ""}
           onChange={(e) => onChangeTextValueNum(e.target.name, e.target.value)}
         />
         <SampleInput
           label={"Sample Species"}
           name="sampleSpecies"
           type="text"
+          value={submissionData.sampleSpecies || ""}
           onChange={(e) => onChangeTextValue(e.target.name, e.target.value)}
         />
         <SampleInput
           label={"Sample Type"}
           name="sampleType"
           type="text"
+          value={submissionData.sampleType || ""}
           onChange={(e) => onChangeTextValue(e.target.name, e.target.value)}
         />
         <SampleInput
@@ -316,6 +342,7 @@ const Sample = () => {
           label={"Sample Details"}
           name="sampleDetails"
           type="text"
+          value={submissionData.sampleDetails || ""}
           onChange={(e) => onChangeTextValue(e.target.name, e.target.value)}
         />
         <br />
@@ -335,7 +362,7 @@ const Sample = () => {
         <SampleInput
           label={"RT-qPCR Targets"}
           name="rtqpcrTarget"
-          value={submissionData.rtqpcrTarget || ""}
+          value={submissionData.rtqpcrTarget || []}
           type="multi-select"
           options={RT_QPCR_TARGETS}
           onSelectionUpdate={(e) => onChangeMultiSelectValue("rtqpcrTarget", e.target.value)}
@@ -353,6 +380,7 @@ const Sample = () => {
           name="comment"
           placeholder="Optional Comments"
           type="text-area"
+          value={submissionData.comment || ""}
           onChange={(e) => onChangeTextValue("comment", e.target.value)}
         />
         <br />
@@ -361,6 +389,7 @@ const Sample = () => {
           label=""
           name="submit"
           type="submit"
+          submitText={searchParams.get("edit") == "true" ? "Update" : "Submit"}
           onClick={() => submitData(submissionData)}
         />
       </Grid>

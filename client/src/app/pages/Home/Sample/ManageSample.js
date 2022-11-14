@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 // Components
 import {
@@ -45,6 +46,7 @@ const ManageSample = () => {
   const [apiProgress, setApiProgress] = React.useState({
     progress: API_PROGRESS.INIT
   });
+  const navigate = useNavigate();
 
   const handleOpen = () => setOpenFormDetail(true);
   const handleClose = () => setOpenFormDetail(false);
@@ -81,7 +83,14 @@ const ManageSample = () => {
   }, [pagination.offset]);
 
   React.useEffect(() => {
-    const col = generateFormTableColumns({ theme, handleOpen, setSelectedFormData });
+    const col = generateFormTableColumns({
+      theme,
+      handleOpen,
+      setSelectedFormData,
+      onClickEdit: (formData) => {
+        navigate(`/sample/login?edit=true&submission_num=${formData.submission_num}`);
+      }
+    });
     col.forEach((c) => {
       c.headerClassName = "sample-form-table-header";
     });
@@ -121,6 +130,11 @@ const ManageSample = () => {
           Toolbar: CustomToolbar
         }}
         sx={{
+          "& .MuiDataGrid-columnHeaders ": {
+            backgroundColor: theme.primary.dark,
+            color: theme.primary.white,
+            fontWeight: "800"
+          },
           "& .sample-form-table-header": {
             backgroundColor: theme.primary.dark,
             color: theme.primary.white,
@@ -143,7 +157,7 @@ const ManageSample = () => {
         rows={data || []}
         columns={columns}
         pageSize={20}
-        isRowSelectable={() => false}
+        isRowSelectable={() => true}
         rowsPerPageOptions={[20]}
         getRowHeight={() => "auto"}
         getRowClassName={() => "sample-form-table-row"}
