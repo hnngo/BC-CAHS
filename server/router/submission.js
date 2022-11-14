@@ -24,7 +24,7 @@ router.get("/", async (req, res) => {
     LEFT JOIN public.rt_qpcr_targets rqt ON rqt.rt_qpcr_id = srq.rt_qpcr_id
     LEFT JOIN public.sample_status_information ssi ON ssi.submission_num = sad.submission_num
     GROUP BY sd.submission_num, sad.sample_id, ssi.sample_status_id
-    ORDER BY sd.receive_date
+    ORDER BY sd.receive_date DESC
     OFFSET ${offset}
     LIMIT ${limit}
   `);
@@ -46,12 +46,39 @@ router.get("/", async (req, res) => {
 });
 
 /**
+ * Get form by submission Number
+ */
+router.get("/:form_id", async (req, res) => {
+  const { form_id } = req.params;
+
+  const data = await pool.query(
+    `
+    SELECT sd.*, sad.*, ssi.*,
+      string_agg(rqt.rt_qpcr_target, ',') rt_qpcr_type
+    FROM public.submission_details sd
+    LEFT JOIN public.sample_details sad ON sd.submission_num = sad.submission_num
+    LEFT JOIN public.submission_rt_qpcr srq ON srq.submission_num = sad.submission_num
+    LEFT JOIN public.rt_qpcr_targets rqt ON rqt.rt_qpcr_id = srq.rt_qpcr_id
+    LEFT JOIN public.sample_status_information ssi ON ssi.submission_num = sad.submission_num
+    WHERE sad.submission_num = $1
+    GROUP BY sd.submission_num, sad.sample_id, ssi.sample_status_id
+    ORDER BY sd.receive_date
+  `,
+    [form_id]
+  );
+
+  res.status(200).json({
+    error: 0,
+    msg: "Fetched successfully",
+    data: data.rows,
+  });
+});
+
+/**
  * Submit a form
  */
 router.post("/submit", async (req, res) => {
-  let data = req.body.data;
-  // let data = sample_data;
-  // data.submissionNum = "ABCD" + Math.round(Math.random() * 10000);
+  let data = req.body;
 
   try {
     // main query
@@ -119,6 +146,87 @@ router.post("/submit", async (req, res) => {
     res.json({
       error: 0,
       msg: "Successfully saved form data to database!",
+      data: data,
+    });
+  } catch (err) {
+    console.log(err);
+    res.status(ERROR_CODE.DATABASE_ERROR).json({
+      error: ERROR_CODE.DATABASE_ERROR,
+      msg: err,
+      data: {},
+    });
+  }
+});
+
+/**
+ * Update a form
+ */
+router.post("/update", async (req, res) => {
+  let data = req.body;
+
+  try {
+    // main query
+    let query = `
+      DO $$ BEGIN
+      UPDATE public.submission_details
+      SET
+        company_name = '${data.companyName}',
+        submitter = '${data.submitter}',
+        receive_date = '${data.receiveDate}',
+        submit_time = '${data.submitTime}',
+        sampling_location = '${data.samplingLocation}',
+        sampling_date = '${data.samplingDate}',
+        contact_phone_num = '${data.contactPhoneNum}',
+        purchase_order_num = '${data.clientPO}',
+        bc_cahs_receiver_name = '${data.receiver}',
+        bc_cahs_custodian_initials = '${data.custodian}',
+        client_case_num = '${data.clientCaseNum}',
+        bc_cahs_pi = '${data.PI}',
+        bc_cahs_project = '${data.BCCAHSProject}',
+        initial_storage = '${data.initialStorage}',
+        analysis_requested = '${data.requestedAnalysis}',
+        comment = '${data.comment}'
+      WHERE submission_num = '${data.submissionNum}';
+
+      UPDATE public.sample_details
+      SET
+        num_of_samples = ${data.sampleNum},
+        species = '${data.sampleSpecies}',
+        sample_details = '${data.sampleDetails}',
+        sample_type = '${data.sampleType}',
+        sample_condition = '${data.sampleCondition}',
+        sample_origin = '${data.sampleOrigin}'
+      WHERE submission_num = '${data.submissionNum}';
+
+      DELETE FROM public.submission_rt_qpcr
+      WHERE submission_num = '${data.submissionNum}';
+    `;
+
+    // get all rtqpcr id and targets
+    let rtqpcrTargets = await pool.query(
+      `SELECT rt_qpcr_id, rt_qpcr_target FROM public.rt_qpcr_targets`
+    );
+    rtqpcrTargets = rtqpcrTargets.rows;
+
+    //loop through all targets, match rtqpcr key to target, append to main query
+    data.rtqpcrTarget.forEach((target) => {
+      let rtqpcr = rtqpcrTargets.find((obj) => obj.rt_qpcr_target === target);
+      let insert = `
+        INSERT INTO public.submission_rt_qpcr (rt_qpcr_id, submission_num, other_description)
+        VALUES(
+          '${rtqpcr.rt_qpcr_id}',
+          '${data.submissionNum}',
+          '${data.otherDetails}');
+      `;
+
+      query += insert;
+    });
+
+    query += `END $$;`;
+    await pool.query(query);
+    res.json({
+      error: 0,
+      msg: "Successfully updated form data to database!",
       data: data,
     });
   } catch (err) {

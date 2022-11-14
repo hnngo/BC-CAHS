@@ -55,13 +55,19 @@ const SampleInput = ({
   const [selectedOptions, setSelectedOptions] = React.useState([]);
   const theme = useTheme();
 
+  React.useEffect(() => {
+    if (type == "multi-select") {
+      setSelectedOptions(value);
+    }
+  }, [value]);
+
   const handleChangeSelect = (event) => {
     const {
-      target: { value }
+      target: { value: targetValue }
     } = event;
     setSelectedOptions(
       // On autofill we get a stringified value.
-      typeof value === "string" ? value.split(",") : value
+      typeof targetValue === "string" ? targetValue.split(",") : targetValue
     );
     onSelectionUpdate(event);
   };
@@ -122,6 +128,7 @@ const SampleInput = ({
         ) : type == "text-area" ? (
           <TextareaAutosize
             minRows={5}
+            value={value}
             placeholder={placeholder}
             required={required}
             onChange={onChange}
@@ -155,7 +162,6 @@ const SampleInput = ({
         ) : type == "multi-select" ? (
           <FormGroup>
             <Select
-              defaultValue=""
               multiple
               required={required}
               value={selectedOptions}
@@ -185,7 +191,7 @@ const SampleInput = ({
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <DesktopDatePicker
               className={"DatePicker-Div"}
-              inputFormat="DD/MM/YYYY"
+              inputFormat="MM/DD/YYYY"
               value={value}
               required={required}
               closeOnSelect
