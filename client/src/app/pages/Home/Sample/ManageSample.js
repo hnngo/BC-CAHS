@@ -87,8 +87,8 @@ const ManageSample = () => {
       theme,
       handleOpen,
       setSelectedFormData,
-      onClickEdit: () => {
-        navigate("/sample/login");
+      onClickEdit: (formData) => {
+        navigate(`/sample/login?edit=true&submission_num=${formData.submission_num}`);
       }
     });
     col.forEach((c) => {
@@ -130,6 +130,11 @@ const ManageSample = () => {
           Toolbar: CustomToolbar
         }}
         sx={{
+          "& .MuiDataGrid-columnHeaders ": {
+            backgroundColor: theme.primary.dark,
+            color: theme.primary.white,
+            fontWeight: "800"
+          },
           "& .sample-form-table-header": {
             backgroundColor: theme.primary.dark,
             color: theme.primary.white,

@@ -53,7 +53,9 @@ const generateColSchema = ({ theme, setSelectedFormData, handleOpen, onClickEdit
               cursor: "pointer"
             }}
             variant="filled"
-            onClick={onClickEdit}
+            onClick={() => {
+              onClickEdit(params.row);
+            }}
           />
           <Chip
             icon={<EditIcon sx={{ fill: theme.primary.white, fontSize: "16px" }} />}

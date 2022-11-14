@@ -28,7 +28,6 @@ const EditSample = ({ onClose, submissionNum, onUpdateSelectedForm }) => {
     error: 0,
     msg: ""
   });
-
   const userContext = React.useContext(UserInfoContext);
 
   const fetchFormStatus = async (submissionNum) => {
@@ -36,6 +35,7 @@ const EditSample = ({ onClose, submissionNum, onUpdateSelectedForm }) => {
       const res = await axios.post("http://localhost:8000/api/form/status", {
         submission_num: submissionNum
       });
+      console.log(res);
       if (!res || !res.data || !res.data.data) {
         // New form status
       } else {
@@ -70,7 +70,10 @@ const EditSample = ({ onClose, submissionNum, onUpdateSelectedForm }) => {
       ].includes(field)
     ) {
       // Update the last signed off by
-      if (formOriginalData[field] && formOriginalData[field] != new Date(value).toISOString()) {
+      if (
+        !formOriginalData[field] ||
+        (formOriginalData[field] && formOriginalData[field] != new Date(value).toISOString())
+      ) {
         newFormDate[field + "_initials"] =
           userContext.userInfo.firstName + " " + userContext.userInfo.lastName;
       }

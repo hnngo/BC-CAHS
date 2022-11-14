@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { Grid, Modal, Box, Typography } from "@mui/material";
+
+import { Grid, Modal, Box } from "@mui/material";
 import SampleInput from "../components/SampleInput";
 import { SAMPLE_CONDITION, SAMPLE_TYPE, ANALYSIS_REQUESTS, RT_QPCR_TARGETS } from "../constants";
 import axios from "axios";
