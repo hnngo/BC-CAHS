@@ -1,9 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
+import { Navigate } from "react-router-dom";
 
 // Utils
 import axios from "axios";
-
-import ErrorMessage from "./ErrorMessage";
 
 function withAuth(WrappedComponent) {
 
@@ -18,13 +17,9 @@ function withAuth(WrappedComponent) {
                 withCredentials: true
             })
         
-            console.log(session.data.data.auth);
-
             if (session.data.data.auth) {
-                console.log("in here")
                 this.setState({authenticated: true})
             } else {
-                console.log("out here")
                 this.setState({authenticated:false})
         }
     }
@@ -33,24 +28,16 @@ function withAuth(WrappedComponent) {
      * Render
      */
     render() {
-            {   
+            {     
                 this.isAuthenticated();
                 if (this.state.authenticated) {
                     return <WrappedComponent/>
                 }  else if (this.state.authenticated === false) {
-                    return <ErrorMessage msg={"Please Login"}/>
+                    return <Navigate to="/login" replace/>
                 } else {
                     <p>Loading...</p>
                 }
-            }
-
-
-
-
-
-                {/* {this.isAuthenticated() == "true" ? <WrappedComponent/> : <ErrorMessage msg={"Please Login"} /> } */}
-                {/* {this.state.auth == true ? console.log("true baby") : console.log("false guyyy") } */}
-            
+            }            
     }
 }
 }
