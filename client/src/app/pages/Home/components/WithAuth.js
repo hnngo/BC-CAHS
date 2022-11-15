@@ -4,6 +4,12 @@ import { Navigate } from "react-router-dom";
 // Utils
 import axios from "axios";
 
+/**
+ * A HOC that protects components from being accessed by unauthenticated users. 
+ * 
+ * @param {*} WrappedComponent a protected component only accessible if user is logged in
+ * @returns either protected component, if user is authenticated, else redirects to login
+ */
 function withAuth(WrappedComponent) {
 
     return class AuthenticatedComponent extends React.Component {
