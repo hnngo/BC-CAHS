@@ -1,5 +1,8 @@
 import React from "react";
 
+// API
+import { apiGetFormStatusBySubmissionNumber, apiUpdateFormStatus } from "../../../../api/form";
+
 // Components
 import SampleInput from "../../components/SampleInput";
 import { Modal, Box, Typography, FormControl, Grid } from "@mui/material";
@@ -12,7 +15,6 @@ import { SAMPLE_STATUS } from "../../constants";
 import { API_PROGRESS } from "../../../../utils/constants";
 
 // Utils
-import axios from "axios";
 import { validate, VALIDATE_TYPES } from "../../../../utils/validator";
 
 // Context
@@ -32,13 +34,13 @@ const EditSample = ({ onClose, submissionNum, onUpdateSelectedForm }) => {
 
   const fetchFormStatus = async (submissionNum) => {
     try {
-      const res = await axios.get(`http://localhost:8000/api/form/status/${submissionNum}`);
+      const { error, data } = await apiGetFormStatusBySubmissionNumber(submissionNum);
 
-      if (!res || !res.data || !res.data.data) {
+      if (error || !data) {
         // New form status
       } else {
-        setFormData({ ...res.data.data });
-        setFormOriginalData({ ...res.data.data });
+        setFormData({ ...data });
+        setFormOriginalData({ ...data });
       }
     } catch (error) {
       // Show error
@@ -115,9 +117,9 @@ const EditSample = ({ onClose, submissionNum, onUpdateSelectedForm }) => {
   const onSubmit = async () => {
     setApiProgress({ ...apiProgress, progress: API_PROGRESS.REQ });
     try {
-      const res = await axios.post("http://localhost:8000/api/form/status/update", formData);
-      if (!res.data || !res.data.data || res.data.error) {
-        setApiProgress({ error: res.data.error, msg: res.data.msg, progress: API_PROGRESS.FAILED });
+      const { error, data, msg } = await apiUpdateFormStatus(formData);
+      if (error || !data) {
+        setApiProgress({ error: error, msg: msg, progress: API_PROGRESS.FAILED });
       } else {
         setApiProgress({
           error: 0,

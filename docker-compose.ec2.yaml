@@ -1,0 +1,42 @@
+version: "3.8" # optional since v1.27.0
+
+services:
+  server:
+    build:
+      context: ./server/
+      dockerfile: Dockerfile
+    volumes:
+      - "./server:/app"
+      - "/app/node_modules"
+    ports:
+      - 8000:8000
+    networks:
+      - cahs
+    hostname: server
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    image: postgres:10
+    environment:
+      POSTGRES_PASSWORD: password
+      POSTGRES_USER: postgres
+      POSTGRES_DB: cahs
+    command: postgres -c 'max_connections=200'
+    ports:
+      - 5432:5432
+    volumes:
+      - ./db:/var/lib/postgresql/data
+    networks:
+      - cahs
+    hostname: postgres
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready", "-U", "postgres", "-d", "cahs"]
+      interval: 20s
+      timeout: 5s
+      retries: 3
+
+networks:
+  cahs:
+    external: false

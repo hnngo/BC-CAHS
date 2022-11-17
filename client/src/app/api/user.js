@@ -1,13 +1,21 @@
 import { get, post } from "../utils/fetchUtils";
 
 export const apiGetMyUserInfo = () => {
-  return get("http://localhost:8000/api/auth/authUser");
+  return get("/api/auth/authUser");
 };
 
 export const apiLogout = () => {
-  return post("http://localhost:8000/api/auth/logout");
+  return post("/api/auth/logout");
 };
 
 export const apiLogin = (data) => {
-  return post("http://localhost:8000/api/auth/login", data);
+  return post("/api/auth/login", data);
+};
+
+export const apiSignup = (data) => {
+  return post("/api/auth/signup", data);
+};
+
+export const apiGetAuthUser = () => {
+  return get("/api/auth/authUser");
 };
