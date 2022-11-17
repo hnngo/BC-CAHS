@@ -16,7 +16,6 @@ import {
 
 const StatusChart = ({ data, onClick = () => {} }) => {
   if (!data) return null;
-  // const theme = useTheme();
 
   return (
     <ResponsiveContainer width="100%" height="100%">
@@ -32,7 +31,7 @@ const StatusChart = ({ data, onClick = () => {} }) => {
           bottom: 5
         }}
         onClick={(e) => {
-          onClick(e.activeLabel);
+          onClick(e.activePayload[0].payload.key);
         }}>
         <CartesianGrid strokeDasharray="3 3" />
         <XAxis type="number" />
@@ -44,21 +43,21 @@ const StatusChart = ({ data, onClick = () => {} }) => {
           stackId="a"
           fill="#8884d8"
           layout={"vertical"}
-          label={{ fill: "#fefefe", fontSize: 20 }}
+          // label={{ fill: "#fefefe", fontSize: 20 }}
         />
         <Bar
           dataKey="processing"
           stackId="a"
           fill="#fc32dd"
           layout={"vertical"}
-          label={{ fill: "#fefefe", fontSize: 20 }}
+          // label={{ fill: "#fefefe", fontSize: 20 }}
         />
         <Bar
           dataKey="ready"
           stackId="a"
           fill="#82ca9d"
           layout={"vertical"}
-          label={{ fill: "#fefefe", fontSize: 20 }}
+          // label={{ fill: "#fefefe", fontSize: 20 }}
         />
       </BarChart>
     </ResponsiveContainer>

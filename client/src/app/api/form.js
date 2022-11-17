@@ -11,3 +11,16 @@ export const apiSubmitForm = (body) => {
 export const apiUpdateFormBySubmissionNumber = (body) => {
   return post(`http://localhost:8000/api/form/update`, body);
 };
+
+export const apiGetForms = (offset, limit, analysis = "") => {
+  let url = `http://localhost:8000/api/form?offset=${offset}&limit=${limit}`;
+  if (analysis) {
+    url += `&analysis=${analysis}`;
+  }
+
+  return get(url);
+};
+
+export const apiGetStatusSummary = () => {
+  return get(`http://localhost:8000/api/form/status`);
+};

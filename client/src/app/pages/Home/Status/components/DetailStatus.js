@@ -11,7 +11,10 @@ import FilterAltIcon from "@mui/icons-material/FilterAlt";
 import EditSample from "../../Sample/components/EditSample";
 import EditIcon from "@mui/icons-material/Edit";
 
-const DetailStatus = ({ data }) => {
+// Constants
+import { ANALYSIS_REQUESTS } from "../../constants";
+
+const DetailStatus = ({ selectedAnalysis, data }) => {
   const theme = useTheme();
   const [formData, setFormData] = React.useState([]);
   const [columns, setColumns] = React.useState([]);
@@ -91,7 +94,6 @@ const DetailStatus = ({ data }) => {
     );
   };
 
-  if (!formData || !formData.length) return null;
   return (
     <Grid
       height="100%"
@@ -101,7 +103,7 @@ const DetailStatus = ({ data }) => {
       justifyContent="center">
       <Grid item>
         <Typography variant="h4" fontWeight={"bold"}>
-          {formData[0].analysis_requested}
+          {ANALYSIS_REQUESTS[selectedAnalysis]}
         </Typography>
       </Grid>
       <Grid item flex={1} width="100%">
@@ -143,6 +145,7 @@ const DetailStatus = ({ data }) => {
           pageSize={20}
           rowsPerPageOptions={[20]}
           getRowClassName={() => "detail-status-table-row"}
+          getRowId={(e) => e.submission_num}
         />
         {openFormDetail && (
           <EditSample
