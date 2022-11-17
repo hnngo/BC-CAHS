@@ -16,6 +16,10 @@ function withAuth(WrappedComponent) {
       authenticated: undefined
     };
 
+    componentDidMount() {
+      this.isAuthenticated();
+    }
+
     async isAuthenticated() {
       var { data } = await apiGetAuthUser();
 
@@ -31,7 +35,6 @@ function withAuth(WrappedComponent) {
      */
     render() {
       {
-        this.isAuthenticated();
         if (this.state.authenticated) {
           return <WrappedComponent />;
         } else if (this.state.authenticated === false) {
