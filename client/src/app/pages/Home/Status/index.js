@@ -13,6 +13,7 @@ import { ANALYSIS_REQUESTS } from "../constants";
 
 const Status = () => {
   const [formData, setFormData] = React.useState([]);
+  const [forceFetchStatus, setForceFetchStatus] = React.useState(false);
   const [selectedAnalysis, setSelectedAnalysis] = React.useState("atpase");
   const [statusData, setStatusData] = React.useState([]);
   const [pagination, setPagination] = React.useState({
@@ -46,7 +47,7 @@ const Status = () => {
   }, [selectedAnalysis]);
 
   const fetchStatusSummary = async () => {
-    const { data, error, msg } = await apiGetStatusSummary();
+    const { data, error } = await apiGetStatusSummary();
 
     if (!error && data) {
       const formatStatusData = {};
@@ -79,15 +80,13 @@ const Status = () => {
       });
 
       setStatusData(Object.values(formatStatusData));
-    } else {
-      //
     }
   };
 
   // Fetch chart summary
   React.useEffect(() => {
     fetchStatusSummary();
-  }, []);
+  }, [forceFetchStatus]);
 
   if (!statusData) return null;
 
@@ -100,6 +99,7 @@ const Status = () => {
         <DetailStatus
           selectedAnalysis={selectedAnalysis}
           data={formData.filter((form) => form.analysis_requested === selectedAnalysis)}
+          onUpdateForm={() => setForceFetchStatus(!forceFetchStatus)}
         />
       </Grid>
     </Grid>

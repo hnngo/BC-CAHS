@@ -14,7 +14,7 @@ import EditIcon from "@mui/icons-material/Edit";
 // Constants
 import { ANALYSIS_REQUESTS } from "../../constants";
 
-const DetailStatus = ({ selectedAnalysis, data }) => {
+const DetailStatus = ({ selectedAnalysis, data, onUpdateForm }) => {
   const theme = useTheme();
   const [formData, setFormData] = React.useState([]);
   const [columns, setColumns] = React.useState([]);
@@ -92,6 +92,7 @@ const DetailStatus = ({ selectedAnalysis, data }) => {
         }
       })
     );
+    onUpdateForm();
   };
 
   return (
