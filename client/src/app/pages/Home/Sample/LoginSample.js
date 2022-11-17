@@ -61,10 +61,11 @@ const Sample = () => {
     rtqpcrTarget: "Please fill in field."
   });
 
+  const [otherDisabled, setOtherDisabled] = useState(true);
+
   const fetchFormBySubmissionNum = async (submissionNum) => {
     try {
       const { error, data } = await apiGetFormBySubmissionNumber(submissionNum);
-
       if (!error && data && data.length == 1) {
         setSubmissionData(convertSampleField(data[0]));
       }
@@ -85,6 +86,12 @@ const Sample = () => {
       setSubmissionData(generateDefaultSampleState());
     }
   }, [searchParams]);
+
+  React.useEffect(() => {
+    if (submissionData.rtqpcrTarget && submissionData.rtqpcrTarget.includes("other")) {
+      setOtherDisabled(false);
+    }
+  }, [submissionData.rtqpcrTarget]);
 
   const handleClose = () => {
     setOpen(false);
@@ -107,7 +114,6 @@ const Sample = () => {
 
   const onChangeTextValueNum = (name, value) => {
     const error = validateTextNum(name, value);
-    console.log(error);
     if (error.length) {
       setSubmissionErrors({ ...submissionErrors, [name]: error });
     } else {
@@ -368,10 +374,11 @@ const Sample = () => {
           onSelectionUpdate={(e) => onChangeMultiSelectValue("rtqpcrTarget", e.target.value)}
         />
         <SampleInput
-          name="rtqpcrTargets_other"
+          name="otherDescription"
           type="text"
-          disableText
+          disableText={otherDisabled}
           placeholder={"If other, please specify"}
+          onChange={(e) => onChangeTextValue(e.target.name, e.target.value)}
         />
         <br />
         <br />

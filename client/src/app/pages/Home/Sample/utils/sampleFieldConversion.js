@@ -10,6 +10,7 @@ const mapBEtoFE = Object.freeze({
   contact_phone_num: "contactPhoneNum",
   initial_storage: "initialStorage",
   num_of_samples: "sampleNum",
+  other_description: "otherDescription",
   purchase_order_num: "clientPO",
   receive_date: "receiveDate",
   rt_qpcr_type: "rtqpcrTarget",
@@ -69,6 +70,5 @@ export const convertSampleField = (object) => {
       }
     }
   });
-
   return convertedObject;
 };
