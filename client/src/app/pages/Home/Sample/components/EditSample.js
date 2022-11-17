@@ -32,9 +32,7 @@ const EditSample = ({ onClose, submissionNum, onUpdateSelectedForm }) => {
 
   const fetchFormStatus = async (submissionNum) => {
     try {
-      const res = await axios.post("http://localhost:8000/api/form/status", {
-        submission_num: submissionNum
-      });
+      const res = await axios.get(`http://localhost:8000/api/form/status/${submissionNum}`);
 
       if (!res || !res.data || !res.data.data) {
         // New form status
