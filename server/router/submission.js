@@ -135,7 +135,7 @@ router.post("/submit", async (req, res) => {
       VALUES(
         '${rtqpcr.rt_qpcr_id}',
         '${data.submissionNum}',
-        '${data.otherDetails}');
+        '${data.otherDescription}');
         `;
 
       query += insert;
@@ -216,7 +216,7 @@ router.post("/update", async (req, res) => {
         VALUES(
           '${rtqpcr.rt_qpcr_id}',
           '${data.submissionNum}',
-          '${data.otherDetails}');
+          '${data.otherDescription}');
       `;
 
       query += insert;
