@@ -40,35 +40,6 @@ const Home = () => {
               {/* TODO: Auto generate breadcrumb */}
               <Breadcrumbs>
               </Breadcrumbs>
-
-              {/* <Breadcrumbs aria-label="breadcrumb">
-                <Chip
-                  component="a"
-                  href="#"
-                  label="Sample"
-                  icon={<ReceiptLongIcon fontSize="small" sx={{ fill: theme.primary.dark }} />}
-                  sx={{
-                    backgroundColor: theme.primary.standard,
-                    color: theme.primary.dark,
-                    letterSpacing: 0.5,
-                    paddingX: 2,
-                    fontSize: "18px"
-                  }}
-                />
-                <Chip
-                  component="a"
-                  href="#"
-                  label="Login Sample"
-                  sx={{
-                    backgroundColor: theme.primary.dark,
-                    color: theme.primary.white,
-                    letterSpacing: 0.5,
-                    paddingX: 2,
-                    fontSize: "18px"
-                  }}
-                />
-              </Breadcrumbs> */}
-
             </Box>
             <Box
               padding={2}
