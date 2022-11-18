@@ -10,6 +10,7 @@ import ReportTemplates from "./pages/Home/ReportTemplates";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import Test from "./pages/Test";
+import NotFound from "./pages/NotFound";
 
 const router = createBrowserRouter([
   {
@@ -42,7 +43,7 @@ const router = createBrowserRouter([
   },
   {
     path: "*",
-    element: <h1>404 Invalid Route</h1>
+    element: <NotFound />
   }
 ]);
 
