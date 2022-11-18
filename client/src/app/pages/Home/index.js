@@ -2,11 +2,12 @@ import React from "react";
 import { Outlet } from "react-router-dom";
 
 // Components
-import { Grid, Box, Breadcrumbs, Chip } from "@mui/material";
+import { Grid, Box, Chip } from "@mui/material";
 import Sidebar from "./components/SideBar";
 import NavBar from "./components/NavBar";
 import ReceiptLongIcon from "@mui/icons-material/ReceiptLong";
 import { useTheme } from "@mui/material/styles";
+import Breadcrumbs from "./components/Breadcrumbs";
 
 // Assets
 import BgHomeImage from "../../../assets/images/background_home.png";
@@ -36,7 +37,10 @@ const Home = () => {
           <Grid container direction={"column"} flexWrap={"unset"} height="100%">
             <Box height={"50px"} display={"flex"} justifyContent={"start"} alignItems={"start"}>
               {/* TODO: Auto generate breadcrumb */}
-              <Breadcrumbs aria-label="breadcrumb">
+              <Breadcrumbs>
+              </Breadcrumbs>
+
+              {/* <Breadcrumbs aria-label="breadcrumb">
                 <Chip
                   component="a"
                   href="#"
@@ -62,7 +66,8 @@ const Home = () => {
                     fontSize: "18px"
                   }}
                 />
-              </Breadcrumbs>
+              </Breadcrumbs> */}
+
             </Box>
             <Box
               padding={2}
