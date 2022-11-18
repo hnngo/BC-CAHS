@@ -119,7 +119,7 @@ const Login = () => {
     });
 
     if (session.data.data.auth) {
-      navigate("/");
+      navigate("/sample");
     }
   };
 
