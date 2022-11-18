@@ -9,6 +9,7 @@ import ReceiptLongIcon from "@mui/icons-material/ReceiptLong";
 import { useTheme } from "@mui/material/styles";
 import Breadcrumbs from "./components/Breadcrumbs";
 
+import withAuth from "../Home/components/WithAuth";
 // Assets
 import BgHomeImage from "../../../assets/images/background_home.png";
 
@@ -89,4 +90,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default withAuth(Home);
