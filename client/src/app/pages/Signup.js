@@ -71,15 +71,13 @@ const Signup = () => {
     e.preventDefault();
     setErrors(validateSignup(data));
 
-    if (validateSignup(data)) {
-      console.log("inside submission logic");
+    if (!Object.entries(validateSignup(data)).length) {
       apiSignup(data).then(({ error }) => {
+        console.log(error);
         if (error == 109) {
           setResponse(true);
-          console.log("response set to true");
           setValid(true);
         } else {
-          console.log("set to false");
           setValid(true);
         }
       });
