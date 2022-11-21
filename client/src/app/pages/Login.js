@@ -114,7 +114,7 @@ const Login = () => {
     const { data } = await apiGetAuthUser();
 
     if (data.auth) {
-      navigate("/");
+      navigate("/sample");
     }
   };
 

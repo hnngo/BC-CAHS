@@ -2,11 +2,13 @@ import React from "react";
 import { Outlet } from "react-router-dom";
 
 // Components
-import { Grid, Box, Breadcrumbs, Chip } from "@mui/material";
+import { Grid, Box, Chip } from "@mui/material";
 import Sidebar from "./components/SideBar";
 import NavBar from "./components/NavBar";
 import ReceiptLongIcon from "@mui/icons-material/ReceiptLong";
 import { useTheme } from "@mui/material/styles";
+import Breadcrumbs from "./components/Breadcrumbs";
+
 import withAuth from "../Home/components/WithAuth";
 // Assets
 import BgHomeImage from "../../../assets/images/background_home.png";
@@ -36,32 +38,7 @@ const Home = () => {
           <Grid container direction={"column"} flexWrap={"unset"} height="100%">
             <Box height={"50px"} display={"flex"} justifyContent={"start"} alignItems={"start"}>
               {/* TODO: Auto generate breadcrumb */}
-              <Breadcrumbs aria-label="breadcrumb">
-                <Chip
-                  component="a"
-                  href="#"
-                  label="Sample"
-                  icon={<ReceiptLongIcon fontSize="small" sx={{ fill: theme.primary.dark }} />}
-                  sx={{
-                    backgroundColor: theme.primary.standard,
-                    color: theme.primary.dark,
-                    letterSpacing: 0.5,
-                    paddingX: 2,
-                    fontSize: "18px"
-                  }}
-                />
-                <Chip
-                  component="a"
-                  href="#"
-                  label="Login Sample"
-                  sx={{
-                    backgroundColor: theme.primary.dark,
-                    color: theme.primary.white,
-                    letterSpacing: 0.5,
-                    paddingX: 2,
-                    fontSize: "18px"
-                  }}
-                />
+              <Breadcrumbs>
               </Breadcrumbs>
             </Box>
             <Box
