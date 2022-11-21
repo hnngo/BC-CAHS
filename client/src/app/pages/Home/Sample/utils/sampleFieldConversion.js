@@ -10,7 +10,7 @@ const mapBEtoFE = Object.freeze({
   contact_phone_num: "contactPhoneNum",
   initial_storage: "initialStorage",
   num_of_samples: "sampleNum",
-  other_description: "otherDescription",
+  rt_qpcr_type_other: "otherDescription",
   purchase_order_num: "clientPO",
   receive_date: "receiveDate",
   rt_qpcr_type: "rtqpcrTarget",
@@ -65,6 +65,8 @@ export const convertSampleField = (object) => {
     if (mapBEtoFE[entry[0]]) {
       if (entry[0] == "rt_qpcr_type") {
         convertedObject[mapBEtoFE[entry[0]]] = entry[1].split(",");
+      } else if (entry[0] == "rt_qpcr_type_other") {
+        convertedObject[mapBEtoFE[entry[0]]] = entry[1].split(",").filter(Boolean)[0];
       } else {
         convertedObject[mapBEtoFE[entry[0]]] = entry[1];
       }

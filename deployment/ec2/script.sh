@@ -29,11 +29,14 @@ sudo systemctl restart nginx
 # Copy content, stay at root of local
 scp -r -i ./deployment/ec2/ec2-key-pair.pem ./ ec2-user@ec2-18-213-81-12.compute-1.amazonaws.com:/home/ec2-user/app
 OR
+# must stop docker first
+sudo rm -rf /home/ec2-user/app/*
 rsync -av --exclude=.git --exclude=node_modules --exclude=db -e "ssh -i ./deployment/ec2/ec2-key-pair.pem" ./ ec2-user@ec2-18-213-81-12.compute-1.amazonaws.com:/home/ec2-user/app
 
-# Copy client/react (local)
+# Copy client/react only (local)
+sudo rm -rf /home/ec2-user/client/*
+sudo rm -rf /usr/share/nginx/html/*
 rsync -av --exclude=.git --exclude=node_modules --exclude=db -e "ssh -i ./deployment/ec2/ec2-key-pair.pem" ./client/build/* ec2-user@ec2-18-213-81-12.compute-1.amazonaws.com:/home/ec2-user/client
-
 sudo cp -r /home/ec2-user/client/* /usr/share/nginx/html
 
 # Docker compose | Inside EC2

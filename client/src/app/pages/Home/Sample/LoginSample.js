@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 
 // Hooks
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, useNavigate } from "react-router-dom";
 
 // API
 import {
@@ -30,6 +30,7 @@ import { useTheme } from "@mui/material/styles";
 
 const Sample = () => {
   const theme = useTheme();
+  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const [open, setOpen] = useState(false);
   const [apiProgress, setApiProgress] = React.useState({
@@ -91,19 +92,32 @@ const Sample = () => {
   React.useEffect(() => {
     if (submissionData.rtqpcrTarget && submissionData.rtqpcrTarget.includes("other")) {
       setOtherDisabled(false);
+    } else {
+      setOtherDisabled(true);
     }
   }, [submissionData.rtqpcrTarget]);
 
   const handleClose = () => {
-    setOpen(false);
-    setApiProgress({
-      progress: API_PROGRESS.INIT,
-      error: 0,
-      msg: " "
-    });
+    const editMode = searchParams.get("edit");
+    // Navigate to form manage if successfully save the form
+    if (editMode != "true" && apiProgress.progress === API_PROGRESS.SUCCESS) {
+      navigate("/sample");
+    } else {
+      setOpen(false);
+      setApiProgress({
+        progress: API_PROGRESS.INIT,
+        error: 0,
+        msg: " "
+      });
+    }
   };
 
   const onChangeTextValue = (name, value) => {
+    if (name === "otherDescription") {
+      setSubmissionData({ ...submissionData, [name]: value });
+      return;
+    }
+
     const error = validateText(name, value);
     if (error.length) {
       setSubmissionErrors({ ...submissionErrors, [name]: error });
@@ -383,6 +397,7 @@ const Sample = () => {
         <SampleInput
           name="otherDescription"
           type="text"
+          value={submissionData.otherDescription}
           disableText={otherDisabled}
           placeholder={"If other, please specify"}
           onChange={(e) => onChangeTextValue(e.target.name, e.target.value)}
@@ -427,7 +442,6 @@ const Sample = () => {
               <Grid item xs={6}>{`${e[1]}`}</Grid>
             </Grid>
           ))}
-
           <div>{apiProgress.msg}</div>
         </Box>
       </Modal>
