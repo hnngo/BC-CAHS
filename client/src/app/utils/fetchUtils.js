@@ -5,7 +5,8 @@ const formatAPIURL = (url) => {
   if (process.env.NODE_ENV !== "production") {
     return "http://localhost:8000" + url;
   } else {
-    return "http://18.213.81.12" + url;
+    // EC2 public v4 DNS
+    return "http://ec2-18-213-81-12.compute-1.amazonaws.com" + url;
   }
 };
 
