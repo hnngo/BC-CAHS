@@ -121,7 +121,7 @@ router.post("/submit", async (req, res) => {
     });
   } catch (err) {
     console.log(err);
-    res.status(ERROR_CODE.DATABASE_ERROR).json({
+    res.json({
       error: ERROR_CODE.DATABASE_ERROR,
       msg: err,
       data: {},

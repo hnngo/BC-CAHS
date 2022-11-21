@@ -11,40 +11,33 @@ import { apiGetAuthUser } from "../../../api/user";
  * @returns either protected component, if user is authenticated, else redirects to login
  */
 function withAuth(WrappedComponent) {
-  return class AuthenticatedComponent extends React.Component {
-    state = {
-      authenticated: undefined
-    };
+  const AuthenticatedComponent = () => {
+    const [isAuthenticated, setIsAuthenticated] = React.useState(undefined);
+  
+    const getCurrentUser = async () => {
+      var { error, data } = await apiGetAuthUser();
 
-    componentDidMount() {
-      this.isAuthenticated();
-    }
-
-    async isAuthenticated() {
-      var { data } = await apiGetAuthUser();
-
-      if (data.auth) {
-        this.setState({ authenticated: true });
+      if (!error && data.auth) {
+        setIsAuthenticated(true);
       } else {
-        this.setState({ authenticated: false });
+        setIsAuthenticated(false);
       }
     }
 
-    /**
-     * Render
-     */
-    render() {
-      {
-        if (this.state.authenticated) {
-          return <WrappedComponent />;
-        } else if (this.state.authenticated === false) {
-          return <Navigate to="/login" replace />;
-        } else {
-          <p>Loading...</p>;
-        }
-      }
+    React.useEffect(() => {
+      getCurrentUser();
+    }, [])
+
+    if (isAuthenticated) {
+      return <WrappedComponent />;
+    } else if (isAuthenticated === false) {
+      return <Navigate to="/login" replace />;
+    } else {
+      return <p>Loading...</p>;
     }
   };
+
+  return AuthenticatedComponent;
 }
 
 export default withAuth;

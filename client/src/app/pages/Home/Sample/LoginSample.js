@@ -68,6 +68,7 @@ const Sample = () => {
       const { error, data } = await apiGetFormBySubmissionNumber(submissionNum);
       if (!error && data && data.length == 1) {
         setSubmissionData(convertSampleField(data[0]));
+        setSubmissionErrors({});
       }
     } catch (error) {
       console.log(error);
@@ -107,9 +108,9 @@ const Sample = () => {
     if (error.length) {
       setSubmissionErrors({ ...submissionErrors, [name]: error });
     } else {
-      setSubmissionData({ ...submissionData, [name]: value });
       delete submissionErrors[name];
     }
+    setSubmissionData({ ...submissionData, [name]: value });
   };
 
   const onChangeTextValueNum = (name, value) => {
@@ -117,8 +118,9 @@ const Sample = () => {
     if (error.length) {
       setSubmissionErrors({ ...submissionErrors, [name]: error });
     } else {
-      setSubmissionData({ ...submissionData, [name]: value });
+      delete submissionErrors[name];
     }
+    setSubmissionData({ ...submissionData, [name]: value });
   };
 
   const onChangeTimeValue = (name, value) => {
@@ -126,8 +128,9 @@ const Sample = () => {
     if (error.length) {
       setSubmissionErrors({ ...submissionErrors, [name]: error });
     } else {
-      setSubmissionData({ ...submissionData, [name]: value });
+      delete submissionErrors[name];
     }
+    setSubmissionData({ ...submissionData, [name]: value });
   };
 
   const onChangeDateValue = (name, value) => {
@@ -136,32 +139,36 @@ const Sample = () => {
     if (error.length) {
       setSubmissionErrors({ ...submissionErrors, [name]: error });
     } else {
-      setSubmissionData({ ...submissionData, [name]: value });
+      delete submissionErrors[name];
     }
+    setSubmissionData({ ...submissionData, [name]: value });
   };
 
   const onChangeSelectValue = (name, value) => {
+    if (value) {
+      delete submissionErrors[name];
+    } else {
+      setSubmissionErrors({ ...submissionErrors, [name]: "Please select an option" });
+    }
     setSubmissionData({ ...submissionData, [name]: value });
   };
 
   const onChangeMultiSelectValue = (name, value) => {
+    if (value) {
+      delete submissionErrors[name];
+    } else {
+      setSubmissionErrors({ ...submissionErrors, [name]: "Please select an option" });
+    }
     setSubmissionData({ ...submissionData, [name]: value });
   };
 
-  const submitData = async (data) => {
-    // Update the errors
-    Object.keys(submissionErrors).forEach((k) => {
-      if (data[k] !== null) {
-        delete submissionErrors[k];
-      }
-    });
-
+  const submitData = async () => {
     if (Object.keys(submissionErrors).length == 0) {
       let res;
       if (searchParams.get("edit") == "true") {
-        res = await apiUpdateFormBySubmissionNumber(data);
+        res = await apiUpdateFormBySubmissionNumber(submissionData);
       } else {
-        res = await apiSubmitForm(data);
+        res = await apiSubmitForm(submissionData);
       }
 
       if (res.error || !res.data) {
@@ -397,7 +404,7 @@ const Sample = () => {
           name="submit"
           type="submit"
           submitText={searchParams.get("edit") == "true" ? "Update" : "Submit"}
-          onClick={() => submitData(submissionData)}
+          onClick={() => submitData()}
         />
       </Grid>
       <Modal open={open} onClose={handleClose} sx={{ zIndex: 80 }}>
