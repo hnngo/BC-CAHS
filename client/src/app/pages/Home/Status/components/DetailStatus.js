@@ -83,16 +83,14 @@ const DetailStatus = ({ selectedAnalysis, data, onUpdateForm }) => {
 
   const onUpdateSelectedForm = (newFormDate) => {
     const selectedNum = selectedFormData.row.submission_num;
-    setFormData(
-      formData.map((d) => {
-        if (d.submission_num == selectedNum) {
-          return { ...d, ...newFormDate };
-        } else {
-          return d;
-        }
-      })
-    );
-    onUpdateForm();
+    const newFormData = formData.map((d) => {
+      if (d.submission_num == selectedNum) {
+        return { ...d, ...newFormDate };
+      } else {
+        return d;
+      }
+    });
+    onUpdateForm(newFormData);
   };
 
   return (
