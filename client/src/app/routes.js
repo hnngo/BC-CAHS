@@ -1,5 +1,5 @@
 import { React } from "react";
-import { createBrowserRouter } from "react-router-dom";
+import { createBrowserRouter, Navigate } from "react-router-dom";
 
 // Pages
 import Home from "./pages/Home";
@@ -29,6 +29,10 @@ const router = createBrowserRouter([
     path: "/",
     element: <Home />,
     children: [
+      {
+        path: "/",
+        element: <Navigate to="/sample" />
+      },
       {
         path: "/sample",
         element: <ManageSample />

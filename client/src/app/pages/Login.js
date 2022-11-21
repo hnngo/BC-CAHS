@@ -101,7 +101,7 @@ const Login = () => {
         lastName: resData.last_name,
         isFetched: true
       });
-      navigate("/");
+      navigate("/sample");
     } else {
       setCredentialError(msg);
     }
