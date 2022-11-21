@@ -15,6 +15,7 @@ const breadcrumbs = () => {
         const isLast = index === pathNames.length - 1;
         return isLast ? ( 
           <Chip
+          key={name}
           component="a"
           href="#"
           label={name.charAt(0).toUpperCase() + name.slice(1)}
@@ -29,6 +30,7 @@ const breadcrumbs = () => {
         ) : 
         ( 
           <Chip
+          key={name}
           component="a"
           href="#"
           label={name.charAt(0).toUpperCase() + name.slice(1)}
