@@ -7,6 +7,11 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 
+/**
+ * Dynamically render dialog popup
+ * @param {*} props boolean
+ * @returns dynamically rendered dialog popup
+ */
 export default function AlertDialog(props) {
   const [open, setOpen] = React.useState(true);
 
