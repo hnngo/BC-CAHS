@@ -27,7 +27,7 @@
   </a>
 
   <p align="center">
-    An awesome README template to jumpstart your projects!
+    A guide to the CAHS LIMS!
     <br />
     <a href="https://github.com/othneildrew/Best-README-Template">View Demo</a>
     ·
@@ -69,32 +69,35 @@
 
 [![Product Name Screen Shot][product-screenshot]](https://example.com)
 
-There are many great README templates available on GitHub; however, I didn't find one that really suited my needs so I created this enhanced one. I want to create a README template so amazing that it'll be the last one you ever need -- I think this is it.
+Hello developers! I hope your term is going well. This document will server as an entry point into the project, and provide a brief overview of what we have implemented so far.
 
-Here's why:
+As you are probably aware, BC CAHS is looking to digitialize their sample registration process. Currently, BC CAHS accepts all sample submissions through a physical form. This form is then manually transposed into an excel sheet, which houses all information about the submitted sample and lab results. BC CAHS aims to replace this excel based system with a database that can be filtered, effectively searched through and edited. 
 
-- Your time should be focused on creating something amazing. A project that solves a problem and helps others
-- You shouldn't be doing the same tasks over and over like creating a README from scratch
-- You should implement DRY principles to the rest of your life :smile:
+Through-out our project term, our team’s focus was  on designing a centralized database that can be used by BC CAHS lab workers. Our emphasis was on implementing this database, basic user authentication and a front-end component which allows CAHS staff to filter, search and edit existing database elements. You will continue to build upon these existing features! 
 
-Of course, no one template will serve all projects since your needs may be different. So I'll be adding more in the near future. You may also suggest changes by forking this repo and creating a pull request or opening an issue. Thanks to all the people have contributed to expanding this template!
+Key Development Points:
 
-Use the `BLANK_README.md` to get started.
+- Our database is built on PostgreSQL. We suggest checking out the database folder, and looking through the migration file to see our current DB structure. PGadmin is what we used for testing and development.
+- Docker is being used to ensure consistency across all development environments.  Make sure to install Docker Desktop.
+- Hope you like Express as a backend framework!
+- React is used in the frontend. We tried to keep things as contemporary as possible. Material UI is used through-out for styling.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ### Built With
 
-This section should list any major frameworks/libraries used to bootstrap your project. Leave any add-ons/plugins for the acknowledgements section. Here are a few examples.
+Checkout the documentation for the tech stack:<br>
+<div align=center>
+<a>
+    <img src="images/structure_diagram.png" alt="Logo" height="150">
+</a>
+</div>
 
-- [![Next][next.js]][next-url]
-- [![React][react.js]][react-url]
-- [![Vue][vue.js]][vue-url]
-- [![Angular][angular.io]][angular-url]
-- [![Svelte][svelte.dev]][svelte-url]
-- [![Laravel][laravel.com]][laravel-url]
-- [![Bootstrap][bootstrap.com]][bootstrap-url]
-- [![JQuery][jquery.com]][jquery-url]
+- [React][react-url]
+- [Docker][docker-url]
+- [PostgreSQL][postgres-url]
+- [Express.JS][express-url]
+
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -232,6 +235,11 @@ Use this space to list resources you find helpful and would like to give credit 
 [next-url]: https://nextjs.org/
 [react.js]: https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB
 [react-url]: https://reactjs.org/
+[postgres.js]: https://webapp.io/blog/content/images/2019/11/postgres.png
+[postgres-url]: https://www.postgresql.org/
+[docker.dev]:https://miro.medium.com/max/1200/1*9CnqScCEkVJlvOXXXzvwhg.jpeg
+[docker-url]: https://www.docker.com/
+[express-url]: https://expressjs.com/
 [vue.js]: https://img.shields.io/badge/Vue.js-35495E?style=for-the-badge&logo=vuedotjs&logoColor=4FC08D
 [vue-url]: https://vuejs.org/
 [angular.io]: https://img.shields.io/badge/Angular-DD0031?style=for-the-badge&logo=angular&logoColor=white
