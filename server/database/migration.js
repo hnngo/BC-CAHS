@@ -117,37 +117,6 @@ const migrate = async (pool) => {
   );
   console.log("Finished sample details table");
 
-  // rtqpcr targets table
-  // await pool.query(
-  //   `DO $$ BEGIN
-  //   CREATE TYPE rt_qpcr_target AS ENUM ('ihnv', 'ipnv', 'isav', 'vhsv', 'prvl1', 'asal', 'psal', 'rsal', 'elfa', 'nperurans', 'other');
-  //   EXCEPTION
-  //     WHEN duplicate_object THEN null;
-  //   END $$;
-
-  //   CREATE TABLE IF NOT EXISTS public.rt_qpcr_targets (
-  //     rt_qpcr_id SERIAL PRIMARY KEY NOT NULL UNIQUE,
-  //     rt_qpcr_target rt_qpcr_target NOT NULL
-  //   );
-
-  //   DO $$ BEGIN
-  //     INSERT INTO public.rt_qpcr_targets(rt_qpcr_id, rt_qpcr_target) VALUES(1, 'ihnv') ON CONFLICT (rt_qpcr_id) DO NOTHING;
-  //     INSERT INTO public.rt_qpcr_targets(rt_qpcr_id, rt_qpcr_target) VALUES(2, 'ipnv') ON CONFLICT (rt_qpcr_id) DO NOTHING;
-  //     INSERT INTO public.rt_qpcr_targets(rt_qpcr_id, rt_qpcr_target) VALUES(3, 'isav') ON CONFLICT (rt_qpcr_id) DO NOTHING;
-  //     INSERT INTO public.rt_qpcr_targets(rt_qpcr_id, rt_qpcr_target) VALUES(4, 'vhsv') ON CONFLICT (rt_qpcr_id) DO NOTHING;
-  //     INSERT INTO public.rt_qpcr_targets(rt_qpcr_id, rt_qpcr_target) VALUES(5, 'prvl1') ON CONFLICT (rt_qpcr_id) DO NOTHING;
-  //     INSERT INTO public.rt_qpcr_targets(rt_qpcr_id, rt_qpcr_target) VALUES(6, 'asal') ON CONFLICT (rt_qpcr_id) DO NOTHING;
-  //     INSERT INTO public.rt_qpcr_targets(rt_qpcr_id, rt_qpcr_target) VALUES(7, 'psal') ON CONFLICT (rt_qpcr_id) DO NOTHING;
-  //     INSERT INTO public.rt_qpcr_targets(rt_qpcr_id, rt_qpcr_target) VALUES(8, 'rsal') ON CONFLICT (rt_qpcr_id) DO NOTHING;
-  //     INSERT INTO public.rt_qpcr_targets(rt_qpcr_id, rt_qpcr_target) VALUES(9, 'elfa') ON CONFLICT (rt_qpcr_id) DO NOTHING;
-  //     INSERT INTO public.rt_qpcr_targets(rt_qpcr_id, rt_qpcr_target) VALUES(10, 'nperurans') ON CONFLICT (rt_qpcr_id) DO NOTHING;
-  //     INSERT INTO public.rt_qpcr_targets(rt_qpcr_id, rt_qpcr_target) VALUES(11, 'other') ON CONFLICT (rt_qpcr_id) DO NOTHING;
-  //   EXCEPTION
-  //     WHEN duplicate_object THEN NULL;
-  //   END $$;
-  //   `
-  // );
-
   await pool.query(
     `
     CREATE TABLE IF NOT EXISTS public.rt_qpcr_targets (
