@@ -3,6 +3,7 @@ import MontserratBold from "../../assets/fonts/Montserrat/static/Montserrat-Bold
 import Montserrat from "../../assets/fonts/Montserrat/static/Montserrat-Regular.ttf";
 import Kodchasan from "../../assets/fonts/Kodchasan/Kodchasan-Medium.ttf";
 
+// custom themes
 const montserrat = {
   fontFamily: "Montserrat",
   fontStyle: "normal",
@@ -59,9 +60,6 @@ export const defaultTheme = createTheme({
     dark: "#0B8AC0",
     darker: ""
   },
-  // chart:{
-  //   first: 
-  // },
 
   typography: {
     fontFamily: [
