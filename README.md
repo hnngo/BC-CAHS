@@ -26,15 +26,6 @@
     <img src="images/logo.png" alt="Logo" height="150">
   </a>
 
-  <p align="center">
-    A guide to the CAHS LIMS!
-    <br />
-    <a href="https://github.com/othneildrew/Best-README-Template">View Demo</a>
-    ·
-    <a href="https://github.com/othneildrew/Best-README-Template/issues">Report Bug</a>
-    ·
-    <a href="https://github.com/othneildrew/Best-README-Template/issues">Request Feature</a>
-  </p>
 </div>
 
 <!-- TABLE OF CONTENTS -->
@@ -51,7 +42,7 @@
       <a href="#getting-started">Getting Started</a>
       <ul>
         <li><a href="#prerequisites">Prerequisites</a></li>
-        <li><a href="#installation">Installation</a></li>
+        <li><a href="#local-deployment">Local Deployment</a></li>
       </ul>
     </li>
     <li><a href="#usage">Usage</a></li>
@@ -66,8 +57,6 @@
 <!-- ABOUT THE PROJECT -->
 
 ## About The Project
-
-[![Product Name Screen Shot][product-screenshot]](https://example.com)
 
 Hello developers! I hope your term is going well. This document will server as an entry point into the project, and provide a brief overview of what we have implemented so far.
 
@@ -85,13 +74,10 @@ Key Development Points:
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ### Built With
-
-Checkout the documentation for the tech stack:<br>
-<div align=center>
+<br>
 <a>
     <img src="images/structure_diagram.png" alt="Logo" height="150">
 </a>
-</div>
 
 - [React][react-url]
 - [Docker][docker-url]
@@ -105,35 +91,49 @@ Checkout the documentation for the tech stack:<br>
 
 ## Getting Started
 
-This is an example of how you may give instructions on setting up your project locally.
-To get a local copy up and running follow these simple example steps.
+If you have never used Docker before, it may feel somewhat intimidating. But once you get used to using it, Docker becomes a very useful and valuable developmental tool. This section will run through how to get your project up and running by using docker.
 
 ### Prerequisites
 
-This is an example of how to list things you need to use the software and how to install them.
+Make sure you have all the nessecary tools downloaded.  
 
 - npm
   ```sh
   npm install npm@latest -g
   ```
+- express
+  ```sh
+  npm install express
+  ```
+- [Downlod Docker!][docker-url]
 
-### Installation
+### Local Deployment
 
-_Below is an example of how you can instruct your audience on installing and setting up your app. This template doesn't rely on any external dependencies or services._
+_Once you have both the code base and nessecary programs downloaded on your machine, it is time to start devloping!_
 
-1. Get a free API Key at [https://example.com](https://example.com)
-2. Clone the repo
+1. Open a terminal, within your code base, and run
    ```sh
-   git clone https://github.com/your_username_/Project-Name.git
+   docker-compose build
    ```
-3. Install NPM packages
+   This command builds all services, including any database migrations. It an essential step!
+
+2. Now your sevices are built, run docker-compose up.
    ```sh
-   npm install
+   docker-compose up
    ```
-4. Enter your API in `config.js`
-   ```js
-   const API_KEY = "ENTER YOUR API";
+   This command creates, starts and attaches containers for a service. It handles configuration steps outlined in the dockerfile, like npm start, automatically.
+
+3. The project is now running! Open http://localhost:3000/login. As of right now, anyone can sign up to create an account. Your server will be running on http://localhost:8000 . 
+ 
+4. Hot reloads are supported. Changes to your code, once saved, will prompt a reload and rendered.
+
+5. Once you are ready to stop development, be sure to run the following command:
+   ```sh
+   docker-compose build
    ```
+   This command stops and removes containers, networks, volumes and other images created by the docker-compose up command. 
+
+6. If you run into issues with you a corrupted database and need to locally delete your db folder, just follow these steps again! 
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
