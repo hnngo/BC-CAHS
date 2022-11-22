@@ -54,7 +54,11 @@ const generateColSchema = ({ theme, setSelectedFormData, handleOpen, onClickEdit
             }}
             variant="filled"
             onClick={() => {
-              onClickEdit(params.row);
+              if (params.row) {
+                onClickEdit(params.row);
+              } else {
+                onClickEdit(params);
+              }
             }}
           />
           <Chip

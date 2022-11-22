@@ -99,7 +99,10 @@ const Status = () => {
         <DetailStatus
           selectedAnalysis={selectedAnalysis}
           data={formData.filter((form) => form.analysis_requested === selectedAnalysis)}
-          onUpdateForm={() => setForceFetchStatus(!forceFetchStatus)}
+          onUpdateForm={(newFormData) => {
+            setFormData(newFormData);
+            setForceFetchStatus(!forceFetchStatus);
+          }}
         />
       </Grid>
     </Grid>

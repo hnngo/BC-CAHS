@@ -8,8 +8,10 @@ import { useNavigate } from "react-router-dom";
 import { createTheme } from "@mui/material/styles";
 import { ThemeProvider } from "@mui/material";
 import validateSignup from "../utils/validateSignup";
-import axios from "axios";
+
 import SuccessAlert from "./Home/components/SuccessAlert";
+// API
+import { apiSignup } from "../api/user";
 
 export const customTheme = createTheme({
   typography: {
@@ -69,16 +71,13 @@ const Signup = () => {
     e.preventDefault();
     setErrors(validateSignup(data));
 
-    if (validateSignup(data)) {
-      console.log("inside submission logic");
-      axios.post("http://localhost:8000/api/auth/signup", data).then((response) => {
-        console.log(response.data);
-        if (response.data.error == 109) {
+    if (!Object.entries(validateSignup(data)).length) {
+      apiSignup(data).then(({ error }) => {
+        console.log(error);
+        if (error == 109) {
           setResponse(true);
-          console.log("response set to true");
           setValid(true);
         } else {
-          console.log("set to false");
           setValid(true);
         }
       });

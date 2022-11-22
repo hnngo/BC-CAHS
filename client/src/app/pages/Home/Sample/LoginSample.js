@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 
 // Hooks
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, useNavigate } from "react-router-dom";
 
 // API
 import {
@@ -30,6 +30,7 @@ import { useTheme } from "@mui/material/styles";
 
 const Sample = () => {
   const theme = useTheme();
+  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const [open, setOpen] = useState(false);
   const [apiProgress, setApiProgress] = React.useState({
@@ -68,6 +69,7 @@ const Sample = () => {
       const { error, data } = await apiGetFormBySubmissionNumber(submissionNum);
       if (!error && data && data.length == 1) {
         setSubmissionData(convertSampleField(data[0]));
+        setSubmissionErrors({});
       }
     } catch (error) {
       console.log(error);
@@ -90,26 +92,39 @@ const Sample = () => {
   React.useEffect(() => {
     if (submissionData.rtqpcrTarget && submissionData.rtqpcrTarget.includes("other")) {
       setOtherDisabled(false);
+    } else {
+      setOtherDisabled(true);
     }
   }, [submissionData.rtqpcrTarget]);
 
   const handleClose = () => {
-    setOpen(false);
-    setApiProgress({
-      progress: API_PROGRESS.INIT,
-      error: 0,
-      msg: " "
-    });
+    const editMode = searchParams.get("edit");
+    // Navigate to form manage if successfully save the form
+    if (editMode != "true" && apiProgress.progress === API_PROGRESS.SUCCESS) {
+      navigate("/sample");
+    } else {
+      setOpen(false);
+      setApiProgress({
+        progress: API_PROGRESS.INIT,
+        error: 0,
+        msg: " "
+      });
+    }
   };
 
   const onChangeTextValue = (name, value) => {
+    if (name === "otherDescription") {
+      setSubmissionData({ ...submissionData, [name]: value });
+      return;
+    }
+
     const error = validateText(name, value);
     if (error.length) {
       setSubmissionErrors({ ...submissionErrors, [name]: error });
     } else {
-      setSubmissionData({ ...submissionData, [name]: value });
       delete submissionErrors[name];
     }
+    setSubmissionData({ ...submissionData, [name]: value });
   };
 
   const onChangeTextValueNum = (name, value) => {
@@ -117,8 +132,9 @@ const Sample = () => {
     if (error.length) {
       setSubmissionErrors({ ...submissionErrors, [name]: error });
     } else {
-      setSubmissionData({ ...submissionData, [name]: value });
+      delete submissionErrors[name];
     }
+    setSubmissionData({ ...submissionData, [name]: value });
   };
 
   const onChangeTimeValue = (name, value) => {
@@ -126,8 +142,9 @@ const Sample = () => {
     if (error.length) {
       setSubmissionErrors({ ...submissionErrors, [name]: error });
     } else {
-      setSubmissionData({ ...submissionData, [name]: value });
+      delete submissionErrors[name];
     }
+    setSubmissionData({ ...submissionData, [name]: value });
   };
 
   const onChangeDateValue = (name, value) => {
@@ -136,32 +153,36 @@ const Sample = () => {
     if (error.length) {
       setSubmissionErrors({ ...submissionErrors, [name]: error });
     } else {
-      setSubmissionData({ ...submissionData, [name]: value });
+      delete submissionErrors[name];
     }
+    setSubmissionData({ ...submissionData, [name]: value });
   };
 
   const onChangeSelectValue = (name, value) => {
+    if (value) {
+      delete submissionErrors[name];
+    } else {
+      setSubmissionErrors({ ...submissionErrors, [name]: "Please select an option" });
+    }
     setSubmissionData({ ...submissionData, [name]: value });
   };
 
   const onChangeMultiSelectValue = (name, value) => {
+    if (value) {
+      delete submissionErrors[name];
+    } else {
+      setSubmissionErrors({ ...submissionErrors, [name]: "Please select an option" });
+    }
     setSubmissionData({ ...submissionData, [name]: value });
   };
 
-  const submitData = async (data) => {
-    // Update the errors
-    Object.keys(submissionErrors).forEach((k) => {
-      if (data[k] !== null) {
-        delete submissionErrors[k];
-      }
-    });
-
+  const submitData = async () => {
     if (Object.keys(submissionErrors).length == 0) {
       let res;
       if (searchParams.get("edit") == "true") {
-        res = await apiUpdateFormBySubmissionNumber(data);
+        res = await apiUpdateFormBySubmissionNumber(submissionData);
       } else {
-        res = await apiSubmitForm(data);
+        res = await apiSubmitForm(submissionData);
       }
 
       if (res.error || !res.data) {
@@ -376,6 +397,7 @@ const Sample = () => {
         <SampleInput
           name="otherDescription"
           type="text"
+          value={submissionData.otherDescription}
           disableText={otherDisabled}
           placeholder={"If other, please specify"}
           onChange={(e) => onChangeTextValue(e.target.name, e.target.value)}
@@ -397,7 +419,7 @@ const Sample = () => {
           name="submit"
           type="submit"
           submitText={searchParams.get("edit") == "true" ? "Update" : "Submit"}
-          onClick={() => submitData(submissionData)}
+          onClick={() => submitData()}
         />
       </Grid>
       <Modal open={open} onClose={handleClose} sx={{ zIndex: 80 }}>
@@ -420,7 +442,6 @@ const Sample = () => {
               <Grid item xs={6}>{`${e[1]}`}</Grid>
             </Grid>
           ))}
-
           <div>{apiProgress.msg}</div>
         </Box>
       </Modal>

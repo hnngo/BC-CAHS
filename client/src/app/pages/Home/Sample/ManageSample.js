@@ -1,6 +1,9 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
+// API
+import { apiGetForms } from "../../../api/form";
+
 // Components
 import {
   DataGrid,
@@ -18,7 +21,6 @@ import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
 import FilterAltIcon from "@mui/icons-material/FilterAlt";
 
 // Utils
-import axios from "axios";
 import generateFormTableColumns from "./utils/generateFormTableColumns";
 import { API_PROGRESS } from "../../../utils/constants";
 
@@ -58,19 +60,14 @@ const ManageSample = () => {
     }
 
     setApiProgress({ apiProgress: API_PROGRESS.REQ });
-    const res = await axios.get(
-      `http://localhost:8000/api/form?offset=${pagination.offset}&limit=${pagination.limit}`,
-      {
-        withCredentials: true
-      }
-    );
+    const { data: fetchedData } = await apiGetForms(pagination.offset, pagination.limit);
 
     setApiProgress({ apiProgress: API_PROGRESS.SUCCESS });
-    if (res.data && res.data.data && res.data.data.forms) {
+    if (fetchedData && fetchedData.forms) {
       const newData = [...data];
-      newData.splice(pagination.offset, 0, ...res.data.data.forms);
+      newData.splice(pagination.offset, 0, ...fetchedData.forms);
       setData(newData);
-      setPagination({ ...pagination, total: +res.data.data.total });
+      setPagination({ ...pagination, total: +fetchedData.total });
     }
   };
 

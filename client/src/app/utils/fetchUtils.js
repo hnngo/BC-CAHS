@@ -1,8 +1,18 @@
 import axios from "axios";
 
+const formatAPIURL = (url) => {
+  // eslint-disable-next-line no-undef
+  if (process.env.NODE_ENV !== "production") {
+    return "http://localhost:8000" + url;
+  } else {
+    // EC2 public v4 DNS
+    return "http://ec2-18-213-81-12.compute-1.amazonaws.com" + url;
+  }
+};
+
 export const get = async (url, headers = {}) => {
   try {
-    const { data } = await axios.get(url, {
+    const { data } = await axios.get(formatAPIURL(url), {
       headers: {
         ...headers
       },
@@ -17,7 +27,7 @@ export const get = async (url, headers = {}) => {
 
 export const post = async (url, body, headers = {}) => {
   try {
-    const { data } = await axios.post(url, body, {
+    const { data } = await axios.post(formatAPIURL(url), body, {
       headers: {
         ...headers
       },

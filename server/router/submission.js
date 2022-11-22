@@ -121,7 +121,7 @@ router.post("/submit", async (req, res) => {
     });
   } catch (err) {
     console.log(err);
-    res.status(ERROR_CODE.DATABASE_ERROR).json({
+    res.json({
       error: ERROR_CODE.DATABASE_ERROR,
       msg: err,
       data: {},
@@ -356,7 +356,8 @@ router.get("/:form_id", async (req, res) => {
   const data = await pool.query(
     `
     SELECT sd.*, sad.*, ssi.*,
-      string_agg(rqt.rt_qpcr_target, ',') rt_qpcr_type
+      string_agg(rqt.rt_qpcr_target, ',') rt_qpcr_type,
+      string_agg(srq.other_description, ',') rt_qpcr_type_other
     FROM public.submission_details sd
     LEFT JOIN public.sample_details sad ON sd.submission_num = sad.submission_num
     LEFT JOIN public.submission_rt_qpcr srq ON srq.submission_num = sad.submission_num

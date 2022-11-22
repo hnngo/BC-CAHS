@@ -7,13 +7,10 @@ import { Box, TextField, Typography, Button, Grid, ThemeProvider } from "@mui/ma
 import ErrorMessage from "./Home/components/ErrorMessage";
 
 // API
-import { apiLogin } from "../api/user";
+import { apiLogin, apiGetAuthUser } from "../api/user";
 
 // Context
 import { UserInfoContext } from "../context/UserContext";
-
-// Utils
-import axios from "axios";
 
 // Style
 import { useTheme, createTheme } from "@mui/material/styles";
@@ -104,7 +101,7 @@ const Login = () => {
         lastName: resData.last_name,
         isFetched: true
       });
-      navigate("/");
+      navigate("/sample");
     } else {
       setCredentialError(msg);
     }
@@ -114,11 +111,9 @@ const Login = () => {
    * Check if Session is active, redirecting to main page.
    */
   const isUserLoggedin = async () => {
-    var session = await axios.get("http://localhost:8000/api/auth/authUser", {
-      withCredentials: true
-    });
+    const { data } = await apiGetAuthUser();
 
-    if (session.data.data.auth) {
+    if (data.auth) {
       navigate("/sample");
     }
   };
