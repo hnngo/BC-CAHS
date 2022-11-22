@@ -5,6 +5,10 @@ import { Box } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import SideBarRow from "./SideBarRow";
 
+/**
+ * Sidebar component
+ * @returns sidebar component
+ */
 const SideBar = () => {
   const theme = useTheme();
 
