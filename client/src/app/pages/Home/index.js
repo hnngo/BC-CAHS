@@ -13,6 +13,10 @@ import withAuth from "../Home/components/WithAuth";
 // Assets
 import BgHomeImage from "../../../assets/images/background_home.png";
 
+/**
+ * Home/ landing page of project
+ * @returns Home page
+ */
 const Home = () => {
   const theme = useTheme();
 
