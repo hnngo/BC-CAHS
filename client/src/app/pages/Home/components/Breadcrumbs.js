@@ -5,9 +5,13 @@ import SailingIcon from '@mui/icons-material/Sailing';
 import { useTheme } from "@mui/material/styles";
 import ReceiptLongIcon from "@mui/icons-material/ReceiptLong";
 
+/**
+ * Dynamically rendered breadcrumb component
+ * @returns breadcrumb component
+ */
 const breadcrumbs = () => {
   const theme = useTheme();
-  const { pathname } = useLocation();
+  const { pathname } = useLocation(); // get current location 
   const pathNames = pathname.split("/").filter(x => x);
   return (
     <Breadcrumbs separator={<SailingIcon style={{fontSize: "18px", color: "white"}} />}>

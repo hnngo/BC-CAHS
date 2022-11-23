@@ -1,3 +1,6 @@
+/**
+ * Validator for form submission.
+ */
 export const VALIDATE_TYPES = {
   NUMBER_ONLY: "number_only",
   CHAR_ONLY: "char_only",
@@ -55,6 +58,13 @@ const VALIDATE_ERROR_MESSAGE = {
   smallIntLimit: "Integer max length - "
 };
 
+/**
+ * Validates form input for numbers
+ * @param {*} value some input
+ * @param {*} validateTypes number
+ * @param  {...any} args 
+ * @returns error if input provided isn't a valid number
+ */
 export const validate = (value, validateTypes = [], ...args) => {
   const error = [];
 
@@ -73,6 +83,12 @@ export const validate = (value, validateTypes = [], ...args) => {
   return error;
 };
 
+/**
+ * Validates form input for dates
+ * @param {c} name some input
+ * @param {*} field input field
+ * @returns error if input provided isn't a valid date
+ */
 export const validateDate = (name, field) => {
   if (field == null || field.length == 0) {
     return `${name}: ${VALIDATE_ERROR_MESSAGE.dateRequired}`;
@@ -83,6 +99,12 @@ export const validateDate = (name, field) => {
   }
 };
 
+/**
+ * Validate form input for time
+ * @param {*} name some input
+ * @param {*} field input field
+ * @returns error if input provided isn't a valid time
+ */
 export const validateTime = (name, field) => {
   if (field == null || field.length == 0) {
     return `${name}: ${VALIDATE_ERROR_MESSAGE.timeRequired}`;
@@ -93,6 +115,12 @@ export const validateTime = (name, field) => {
   }
 };
 
+/**
+ * Validate form input for text
+ * @param {*} name some input
+ * @param {*} field input field
+ * @returns error if input provided isn't a valid text
+ */
 export const validateText = (name, field) => {
   if (field == null || field.length == 0) {
     return `${name}: ${VALIDATE_ERROR_MESSAGE.textRequired}`;
@@ -103,6 +131,12 @@ export const validateText = (name, field) => {
   }
 };
 
+/**
+ * Validate form input for numbers
+ * @param {*} name some input
+ * @param {*} field input field
+ * @returns error if input provided isn't a valid number or length
+ */
 export const validateTextNum = (name, field) => {
   if (field == null || field.length == 0) {
     return `${name}: ${VALIDATE_ERROR_MESSAGE.smallIntRequired}`;

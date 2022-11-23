@@ -14,6 +14,10 @@ import { apiLogout } from "../../../api/user";
 // Style
 import { useTheme } from "@mui/material/styles";
 
+/**
+ * Navbar component
+ * @returns a navbar component
+ */
 const NavBar = () => {
   const theme = useTheme();
   const [anchorEl, setAnchorEl] = React.useState(null);

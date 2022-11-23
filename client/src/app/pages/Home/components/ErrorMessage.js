@@ -2,6 +2,11 @@ import React from "react";
 import { Grid, Typography } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 
+/**
+ * Error message component
+ * @param {*} param0 some error message
+ * @returns a message component
+ */
 const ErrorMessage = ({ msg }) => {
   const theme = useTheme();
 

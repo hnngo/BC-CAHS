@@ -4,6 +4,10 @@ import { useNavigate } from "react-router-dom";
 import { Box, Typography } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 
+/**
+ * Dynamically render sidebar row component
+ * @returns dynamically rendered sidebar row component
+ */
 const SideBarRow = ({ title, indent, bold, onClick, to }) => {
   const theme = useTheme();
   const navigate = useNavigate();

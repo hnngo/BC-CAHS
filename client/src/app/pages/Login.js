@@ -74,18 +74,6 @@ const Login = () => {
   };
 
   /**
-   * Log user into Database through axios call.
-   *
-   * @returns a response either validating or rejecting user authentication.
-   */
-  // const loginCall = async () => {
-  //   const response = await axios.post("http://localhost:8000/api/auth/login", data, {
-  //     withCredentials: true
-  //   });
-  //   return response;
-  // };
-
-  /**
    * Check if login action is valid. Redirect if login action is valid,
    * else set Credential Error to True, rendering an error message.
    */
@@ -139,13 +127,12 @@ const Login = () => {
             fontFamily={"Kodchasan"}
             paddingTop={5}
             color={theme.secondary.lighter}
-            // textShadow={`2px 2px ${theme.primary.dark}`}
             fontWeight="bold">
             CAHS LIMS
           </Typography>
 
           <Typography variant="h5" color={theme.secondary.light} fontFamily={"Kodchasan"}>
-            Labotory Information Management System
+            Laboratory Information Management System
           </Typography>
         </Box>
 
@@ -193,7 +180,7 @@ const Login = () => {
           <Grid container>
             <Grid item xs={1}></Grid>
             <Grid item xs={7} display="flex" alignItems={"center"}>
-              <Typography>Don&apos;t have an anccount?</Typography>
+              <Typography>Don&apos;t have an account?</Typography>
             </Grid>
 
             <Grid item xs={4}>

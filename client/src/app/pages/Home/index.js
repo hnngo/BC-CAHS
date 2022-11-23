@@ -13,6 +13,10 @@ import withAuth from "../Home/components/WithAuth";
 // Assets
 import BgHomeImage from "../../../assets/images/background_home.png";
 
+/**
+ * Home/ landing page of project
+ * @returns Home page
+ */
 const Home = () => {
   const theme = useTheme();
 
@@ -37,7 +41,6 @@ const Home = () => {
         <Box height="100%">
           <Grid container direction={"column"} flexWrap={"unset"} height="100%">
             <Box height={"50px"} display={"flex"} justifyContent={"start"} alignItems={"start"}>
-              {/* TODO: Auto generate breadcrumb */}
               <Breadcrumbs>
               </Breadcrumbs>
             </Box>
@@ -48,11 +51,6 @@ const Home = () => {
               flex={1}
               sx={{ overflowY: "scroll" }}>
               <Outlet />
-              {/* <Routes>
-                <Route path="/sample" element={<Sample />} />
-                <Route path="/status" element={<Status />} />
-                <Route path="/templates" element={<Templates />} />
-              </Routes> */}
             </Box>
           </Grid>
         </Box>
