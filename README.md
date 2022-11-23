@@ -49,8 +49,6 @@
     <li><a href="#roadmap">Roadmap</a></li>
     <li><a href="#contributing">Contributing</a></li>
     <li><a href="#license">License</a></li>
-    <li><a href="#contact">Contact</a></li>
-    <li><a href="#acknowledgments">Acknowledgments</a></li>
   </ol>
 </details>
 
@@ -141,9 +139,28 @@ _Once you have both the code base and nessecary programs downloaded on your mach
 
 ## Usage
 
-Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
+The functionality of the site is pretty straight forward. We'd encourage you to play around with the site before you begin further development. Best place to start would be signing up and logging in (authorization code can be found ). You'll be greeted by the following page:
+<div align=center>
+<a>
+    <img src="images/sample_home.png" alt="Logo" height="150">
+</a>
+</div>
 
-_For more examples, please refer to the [Documentation](https://example.com)_
+No data has been inputted yet. The Frontend code can be found here --> client\src\app\pages\Home\Sample. Let's start be logging some data. Our submission form, and all provided fields, are based upon the specifications of the BC CAHS. 
+
+<div align=center>
+<a>
+    <img src="images/loginSamplePage.png" alt="Logo" height="150">
+</a>
+</div>
+
+If you want to take a look at the code, we suggest checking out --> client\src\app\pages\Home\components\SampleInput.js. Be sure to also look into the server side of things to see the connection between frontend and backend --> server\router\submission.js!
+
+After you have logged in data, it'll be rendered in both the sample landing page and in the status page. Check out the code for the Status page here --> client\src\app\pages\Home\Status. 
+
+Mess around with inputting data, and applying different fields on the pages mentioned above. We've tried our best to document the code through-out the development, so hopefully you will be able to dive in quickly and build upon the work that we have started.
+
+From our understanding, alot of the work you will tackle will centered on data visualization for the Data/Report Templates. We'd recommend looking closely at the implementation of our Status page code, and understanding the way in which data is being grabbed from postgres.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -151,15 +168,15 @@ _For more examples, please refer to the [Documentation](https://example.com)_
 
 ## Roadmap
 
-- [x] Add Changelog
-- [x] Add back to top links
-- [ ] Add Additional Templates w/ Examples
-- [ ] Add "components" document to easily copy & paste sections of the readme
-- [ ] Multi-language Support
-  - [ ] Chinese
-  - [ ] Spanish
-
-See the [open issues](https://github.com/othneildrew/Best-README-Template/issues) for a full list of proposed features (and known issues).
+- [x] Structure and Create Database
+- [x] Accept and render live data
+- [x] Bar graphical representation of data
+- [x] User Authentication (Login, Log-out, session persistence)
+- [ ] Further User Authentication (ie. admin privledges, limited accounts)
+- [ ] Additional data representation fields
+- [ ] To be determined by BC CAHS
+- [ ] Deployment on BC CAHS Arbutus Cloud
+- [ ] To be determined by use
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -167,10 +184,7 @@ See the [open issues](https://github.com/othneildrew/Best-README-Template/issues
 
 ## Contributing
 
-Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
-
-If you have a suggestion that would make this better, please fork the repo and create a pull request. You can also simply open an issue with the tag "enhancement".
-Don't forget to give the project a star! Thanks again!
+I hope this section is not redundant! We used the following git work-flow in our developmental process: 
 
 1. Fork the Project
 2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
@@ -185,33 +199,6 @@ Don't forget to give the project a star! Thanks again!
 ## License
 
 Distributed under the MIT License. See `LICENSE.txt` for more information.
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-<!-- CONTACT -->
-
-## Contact
-
-Your Name - [@your_twitter](https://twitter.com/your_username) - email@example.com
-
-Project Link: [https://github.com/your_username/repo_name](https://github.com/your_username/repo_name)
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-<!-- ACKNOWLEDGMENTS -->
-
-## Acknowledgments
-
-Use this space to list resources you find helpful and would like to give credit to. I've included a few of my favorites to kick things off!
-
-- [Choose an Open Source License](https://choosealicense.com)
-- [GitHub Emoji Cheat Sheet](https://www.webpagefx.com/tools/emoji-cheat-sheet)
-- [Malven's Flexbox Cheatsheet](https://flexbox.malven.co/)
-- [Malven's Grid Cheatsheet](https://grid.malven.co/)
-- [Img Shields](https://shields.io)
-- [GitHub Pages](https://pages.github.com)
-- [Font Awesome](https://fontawesome.com)
-- [React Icons](https://react-icons.github.io/react-icons/search)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
