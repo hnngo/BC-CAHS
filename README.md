@@ -174,9 +174,8 @@ From our understanding, alot of the work you will tackle will centered on data v
 - [x] User Authentication (Login, Log-out, session persistence)
 - [ ] Further User Authentication (ie. admin privledges, limited accounts)
 - [ ] Additional data representation fields
-- [ ] To be determined by BC CAHS
 - [ ] Deployment on BC CAHS Arbutus Cloud
-- [ ] To be determined by use
+- [ ] To be determined by BC CAHS
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
