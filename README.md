@@ -113,7 +113,7 @@ _Once you have both the code base and nessecary programs downloaded on your mach
    ```sh
    docker-compose build
    ```
-   This command builds all services, including any database migrations. It an essential step!
+   This command builds all services, including any database migrations. It's an essential step!
 
 2. Now your sevices are built, run docker-compose up.
    ```sh
@@ -127,11 +127,17 @@ _Once you have both the code base and nessecary programs downloaded on your mach
 
 5. Once you are ready to stop development, be sure to run the following command:
    ```sh
-   docker-compose build
+   docker-compose down
    ```
    This command stops and removes containers, networks, volumes and other images created by the docker-compose up command. 
 
-6. If you run into issues with you a corrupted database and need to locally delete your db folder, just follow these steps again! 
+6. If you run into issues with a corrupted database and need to locally delete your db folder, just follow these steps again!
+
+* Note: After your initial setup, you can run the script:
+```
+npm run dev
+```
+Checkout package.json in the root directory to see what is actually happening!
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -146,7 +152,7 @@ The functionality of the site is pretty straight forward. We'd encourage you to 
 </a>
 </div>
 
-No data has been inputted yet. The Frontend code can be found here --> client\src\app\pages\Home\Sample. Let's start be logging some data. Our submission form, and all provided fields, are based upon the specifications of the BC CAHS. 
+No data has been inputted yet. The Frontend code can be found here --> client\src\app\pages\Home\Sample. Let's start logging in some data. Our submission form, and all provided fields, are based upon the specifications of the BC CAHS. 
 
 <div align=center>
 <a>
@@ -158,7 +164,7 @@ If you want to take a look at the code, we suggest checking out --> client\src\a
 
 After you have logged in data, it'll be rendered in both the sample landing page and in the status page. Check out the code for the Status page here --> client\src\app\pages\Home\Status. 
 
-Mess around with inputting data, and applying different fields on the pages mentioned above. We've tried our best to document the code through-out the development, so hopefully you will be able to dive in quickly and build upon the work that we have started.
+Mess around with inputting the data, and applying different fields on the pages mentioned above. We've tried our best to document the code through-out the development, so hopefully you will be able to dive in quickly and build upon the work that we have started.
 
 From our understanding, alot of the work you will tackle will centered on data visualization for the Data/Report Templates. We'd recommend looking closely at the implementation of our Status page code, and understanding the way in which data is being grabbed from postgres.
 
@@ -172,7 +178,7 @@ From our understanding, alot of the work you will tackle will centered on data v
 - [x] Accept and render live data
 - [x] Bar graphical representation of data
 - [x] User Authentication (Login, Log-out, session persistence)
-- [ ] Further User Authentication (ie. admin privledges, limited accounts)
+- [ ] Further User Authentication (ie. admin privileges, limited accounts, retrieve password)
 - [ ] Additional data representation fields
 - [ ] Deployment on BC CAHS Arbutus Cloud
 - [ ] To be determined by BC CAHS
