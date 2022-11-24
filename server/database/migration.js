@@ -47,6 +47,8 @@ const migrate = async (pool) => {
 
   /**
    * Create submission_details table
+   * Create analysis type as enum
+   * Create status type as enum
    */
 
   await pool.query(
@@ -88,6 +90,8 @@ const migrate = async (pool) => {
 
   /**
    * Create sample_details
+   * Create sample condition as enum
+   * Create sample origin as enum
    */
   await pool.query(
     `DO $$ BEGIN
@@ -116,6 +120,8 @@ const migrate = async (pool) => {
     )`
   );
   console.log("Finished sample details table");
+
+  // insert rtqpcr targets into rtqpcr_target table with corresponding IDs
 
   await pool.query(
     `
