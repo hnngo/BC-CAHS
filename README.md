@@ -60,7 +60,7 @@ Hello developers! I hope your term is going well. This document will server as a
 
 As you are probably aware, BC CAHS is looking to digitialize their sample registration process. Currently, BC CAHS accepts all sample submissions through a physical form. This form is then manually transposed into an excel sheet, which houses all information about the submitted sample and lab results. BC CAHS aims to replace this excel based system with a database that can be filtered, effectively searched through and edited.
 
-Through-out our project term, our team’s focus was on designing a centralized database that can be used by BC CAHS lab workers. Our emphasis was on implementing this database, basic user authentication and a front-end component which allows CAHS staff to filter, search and edit existing database elements. You will continue to build upon these existing features!
+Throughout our project term, our team’s focus was on designing a centralized database that can be used by BC CAHS lab workers. Our emphasis was on implementing this database, basic user authentication and a front-end component which allows CAHS staff to filter, search and edit existing database elements. You will continue to build upon these existing features!
 
 Key Development Points:
 
@@ -199,7 +199,7 @@ From our understanding, alot of the work you will tackle will centered on data v
 
 Currently, the application is deployed in AWS for demonstrating and presetation purposes. Sit in front of the application is the NGINX webserver that will redirect all `/api` route to API server at PORT 8000 and the other will be redirect to the default folder of NGINX `/usr/share/nginx/html` (details can be found in the file `nginx.conf` under folder deployment of this github).
 
-Because we separate the React application from the stack, so there is a file called `docker-compose.ec2.yaml` to be specifically used for deployment to AWS.
+Because we separated the React application from the stack, there is a file called `docker-compose.ec2.yaml` to be specifically used for deployment to AWS.
 
 <div align=center>
 <a>
@@ -209,7 +209,7 @@ Because we separate the React application from the stack, so there is a file cal
 
 ### Ideal deployment (for production)
 
-The ideal deployment should not contain Database within the Docker because if the dockerdown, all the data might lost as well. Therefore, it is better to have either self-hosted database, AWS RDS, AWS-managed relational database Aurora, or CAHS Database separately so we can have a proper **_backup plan_** to prevent data lost.
+The ideal deployment should not contain the Database within the Docker because if the docker is down, all the data might be lost as well. Therefore, it is better to have either a self-hosted database such as AWS RDS, AWS-managed relational database Aurora, or CAHS can host a Database separately so we can have a proper **_backup plan_** to prevent data lost.
 
 <div align=center>
 <a>
@@ -217,7 +217,7 @@ The ideal deployment should not contain Database within the Docker because if th
 </a>
 </div>
 
-\* Note: The above proposed deployment might not well suited with the infrastructure of Arbutus cloud, but there will have simililar components/entities/services that can replace the proposed AWS services. For example, we can replace AWS EC2 instance by any service of Arbutus that can provide a server that up and running.
+\* Note: The above proposed deployment might not well suited with the infrastructure of Arbutus cloud, but there will have simililar components/entities/services that can replace the proposed AWS services. For example, we can replace AWS EC2 instance by any service Arbutus Cloud offers that can provide a running server.
 
 <!-- ROADMAP -->
 
@@ -239,7 +239,7 @@ The ideal deployment should not contain Database within the Docker because if th
   - [x] Create Database schema/ERD
   - [x] Maintain well-defined and clear table format to support further expansion
   - [x] Create basic migration upon running the server
-  - [ ] Better design for database migration (currently, the database migration script running whenever the application is spinning up. This is not a good practice, can consider using `knex` for better migration plan)
+  - [ ] Better design for database migration (currently, the database migration script runs whenever the application is spinning up. This is not a good practice. Consider using `knex` for better migration plan)
 
 - Form/Submission
 
@@ -280,6 +280,30 @@ I hope this section is not redundant! We used the following git work-flow in our
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
+## Useful Resources
+
+Some useful guides or reference sheets that you may find helpful early on in development.
+
+### Docker
+
+- https://gist.github.com/jonlabelle/bd667a97666ecda7bbc4f1cc9446d43a
+- https://dockerlabs.collabnix.com/docker/cheatsheet/
+- https://devhints.io/docker-compose
+
+### React
+
+- https://www.youtube.com/watch?v=hQAHSlTtcmY
+- https://devhints.io/react
+
+### PostgreSQL
+
+- https://www.postgresql.org/docs/current/sql-syntax.html
+- https://node-postgres.com/api/pool
+
+### Express
+
+- https://expressjs.com/en/api.html
+- https://www.youtube.com/watch?v=SccSCuHhOw0
 <!-- LICENSE -->
 
 ## License
