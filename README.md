@@ -294,6 +294,7 @@ Some useful guides or reference sheets that you may find helpful early on in dev
 
 - https://www.youtube.com/watch?v=hQAHSlTtcmY
 - https://devhints.io/react
+- https://mui.com/material-ui
 
 ### PostgreSQL
 
