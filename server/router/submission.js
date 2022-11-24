@@ -113,7 +113,10 @@ router.post("/submit", async (req, res) => {
     });
 
     query += `END $$;`;
+
     await pool.query(query);
+
+    // send data or error
     res.json({
       error: 0,
       msg: "Successfully saved form data to database!",

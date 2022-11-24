@@ -112,6 +112,8 @@ const Sample = () => {
     }
   };
 
+  //onChange handlers for various different types of inputs
+
   const onChangeTextValue = (name, value) => {
     if (name === "otherDescription") {
       setSubmissionData({ ...submissionData, [name]: value });
@@ -176,6 +178,9 @@ const Sample = () => {
     setSubmissionData({ ...submissionData, [name]: value });
   };
 
+  // check if are any errors first
+  // set api progress
+  // submit data
   const submitData = async () => {
     if (Object.keys(submissionErrors).length == 0) {
       let res;
