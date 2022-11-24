@@ -50,6 +50,7 @@
   <li><a href="#roadmap">Roadmap</a></li>
   <li><a href="#contributing">Contributing</a></li>
   <li><a href="#license">License</a></li>
+  <li><a href=#useful-resources>Resources</a></li>
 </ol>
 
 <!-- ABOUT THE PROJECT -->
@@ -280,6 +281,8 @@ I hope this section is not redundant! We used the following git work-flow in our
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
+<!-- RESOURCES -->
+
 ## Useful Resources
 
 Some useful guides or reference sheets that you may find helpful early on in development.
@@ -305,6 +308,9 @@ Some useful guides or reference sheets that you may find helpful early on in dev
 
 - https://expressjs.com/en/api.html
 - https://www.youtube.com/watch?v=SccSCuHhOw0
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
 <!-- LICENSE -->
 
 ## License
