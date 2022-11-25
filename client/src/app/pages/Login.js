@@ -91,7 +91,7 @@ const Login = () => {
       });
       navigate("/sample");
     } else {
-      setCredentialError(msg);
+      setCredentialError(error);
     }
   };
 

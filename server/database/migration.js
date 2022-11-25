@@ -76,7 +76,7 @@ const migrate = async (pool) => {
     contact_phone_num VARCHAR(15) NOT NULL,
     purchase_order_num VARCHAR(15) NOT NULL,
     bc_cahs_receiver_name VARCHAR(50) NOT NULL,
-    bc_cahs_custodian_initials VARCHAR(5) NOT NULL,
+    bc_cahs_custodian_initials VARCHAR(50) NOT NULL,
     client_case_num VARCHAR(30) NOT NULL,
     bc_cahs_pi VARCHAR(5) NOT NULL,
     bc_cahs_project VARCHAR(30) NOT NULL,

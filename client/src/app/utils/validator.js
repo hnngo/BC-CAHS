@@ -21,7 +21,7 @@ const submissionFormCharacterLimits = {
   clientCaseNum: 30,
   contactPhoneNum: 15,
   samplingLocation: 50,
-  custodian: 5,
+  custodian: 50,
   PI: 5,
   BCCAHSProject: 30,
   initialStorage: 20,
@@ -62,7 +62,7 @@ const VALIDATE_ERROR_MESSAGE = {
  * Validates form input for numbers
  * @param {*} value some input
  * @param {*} validateTypes number
- * @param  {...any} args 
+ * @param  {...any} args
  * @returns error if input provided isn't a valid number
  */
 export const validate = (value, validateTypes = [], ...args) => {
