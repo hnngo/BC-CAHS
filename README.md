@@ -57,18 +57,18 @@
 
 ## About The Project
 
-Hello developers! I hope your term is going well. This document will server as an entry point into the project, and provide a brief overview of what we have implemented so far.
+Hello developers! I hope your term is going well. This document will serve as an entry point into the project, and provide a brief overview of what we have implemented so far.
 
-As you are probably aware, BC CAHS is looking to digitialize their sample registration process. Currently, BC CAHS accepts all sample submissions through a physical form. This form is then manually transposed into an excel sheet, which houses all information about the submitted sample and lab results. BC CAHS aims to replace this excel based system with a database that can be filtered, effectively searched through and edited.
+As you are probably aware, BC CAHS is looking to digitize their sample registration process. Currently, BC CAHS accepts all sample submissions through a physical form. This form is then manually transposed into an excel sheet, which houses all information about the submitted sample and lab results. BC CAHS aims to replace this excel based system with a database that can be filtered, effectively searched through and edited.
 
-Throughout our project term, our team’s focus was on designing a centralized database that can be used by BC CAHS lab workers. Our emphasis was on implementing this database, basic user authentication and a front-end component which allows CAHS staff to filter, search and edit existing database elements. You will continue to build upon these existing features!
+Throughout our project term, our team’s focus was on designing a centralized database that could be used by BC CAHS lab workers. Our emphasis was on implementing this database, basic user authentication and a front-end component which allows CAHS staff to filter, search and edit existing database elements. You will continue to build upon these existing features!
 
 Key Development Points:
 
-- Our database is built on PostgreSQL. We suggest checking out the database folder, and looking through the migration file to see our current DB structure. PGadmin is what we used for testing and development.
+- Our database is built on PostgreSQL. We suggest checking out the database folder and looking through the migration file to see our current DB structure. PGadmin is what we used for testing and development.
 - Docker is being used to ensure consistency across all development environments. Make sure to install Docker Desktop.
 - Hope you like Express as a backend framework!
-- React is used in the frontend. We tried to keep things as contemporary as possible. Material UI is used through-out for styling.
+- React is used in the frontend. We tried to keep things as contemporary as possible. Material UI is used throughout for styling.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -138,7 +138,7 @@ _Once you have both the code base and nessecary programs downloaded on your mach
 
    This command stops and removes containers, networks, volumes and other images created by the docker-compose up command.
 
-### Troubleshoot while development
+### Troubleshoot during development
 
 1. If you run into issues with a corrupted database and need to locally delete your `db` folder, just follow these steps again!
 
@@ -150,7 +150,7 @@ _Once you have both the code base and nessecary programs downloaded on your mach
 
   Checkout package.json in the root directory to see what is actually happening!
 
-2. If you run into isseus where the docker tells that you are out of space, you can cleaning up all the dangling images, containers, and VOLUMES
+2. If you run into issues where docker tells you that you are out of space, you can clean up all the dangling images, containers, and volumes in VOLUMES.
 
 <div align=center>
 <a>
@@ -160,7 +160,7 @@ _Once you have both the code base and nessecary programs downloaded on your mach
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-3. If you want to update any local development environment setting such as changing the PORTs running or update the data path of postgres, please find them in `docker-compose.yml`. Don't forget to `docker-compose down`, `docker-compose build`, and `docker-compose up` again to run the application with new settings applied.
+3. If you want to update any local development environment settings such as changing the running PORTs or updating the data path of postgres, please find them in `docker-compose.yml`. Don't forget to `docker-compose down`, `docker-compose build`, and `docker-compose up` again to run the application with new settings applied.
 
 <!-- USAGE EXAMPLES -->
 
@@ -198,7 +198,7 @@ From our understanding, alot of the work you will tackle will centered on data v
 
 ### Current deployment (for presentation only)
 
-Currently, the application is deployed in AWS for demonstrating and presetation purposes. Sit in front of the application is the NGINX webserver that will redirect all `/api` route to API server at PORT 8000 and the other will be redirect to the default folder of NGINX `/usr/share/nginx/html` (details can be found in the file `nginx.conf` under folder deployment of this github).
+Currently, the application is deployed in AWS for demonstration and presentation purposes. Sitting in front of the application is the NGINX webserver that will redirect all `/api` routes to the API server at PORT 8000 and the others will be redirected to the default folder of NGINX `/usr/share/nginx/html` (details can be found in the file `nginx.conf` under folder deployment of this github).
 
 Because we separated the React application from the stack, there is a file called `docker-compose.ec2.yaml` to be specifically used for deployment to AWS.
 
@@ -210,7 +210,7 @@ Because we separated the React application from the stack, there is a file calle
 
 ### Ideal deployment (for production)
 
-The ideal deployment should not contain the Database within the Docker because if the docker is down, all the data might be lost as well. Therefore, it is better to have either a self-hosted database such as AWS RDS, AWS-managed relational database Aurora, or CAHS can host a Database separately so we can have a proper **_backup plan_** to prevent data lost.
+The ideal deployment should not contain the Database within Docker because if docker is down, all the data might be lost. Therefore, it is better to have either a self-hosted database such as AWS RDS, or AWS-managed relational database Aurora, or have CAHS host a Database separately so we can have a proper **_backup_** plan to prevent data being lost.
 
 <div align=center>
 <a>
@@ -232,8 +232,8 @@ The ideal deployment should not contain the Database within the Docker because i
     - [x] Session persistence
   - [ ] Advanced User Authentication
     - [ ] Admin/Limited privileges
-    - [ ] Email, Phone call, SMS verification upon register step
-    - [ ] Forget password
+    - [ ] Email, Phone call, or SMS verification upon registration
+    - [ ] Retrieve forgotten password
 
 - Structure and Create Database
 
@@ -261,7 +261,7 @@ The ideal deployment should not contain the Database within the Docker because i
 - Deployment
 
   - [x] Deploy to AWS for presentation
-  - [ ] Deployment on BC CAHS Arbutus Cloud
+  - [ ] Deploy to BC CAHS Arbutus Cloud
 
 - [ ] To be determined by BC CAHS
 
